@@ -1,19 +1,16 @@
-# ProjectG - Scrum Planning
-
-## Sprint Overview
-
-**Current Sprint:** Sprint #
-**Sprint Duration:** [Start Date] - [End Date]
-**Sprint Goal:** [Define the main objective for this sprint]
+# ProjectG - Scrum Plan
 
 ## Team
 
 - **Product Owner:** [Name]
 - **Scrum Master:** [Name]
 - **Development Team:**
-  - [Developer 1]
-  - [Developer 2]
-  - [Developer 3]
+  - Antti Reinikainen
+  - Phong Nguyen
+  - Vinh Phuc Phuong
+  - Toni Parhiala
+  - Ramona Hirvonen
+  - Ngan Nguyen
 
 ## Sprint Ceremonies
 
@@ -43,30 +40,3 @@
   - What went well
   - What can be improved
   - Action items for next sprint
-
-## Definition of Done
-
-- [ ] Code is written and follows project standards
-- [ ] Unit tests are written and passing
-- [ ] Code is reviewed and approved
-- [ ] Documentation is updated
-- [ ] Feature is tested in development environment
-- [ ] No critical bugs remain
-
-## Blockers & Issues
-
-| Issue         | Reporter | Date Reported | Status        | Resolution     |
-| ------------- | -------- | ------------- | ------------- | -------------- |
-| [Description] | [Name]   | [Date]        | Open/Resolved | [How resolved] |
-
-## Velocity Tracking
-
-| Sprint   | Planned Points | Completed Points | Notes   |
-| -------- | -------------- | ---------------- | ------- |
-| Sprint 1 | [Number]       | [Number]         | [Notes] |
-| Sprint 2 | [Number]       | [Number]         | [Notes] |
-
-## Notes & Decisions
-
-- [Date] - [Important decision or note]
-- [Date] - [Important decision or note]
