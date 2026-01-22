@@ -40,3 +40,9 @@
   - What went well
   - What can be improved
   - Action items for next sprint
+
+### Comments from the devs
+
+- **22/01/2026**
+- Minusta erinomainen suunitelma! -Antti
+- Tässä vielä perus infora Scrumista: https://www.atlassian.com/agile/scrum
