@@ -40,3 +40,6 @@
   - What went well
   - What can be improved
   - Action items for next sprint
+
+### Comments from the devs
+- Minusta erinomainen suunitelma! -Antti
