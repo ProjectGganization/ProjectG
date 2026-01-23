@@ -46,3 +46,7 @@
 - **22/01/2026**
 - Minusta erinomainen suunitelma! -Antti
 - Tässä vielä perus infora Scrumista: https://www.atlassian.com/agile/scrum
+
+- **23/01/2026**
+
+
