@@ -49,5 +49,6 @@
 
 - **23/01/2026**
 - Loistava suunitelma.
+- Infoo scrumista: https://gofore.com/scrum-pahkinankuoressa/
 
 
