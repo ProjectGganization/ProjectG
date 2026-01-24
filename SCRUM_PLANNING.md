@@ -1,6 +1,6 @@
 # ProjectG - Scrum Plan
 
-## Team
+## Team: LOL G
 
 - **Product Owner:** [Name]
 - **Scrum Master:** [Name]
@@ -41,6 +41,20 @@
   - What can be improved
   - Action items for next sprint
 
+### Product Backlog
+Core Features
+- User can create a ticket
+- User can view ticket list
+- User can view ticket details
+- User can update a ticket status
+- Admin can assign tickets
+- Admin can filter/search tickets
+
+Non-functional / Supporting
+- Database setup
+- UI layout + styling
+- Testing
+
 ### Comments from the devs
 
 - **22/01/2026**
@@ -50,5 +64,9 @@
 - **23/01/2026**
 - Loistava suunitelma.
 - Infoo scrumista: https://gofore.com/scrum-pahkinankuoressa/
+
+- **25/01/2026**
+- Cool! -Ngan
+- Scrum opas suomeksi: https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Finnish.pdf
 
 
