@@ -51,4 +51,8 @@
 - Loistava suunitelma.
 - Infoo scrumista: https://gofore.com/scrum-pahkinankuoressa/
 
+- **25/01/2026**
+- Cool! -Ngan
+- Scrum opas suomeksi: https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Finnish.pdf
+
 
