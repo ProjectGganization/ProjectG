@@ -1,6 +1,6 @@
 # ProjectG - Scrum Plan
 
-## Team
+## Team: LOL G
 
 - **Product Owner:** [Name]
 - **Scrum Master:** [Name]
