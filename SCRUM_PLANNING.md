@@ -41,6 +41,20 @@
   - What can be improved
   - Action items for next sprint
 
+### Product Backlog
+Core Features
+- User can create a ticket
+- User can view ticket list
+- User can view ticket details
+- User can update a ticket status
+- Admin can assign tickets
+- Admin can filter/search tickets
+
+Non-functional / Supporting
+- Database setup
+- UI layout + styling
+- Testing
+
 ### Comments from the devs
 
 - **22/01/2026**
