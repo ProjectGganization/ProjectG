@@ -10,7 +10,7 @@
   - Vinh Phuc Phuong
   - Toni Parhiala
   - Ramona Hirvonen
-  - Ngan Nguyen
+  - Ngan Tran
 
 ## Sprint Ceremonies
 
