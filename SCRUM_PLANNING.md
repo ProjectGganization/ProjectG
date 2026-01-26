@@ -69,4 +69,5 @@ Non-functional / Supporting
 - Cool! -Ngan
 - Scrum opas suomeksi: https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Finnish.pdf
 
-
+**26/01/2026**
+- Aivan mahtava! -Toni
