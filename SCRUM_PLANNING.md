@@ -71,3 +71,7 @@ Non-functional / Supporting
 
 **26/01/2026**
 - Aivan mahtava! -Toni
+
+**27/01/2026**
+- Vamos! - Vinh
+- https://www.scrum.org/resources/what-scrum-module
