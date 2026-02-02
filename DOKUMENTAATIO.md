@@ -29,6 +29,6 @@ Lyhyt kuvaus käyttäjäryhmistä
 - Ylläpitäjä tarina #1
 
 ## Käyttöliitymä
-Teksti
+
 ### Käyttöliittymäkaavio
-- png kuva
+Linkki: https://miro.com/app/board/uXjVGRbZFy4=/?focusWidget=3458764657994404708
