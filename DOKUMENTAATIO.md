@@ -13,7 +13,7 @@ Järjestelmän alustava nimi: TicketGuru
 Johdantoteksti
 
 ## Järjestelmän määrittely
-Lyhyt kuvaus käyttäjäryhmistä
+Lipunmyyjä - Lipunmyyjä käyttää järjestelmää asiakaspalvelutilanteissa. Tehtävänä on tehdä myyntejä, käsittelee maksut ja hoitaa tarvittaessa peruutukset tai palautukset. Järjestelmän näkökulmasta lipunmyyjä on päivittäinen käyttäjä, jonka tekemät tapahtumat pitää kirjata (kuka teki, milloin teki, mitä myyntiin).
 
 ### Käyttötapauskaavio
 - png kuva
@@ -23,7 +23,11 @@ Lyhyt kuvaus käyttäjäryhmistä
 - Asiakas tarina #1
 
 #### Lipunmyyjä
-- Lipunmyyjä tarina #1
+- Lipunmyyjänä, haluan nähdä tuotteet nopeasti, jotta jonot eivät kasva
+- Kun asiakas haluaa ostaa useita lippuja, haluan muuttaa määriä, ilman uudelleenhakua.
+- Kun maksu on hyväksytty, haluan kuitin yhdellä painalluksella
+- Kun asiakas palaa kuitin kanssa, haluan löytää myynnin numerolla, jotta voin tarkistaa tilanteen.
+- Kun vuoro loppuu, haluan yhteenvedon / raportin vuorosta esim. myyntien lukumääristä.
 
 #### Ylläpitäjä
 - Ylläpitäjä tarina #1
