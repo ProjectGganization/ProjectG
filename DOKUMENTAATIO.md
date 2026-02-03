@@ -58,3 +58,28 @@ Ylläpitäjä - Ylläpitäjä pitää huolen järjestelmän turvallisuudesta hal
 
 ### Käyttöliittymäkaavio
 Linkki: https://miro.com/app/board/uXjVGRbZFy4=/?focusWidget=3458764657994404708
+
+## Tietokanta
+Teksti
+
+### Tietohakemisto
+markdown tai png kuva
+
+> ### _Tilit_
+> _Tilit-taulu sisältää käyttäjätilit. Käyttäjällä voi olla monta tiliä. Tili kuuluu aina vain yhdelle käyttäjälle._
+>
+> Kenttä | Tyyppi | Kuvaus
+> ------ | ------ | ------
+> id | int PK | Tilin id
+> nimimerkki | varchar(30) |  Tilin nimimerkki
+> avatar | int FK | Tilin avatar, viittaus [avatar](#Avatar)-tauluun
+> kayttaja | int FK | Viittaus käyttäjään [käyttäjä](#Kayttaja)-taulussa
+
+### Käsitekaavio
+png
+
+### Luokkakaavio
+png
+
+### Relaatiotietokanta
+png
