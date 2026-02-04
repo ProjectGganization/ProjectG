@@ -65,15 +65,80 @@ Teksti
 ### Tietohakemisto
 markdown tai png kuva
 
-> ### _Tilit_
-> _Tilit-taulu sisältää käyttäjätilit. Käyttäjällä voi olla monta tiliä. Tili kuuluu aina vain yhdelle käyttäjälle._
->
-> Kenttä | Tyyppi | Kuvaus
-> ------ | ------ | ------
-> id | int PK | Tilin id
-> nimimerkki | varchar(30) |  Tilin nimimerkki
-> avatar | int FK | Tilin avatar, viittaus [avatar](#Avatar)-tauluun
-> kayttaja | int FK | Viittaus käyttäjään [käyttäjä](#Kayttaja)-taulussa
+### _Users_                                                                 
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------ 
+user_id | int PK | Käyttäjän tunniste |
+email | varchar(255) NOT NULL | Sisäänkirjautumiseen käytettävä sähköposti
+password_hash | varchar(255) NOT NULL | Suojattu salasana
+role_id | int FK | Viittaus käyttäjän rooliin
+is_active | BOOLEAN | Onko tili lukittu vai ei
+
+### _Roles_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+role_id | int PK | Roolin tunniste
+Role_name | varchar(50) NOT NULL | Roolin nimi (admin, seller, customer)
+
+### _Venues_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+venue_id | int PK | Paikan tunniste
+name | varchar(250) NOT NULL| Paikan nimni
+city | varchar(250) NOT NULL | Kaupungin nimi
+address | varchar(250) NOT NULL | Paikan osoite
+
+### _Events_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+event_id | int PK | Tapahtuman tunniste
+title | varchar(250) NOT NULL | Tapahtuman nimi
+description | varchar(250) | Kuvausteksti
+start_time | datetime NOT NULL| Tapahtuman aloitusaika
+venue_id | int FK | Missä tapahtuma järjestetään
+status | varchar(50) DEFAULT | Tapahtuman tila (Visible, Hidden)
+
+### _Ticket Types_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+type_id | int PK | Lipputyypin tunniste
+event_id | int FK | Mihin tapahtumaan liittyy
+name | varchar(100) NOT NULL | Opiskelija, Aikuinen, Eläkeläinen
+price | decimal NOT NULL | Lipun hinta
+
+### _Tickets_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+ticket_id | int PK | Lipun tunniste
+type_id | int FK | Viittaus hintaan ja tyyppiin
+order_id | int FK | Mihin tilaukseen kuuluu
+qr_code | varchar(250) NOT NULL | Uniikki koodi tarkastusta varten
+status | varchar(50) NOT NULL | Lipun tila (Available, Sold, Reserved)
+
+### _Orders_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+order_id | int PK | Tilausnumero
+user_id | int FK | Kuka osti
+seller_id | int FK (user_id) | Kuka myi
+total_price | decimal NOT NULL | Tilauksen summa
+created_at | timestamp | Myyntihetki
+
+### _Sales Sessions_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+session_id | int PK | Vuoron tunniste
+seller_id | int FK (user_id) | Kuka oli töissä
+start_time | datetime | Vuoron alkuaika
+end_time | datetime | Vuoron lopetusaika
 
 ### Käsitekaavio
 png
