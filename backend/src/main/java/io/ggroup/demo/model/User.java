@@ -32,7 +32,7 @@ public class User {
     }
 
     public User(String email, String passwordHash, Integer roleId, Boolean isActive) {
-        this.email = email;
+        this.email = email; 
         this.passwordHash = passwordHash;
         this.roleId = roleId;
         this.isActive = isActive;
