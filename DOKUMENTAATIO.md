@@ -141,7 +141,7 @@ start_time | datetime | Vuoron alkuaika
 end_time | datetime | Vuoron lopetusaika
 
 ### Käsitekaavio
-png
+![Käsitekaavio](docs/Käsitekaavio.png)
 
 ### Luokkakaavio
 png
