@@ -200,7 +200,8 @@ quantity | int NOT NULL | Tilauksen lippujen määrä
 ![Käsitekaavio](docs/Käsitekaavio.png)
 
 ### Luokkakaavio
-png
+<img width="1003" height="463" alt="Näyttökuva 2026-02-10 170601" src="https://github.com/user-attachments/assets/9d8852f0-50f1-464d-b9f5-c00886a50c1a" />
+
 
 ### Relaatiotietokanta
 ![Relaatiotietokanta](docs/relaatiokaavio.png)
