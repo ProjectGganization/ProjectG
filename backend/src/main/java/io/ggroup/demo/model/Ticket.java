@@ -2,6 +2,7 @@ package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "tickets")
@@ -13,34 +14,37 @@ public class Ticket {
     private Integer ticketId;
 
     // Foreign key to TicketType
-    @NotNull
-    @Column(name = "type_id", nullable = false)
-    private Integer typeId;
+    @ManyToOne
+    @JoinColumn(name = "ticket_type", referencedColumnName = "ticket_type")
+    private TicketType ticketType;
 
-    // Foreign key to Order
-    @NotNull
-    @Column(name = "order_id", nullable = false)
-    private Integer orderId;
+    // Foreign key to Event
+    @ManyToOne
+    @JoinColumn(name = "event_id", referencedColumnName = "event_id")
+    private Event event;
 
-    // Unique QR code for the ticket
     @NotNull
-    @Column(name = "qr_code", nullable = false, length = 250, unique = true)
-    private String qrCode;
+    @Column(name = "unitprice", nullable = false, precision = 10, scale = 2)
+    private BigDecimal unitPrice;
 
-    // Ticket status (e.g., "Available", "Sold", "Reserved")
     @NotNull
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
+    @Column(name = "in_stock", nullable = false)
+    private Integer inStock;
+
+    @NotNull
+    @Column(name = "order_limit", nullable = false)
+    private Integer orderLimit;
 
     // Constructors
     public Ticket() {
     }
 
-    public Ticket(Integer typeId, Integer orderId, String qrCode, String status) {
-        this.typeId = typeId;
-        this.orderId = orderId;
-        this.qrCode = qrCode;
-        this.status = status;
+    public Ticket(TicketType ticketType, Event event, BigDecimal unitPrice, Integer inStock, Integer orderLimit) {
+        this.ticketType = ticketType;
+        this.event = event;
+        this.unitPrice = unitPrice;
+        this.inStock = inStock;
+        this.orderLimit = orderLimit;
     }
 
     // Getters and Setters
@@ -52,35 +56,43 @@ public class Ticket {
         this.ticketId = ticketId;
     }
 
-    public Integer getTypeId() {
-        return typeId;
+    public TicketType getTicketType() {
+        return ticketType;
     }
 
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
-    public String getQrCode() {
-        return qrCode;
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
-    public String getStatus() {
-        return status;
+    public Integer getInStock() {
+        return inStock;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setInStock(Integer inStock) {
+        this.inStock = inStock;
+    }
+
+    public Integer getOrderLimit() {
+        return orderLimit;
+    }
+
+    public void setOrderLimit(Integer orderLimit) {
+        this.orderLimit = orderLimit;
     }
 }

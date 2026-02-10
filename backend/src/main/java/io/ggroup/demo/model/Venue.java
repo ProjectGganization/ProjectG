@@ -17,21 +17,22 @@ public class Venue {
     private String name;
 
     @NotNull
-    @Column(name = "city", nullable = false, length = 250)
-    private String city;
-
-    @NotNull
     @Column(name = "address", nullable = false, length = 250)
     private String address;
+
+    // Foreign key to PostalCode (optional, can be null)
+    @ManyToOne
+    @JoinColumn(name = "postal_code", referencedColumnName = "postal_code")
+    private PostalCode postalCode;
 
     // Constructors
     public Venue() {
     }
 
-    public Venue(String name, String city, String address) {
+    public Venue(String name, String address, PostalCode postalCode) {
         this.name = name;
-        this.city = city;
         this.address = address;
+        this.postalCode = postalCode;
     }
 
     // Getters and Setters
@@ -51,19 +52,19 @@ public class Venue {
         this.name = name;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public PostalCode getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(PostalCode postalCode) {
+        this.postalCode = postalCode;
     }
 }
