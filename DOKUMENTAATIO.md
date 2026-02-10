@@ -63,7 +63,6 @@ Linkki: https://miro.com/app/board/uXjVGRbZFy4=/?focusWidget=3458764657994404708
 Teksti
 
 ### Tietohakemisto
-markdown tai png kuva
 
 ### _Users_                                                                 
 
@@ -72,24 +71,51 @@ Kenttä | Tyyppi | Kuvaus
 user_id | int PK | Käyttäjän tunniste |
 email | varchar(255) NOT NULL | Sisäänkirjautumiseen käytettävä sähköposti
 password_hash | varchar(255) NOT NULL | Suojattu salasana
-role_id | int FK | Viittaus käyttäjän rooliin
-is_active | BOOLEAN | Onko tili lukittu vai ei
+account_created | date | Milloin tili on tehty
+account_status | varchar FK | Fk AccountStatus tauluun
 
-### _Roles_
+### _AccountStatus_
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
-role_id | int PK | Roolin tunniste
-Role_name | varchar(50) NOT NULL | Roolin nimi (admin, seller, customer)
+account_status | varchar PK | Kertoo onko tili lukittu vai ei
+
+### _Customers_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+customer_id | int PK | Asiakkaan ID
+firstname | varchar (50) NOT NULL| Etunimi
+lastname | varchar (100) NOT NULL | Sukunimi
+email | varchar (250) NOT NULL | Sähköpostiosoite
+phone | varchar (25) NOT NULL | Puhelinnumero
+user_id | int FK | FK Users tauluun, jos asiakkaalla on olemassaoleva tili
+
+### _Sellers_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+seller_id | int PK | Myyjän ID
+name | varchar(50) NOT NULL | Myyjän nimi
+email | varchar (250) | Myyjän sähköpostiosoite
+phone | varchar (25) | Puhelinnumero
+user_id | int FK | FK Users tauluun
 
 ### _Venues_
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 venue_id | int PK | Paikan tunniste
-name | varchar(250) NOT NULL| Paikan nimni
-city | varchar(250) NOT NULL | Kaupungin nimi
+name | varchar(250) NOT NULL| Paikan nimi
 address | varchar(250) NOT NULL | Paikan osoite
+postalcode | varchar(5) FK | FK PostalCodes tauluun
+
+### _PostalCode_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+postalcode | varchar(5) PK | Postinumero
+city | varchar (250) NOT NULL | Kaupungin nimi
 
 ### _Events_
 
@@ -98,47 +124,77 @@ Kenttä | Tyyppi | Kuvaus
 event_id | int PK | Tapahtuman tunniste
 title | varchar(250) NOT NULL | Tapahtuman nimi
 description | varchar(250) | Kuvausteksti
+photo | varbinary (max) | Tapahtuman kuva
 start_time | datetime NOT NULL| Tapahtuman aloitusaika
+end_time | datetime | Tapahtuman päättymisaika
+event_status | varchar FK | FK EventStatus tauluun
 venue_id | int FK | Missä tapahtuma järjestetään
-status | varchar(50) DEFAULT | Tapahtuman tila (Visible, Hidden)
+category | varchar FK | FK Category tauluun
 
-### _Ticket Types_
+### _EventStatus_
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
-type_id | int PK | Lipputyypin tunniste
-event_id | int FK | Mihin tapahtumaan liittyy
-name | varchar(100) NOT NULL | Opiskelija, Aikuinen, Eläkeläinen
-price | decimal NOT NULL | Lipun hinta
+event_status | varchar PK | Kertooko onko tapahtuma loppuumyyty
+
+### _Category_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+category | varchar PK | Tapahtuman kategoria
 
 ### _Tickets_
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 ticket_id | int PK | Lipun tunniste
-type_id | int FK | Viittaus hintaan ja tyyppiin
-order_id | int FK | Mihin tilaukseen kuuluu
-qr_code | varchar(250) NOT NULL | Uniikki koodi tarkastusta varten
-status | varchar(50) NOT NULL | Lipun tila (Available, Sold, Reserved)
+ticket_type | varchar FK | FK TicketType tauluun
+event_id | int FK | FK Events tauluun
+unitprice | decimal NOT NULL | Lipun yksikköhinta
+in_stock | int NOT NULL | Jäljellä oleva määrä
+order_limit | int NOT NULL | Max määrä per tilaus
+
+### _IssuedTickets_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+issuedticket_id | int PK | Lipun id
+order_id | int FK | FK Orders tauluun
+qr_code | varchar NOT NULL | Uniikki tarkistuskoodi
+ticket_id | int FK | FK Tickets tauluun
+
+### _Ticket Types_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+ticket_type | varchar FK | Lipputyypi
 
 ### _Orders_
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 order_id | int PK | Tilausnumero
-user_id | int FK | Kuka osti
-seller_id | int FK (user_id) | Kuka myi
-total_price | decimal NOT NULL | Tilauksen summa
-created_at | timestamp | Myyntihetki
+customer_id | int FK | FK customers tauluun
+date | datetime NOT NULL | Tilausajankohta
+seller_id | int FK | FK sellers tauluun
+is_refunded | boolean | Onko tilaus hyvitetty
+is_paid | boolean | Onko tilaus maksettu
+payment_method | varchar FK | FK paymentMethod tauluun
 
-### _Sales Sessions_
+### _PaymentMethod_
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
-session_id | int PK | Vuoron tunniste
-seller_id | int FK (user_id) | Kuka oli töissä
-start_time | datetime | Vuoron alkuaika
-end_time | datetime | Vuoron lopetusaika
+payment_method | varchar PK | Maksutapa
+
+### _OrderDetails_
+
+Kenttä | Tyyppi | Kuvaus
+------ | ------ | ------
+order_id | int FK | FK Orders tauluun
+ticket_id | int FK | FK Tickets tauluun
+unitprice | decimal NOT NULL | Lipun yksikköhinta
+quantity | int NOT NULL | Tilauksen lippujen määrä
 
 ### Käsitekaavio
 ![Käsitekaavio](docs/Käsitekaavio.png)
@@ -147,4 +203,4 @@ end_time | datetime | Vuoron lopetusaika
 png
 
 ### Relaatiotietokanta
-png
+![Relaatiotietokanta](docs/relaatiokaavio.png)
