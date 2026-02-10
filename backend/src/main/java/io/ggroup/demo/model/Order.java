@@ -2,7 +2,6 @@ package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,31 +13,42 @@ public class Order {
     @Column(name = "order_id")
     private Integer orderId;
 
-    // Foreign key to User
-    @Column(name = "user_id")
-    private Integer userId;
-
-    // Foreign key to User with role "Seller"
-    @Column(name = "seller_id")
-    private Integer sellerId;
+    // Foreign key to Customer
+    @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
+    private Customer customer;
 
     @NotNull
-    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice;
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
-    // Timestamp of when the ticket was purchased
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    // Foreign key to Seller
+    @ManyToOne
+    @JoinColumn(name = "seller_id", referencedColumnName = "seller_id")
+    private Seller seller;
+
+    @Column(name = "is_refunded")
+    private Boolean isRefunded;
+
+    @Column(name = "is_paid")
+    private Boolean isPaid;
+
+    // Foreign key to PaymentMethod
+    @ManyToOne
+    @JoinColumn(name = "payment_method", referencedColumnName = "payment_method")
+    private PaymentMethod paymentMethod;
 
     // Constructors
     public Order() {
     }
 
-    public Order(Integer userId, Integer sellerId, BigDecimal totalPrice, LocalDateTime createdAt) {
-        this.userId = userId;
-        this.sellerId = sellerId;
-        this.totalPrice = totalPrice;
-        this.createdAt = createdAt;
+    public Order(Customer customer, LocalDateTime date, Seller seller, Boolean isRefunded, Boolean isPaid, PaymentMethod paymentMethod) {
+        this.customer = customer;
+        this.date = date;
+        this.seller = seller;
+        this.isRefunded = isRefunded;
+        this.isPaid = isPaid;
+        this.paymentMethod = paymentMethod;
     }
 
     // Getters and Setters
@@ -50,35 +60,51 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public Integer getSellerId() {
-        return sellerId;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setSellerId(Integer sellerId) {
-        this.sellerId = sellerId;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public Seller getSeller() {
+        return seller;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public Boolean getIsRefunded() {
+        return isRefunded;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setIsRefunded(Boolean isRefunded) {
+        this.isRefunded = isRefunded;
+    }
+
+    public Boolean getIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(Boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

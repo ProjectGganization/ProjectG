@@ -2,6 +2,7 @@ package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
@@ -20,22 +21,24 @@ public class User {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    @NotNull
-    @Column(name = "role_id", nullable = false)
-    private Integer roleId;
+    // Date when the account was created
+    @Column(name = "account_created")
+    private LocalDate accountCreated;
 
-    @Column(name = "is_active")
-    private Boolean isActive = true;
+    // Foreign key to AccountStatus
+    @ManyToOne
+    @JoinColumn(name = "account_status", referencedColumnName = "account_status")
+    private AccountStatus accountStatus;
 
     // Constructors
     public User() {
     }
 
-    public User(String email, String passwordHash, Integer roleId, Boolean isActive) {
+    public User(String email, String passwordHash, LocalDate accountCreated, AccountStatus accountStatus) {
         this.email = email; 
         this.passwordHash = passwordHash;
-        this.roleId = roleId;
-        this.isActive = isActive;
+        this.accountCreated = accountCreated;
+        this.accountStatus = accountStatus;
     }
 
     // Getters and Setters
@@ -63,19 +66,19 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public LocalDate getAccountCreated() {
+        return accountCreated;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setAccountCreated(LocalDate accountCreated) {
+        this.accountCreated = accountCreated;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
     }
 }

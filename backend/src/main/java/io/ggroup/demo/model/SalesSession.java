@@ -13,10 +13,11 @@ public class SalesSession {
     @Column(name = "session_id")
     private Integer sessionId;
 
-    // Foreign key to User (seller)
+    // Foreign key to Seller
     @NotNull
-    @Column(name = "seller_id", nullable = false)
-    private Integer sellerId;
+    @ManyToOne
+    @JoinColumn(name = "seller_id", referencedColumnName = "seller_id")
+    private Seller seller;
 
     // Start and end times of the sales session
     @Column(name = "start_time")
@@ -30,8 +31,8 @@ public class SalesSession {
     public SalesSession() {
     }
 
-    public SalesSession(Integer sellerId, LocalDateTime startTime, LocalDateTime endTime) {
-        this.sellerId = sellerId;
+    public SalesSession(Seller seller, LocalDateTime startTime, LocalDateTime endTime) {
+        this.seller = seller;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -45,12 +46,12 @@ public class SalesSession {
         this.sessionId = sessionId;
     }
 
-    public Integer getSellerId() {
-        return sellerId;
+    public Seller getSeller() {
+        return seller;
     }
 
-    public void setSellerId(Integer sellerId) {
-        this.sellerId = sellerId;
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 
     public LocalDateTime getStartTime() {
