@@ -3,6 +3,8 @@ package io.ggroup.demo.controller;
 import io.ggroup.demo.model.Event;
 import io.ggroup.demo.repository.EventRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +32,24 @@ public class EventsController {
     public ResponseEntity<Long> getEventCount() {
         long count = eventRepository.count();
         return ResponseEntity.ok(count);
+    }
+
+    // GET /api/events/{id} - Search event by ID
+    @Operation(summary = "Get event by ID", description = "Returns a single event by its ID")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Event found",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Event.class))
+        ),
+        @ApiResponse(responseCode = "404", description = "Event not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Event> getEventById(@PathVariable Integer id) {
+        return eventRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // ==================== TODO: Nämä tulisi luoda ====================
