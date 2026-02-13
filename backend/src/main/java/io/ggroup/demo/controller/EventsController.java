@@ -1,0 +1,44 @@
+package io.ggroup.demo.controller;
+
+import io.ggroup.demo.model.Event;
+import io.ggroup.demo.repository.EventRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/events")
+@Tag(name = "Event API", description = "Endpoints for managing events")
+public class EventsController {
+
+    private final EventRepository eventRepository;
+
+    public EventsController(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
+ //Esimerkki toimivasta endpointista. Kun olet tehnyt oman endpointin valmiiksi niin tämä endpoint näyttää uusien endpointtien määrän.
+    @Operation(summary = "Get event count", description = "Returns the total number of events")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved event count")
+    @GetMapping("/count")
+    public ResponseEntity<Long> getEventCount() {
+        long count = eventRepository.count();
+        return ResponseEntity.ok(count);
+    }
+
+    // ==================== TODO: Nämä tulisi luoda ====================
+    //
+    // 1. GET    /api/events       - Get all events (return List<Event>)
+    // 2. GET    /api/events/{id}  - Get a single event by ID (return 404 if not found)
+    // 3. POST   /api/events       - Create a new event (return 201 status)
+    // 4. PUT    /api/events/{id}  - Update an existing event (return 404 if not found)
+    // 5. DELETE /api/events/{id}  - Delete an event (return 204 on success, 404 if not found)
+
+
+}

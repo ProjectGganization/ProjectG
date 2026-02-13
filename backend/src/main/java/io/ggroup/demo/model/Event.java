@@ -84,6 +84,10 @@ public class Event {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public byte[] getPhoto() {
         return photo;
     }
