@@ -61,42 +61,6 @@ curl -X GET http://localhost:8080/api/events/1
 ```json
 {
   "status": 404,
-  "error": "Not Found"
+  "error": "Event not found"
 }
 ```
-
----
-
-### Get Event Count
-
-Returns the total number of events in the system.
-
-**Endpoint:** `GET /api/events/count`
-
-**Response Codes:**
-
-| Code | Description                  |
-| ---- | ---------------------------- |
-| 200  | Count retrieved successfully |
-
-**Response Body (200 OK):**
-
-Content-Type: `application/json`
-
-```json
-5
-```
-
-**Example Request:**
-
-```bash
-curl -X GET http://localhost:8080/api/events/count
-```
-
----
-
-## Notes
-
-- All endpoints return JSON format
-- Authentication/Authorization requirements will be added in future versions
-- Swagger UI documentation available at `/swagger-ui.html` when the application is running

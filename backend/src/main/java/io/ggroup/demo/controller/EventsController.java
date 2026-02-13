@@ -1,5 +1,7 @@
 package io.ggroup.demo.controller;
 
+import io.ggroup.demo.exception.EventNotFoundException;
+import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.Event;
 import io.ggroup.demo.repository.EventRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,14 +44,19 @@ public class EventsController {
             description = "Event found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Event.class))
         ),
-        @ApiResponse(responseCode = "404", description = "Event not found"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+        @ApiResponse(
+            responseCode = "404", 
+            description = "Event not found",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Integer id) {
+    public ResponseEntity<?> getEventById(@PathVariable Integer id) {
         return eventRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(event -> ResponseEntity.ok((Object) event))
+                .orElseGet(() -> ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, "Event not found")));
     }
 
     // ==================== TODO: Nämä tulisi luoda ====================
