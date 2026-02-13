@@ -62,9 +62,14 @@ Linkki: https://miro.com/app/board/uXjVGRbZFy4=/?focusWidget=3458764657994404708
 ## Tietokanta
 Teksti
 
-### Tietohakemisto
+## Tietohakemisto
 
-### _Users_                                                                 
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Users
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------ 
@@ -73,14 +78,30 @@ email | varchar(255) NOT NULL | Sisäänkirjautumiseen käytettävä sähköpost
 password_hash | varchar(255) NOT NULL | Suojattu salasana
 account_created | date | Milloin tili on tehty
 account_status | varchar FK | Fk AccountStatus tauluun
+</details>
 
-### _AccountStatus_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    AccountStatus
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 account_status | varchar PK | Kertoo onko tili lukittu vai ei
+</details>
 
-### _Customers_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Customers
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -90,8 +111,16 @@ lastname | varchar (100) NOT NULL | Sukunimi
 email | varchar (250) NOT NULL | Sähköpostiosoite
 phone | varchar (25) NOT NULL | Puhelinnumero
 user_id | int FK | FK Users tauluun, jos asiakkaalla on olemassaoleva tili
+</details>
 
-### _Sellers_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Sellers
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -100,8 +129,16 @@ name | varchar(50) NOT NULL | Myyjän nimi
 email | varchar (250) | Myyjän sähköpostiosoite
 phone | varchar (25) | Puhelinnumero
 user_id | int FK | FK Users tauluun
+</details>
 
-### _Venues_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Venues
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -109,15 +146,31 @@ venue_id | int PK | Paikan tunniste
 name | varchar(250) NOT NULL| Paikan nimi
 address | varchar(250) NOT NULL | Paikan osoite
 postalcode | varchar(5) FK | FK PostalCodes tauluun
+</details>
 
-### _PostalCode_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    PostalCode
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 postalcode | varchar(5) PK | Postinumero
 city | varchar (250) NOT NULL | Kaupungin nimi
+</details>
 
-### _Events_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Events
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -130,20 +183,44 @@ end_time | datetime | Tapahtuman päättymisaika
 event_status | varchar FK | FK EventStatus tauluun
 venue_id | int FK | Missä tapahtuma järjestetään
 category | varchar FK | FK Category tauluun
+</details>
 
-### _EventStatus_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    EventStatus
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 event_status | varchar PK | Kertooko onko tapahtuma loppuumyyty
+</details>
 
-### _Category_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Category
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 category | varchar PK | Tapahtuman kategoria
+</details>
 
-### _Tickets_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Tickets
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -153,8 +230,16 @@ event_id | int FK | FK Events tauluun
 unitprice | decimal NOT NULL | Lipun yksikköhinta
 in_stock | int NOT NULL | Jäljellä oleva määrä
 order_limit | int NOT NULL | Max määrä per tilaus
+</details>
 
-### _IssuedTickets_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    IssuedTickets
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -162,14 +247,30 @@ issuedticket_id | int PK | Lipun id
 order_id | int FK | FK Orders tauluun
 qr_code | varchar NOT NULL | Uniikki tarkistuskoodi
 ticket_id | int FK | FK Tickets tauluun
+</details>
 
-### _Ticket Types_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Ticket Types
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 ticket_type | varchar FK | Lipputyypi
+</details>
 
-### _Orders_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;"> 
+    Orders
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -180,14 +281,30 @@ seller_id | int FK | FK sellers tauluun
 is_refunded | boolean | Onko tilaus hyvitetty
 is_paid | boolean | Onko tilaus maksettu
 payment_method | varchar FK | FK paymentMethod tauluun
+</details>
 
-### _PaymentMethod_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+    Payment Method
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
 payment_method | varchar PK | Maksutapa
+</details>
 
-### _OrderDetails_
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+    OrderDetails
+</span>
+</summary>
 
 Kenttä | Tyyppi | Kuvaus
 ------ | ------ | ------
@@ -195,6 +312,9 @@ order_id | int FK | FK Orders tauluun
 ticket_id | int FK | FK Tickets tauluun
 unitprice | decimal NOT NULL | Lipun yksikköhinta
 quantity | int NOT NULL | Tilauksen lippujen määrä
+</details>
+
+---
 
 ### Käsitekaavio
 ![Käsitekaavio](docs/Käsitekaavio.png)
