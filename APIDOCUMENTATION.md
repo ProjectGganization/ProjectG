@@ -64,3 +64,42 @@ curl -X GET http://localhost:8080/api/events/1
   "error": "Event not found"
 }
 ```
+
+### Delete Event by ID
+
+Delete a single event by its unique identifier.
+
+**Endpoint:** `DELETE /api/events/{id}`
+
+**Path Parameters:**
+
+| Parameter | Type    | Required | Description         |
+| --------- | ------- | -------- | ------------------- |
+| `id`      | Integer | Yes      | The unique event ID |
+
+**Response Codes:**
+
+| Code | Description                    |
+| ---- | ------------------------------ |
+| 204  | Event deleted successfully     |
+| 404  | Event not found                |
+| 500  | Internal server error          |
+
+**Response Body (204 No Content):**
+
+No body returned on successful deletion.
+
+**Example Request:**
+
+```bash
+curl -X DELETE http://localhost:8080/api/events/1
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 404,
+  "error": "Event not found"
+}
+```
