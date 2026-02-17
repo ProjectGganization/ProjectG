@@ -7,6 +7,64 @@ Base URL: `/api/events`
 <details>
 <summary>
 <span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get all Events
+</span>
+</summary>
+
+Get all events
+
+**Endpoint:** `GET /api/events`
+
+**Response Codes:**
+
+| Code | Description              |
+| ---- | ------------------------ |
+| 200  | All events found successfully |
+| 404  | No events found |
+| 500  | Internal server error |
+
+**Response Body (200 OK):**
+
+Content-Type: `application/json`
+
+``` json
+{
+  "event_id": 1,
+  "title": "Event name",
+  "description": "Event description",
+  "start_time": "2026-03-15T19:00:00",
+  "end_time": "2026-03-15T23:00:00",
+  "venue": {
+    "venue_id": 1,
+    "name": "Venue name"
+  },
+  "event_status": {
+    "id": 1,
+    "status": "Active"
+  }
+}
+```
+**Example Request:**
+
+``` bash
+curl -X GET http://localhost:8080/api/events
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 404,
+  "error": "No events found"
+}
+```
+</details>
+
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
   Get Event by ID
 </span>
 </summary>
