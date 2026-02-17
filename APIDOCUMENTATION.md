@@ -4,7 +4,12 @@
 
 Base URL: `/api/events`
 
-### Get Event by ID
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get Event by ID
+</span>
+</summary>
 
 Retrieve a single event by its unique identifier.
 
@@ -103,3 +108,6 @@ curl -X DELETE http://localhost:8080/api/events/1
   "error": "Event not found"
 }
 ```
+</details>
+
+---
