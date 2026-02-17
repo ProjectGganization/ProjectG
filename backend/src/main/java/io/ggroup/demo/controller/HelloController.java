@@ -1,15 +1,18 @@
 package io.ggroup.demo.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -39,4 +42,22 @@ public class HelloController {
         response.put("timestamp", System.currentTimeMillis());
         return response;
     }
+
+
+    @Operation(summary = "Update greeting message", description = "Updates the greeting message")
+@ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Message updated successfully")
+})
+@PutMapping("/hello")
+public Map<String, String> updateHello(@RequestBody Map<String, String> request) {
+    Map<String, String> response = new HashMap<>();
+
+    String newMessage = request.get("message");
+
+    response.put("message", newMessage);
+    response.put("status", "updated");
+
+    return response;
 }
+}
+
