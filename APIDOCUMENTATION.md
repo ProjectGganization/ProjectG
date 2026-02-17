@@ -69,16 +69,8 @@ curl -X GET http://localhost:8080/api/events/1
   "error": "Event not found"
 }
 ```
-</details>
 
----
-
-<details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Delete Event by ID
-</span>
-</summary>
+### Delete Event by ID
 
 Delete a single event by its unique identifier.
 
@@ -115,87 +107,6 @@ curl -X DELETE http://localhost:8080/api/events/1
   "status": 404,
   "error": "Event not found"
 }
-```
-</details>
-
----
-
-<details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Create New Event
-</span>
-</summary>
-
-Add a new event. This endpoint is used by administrators to manage upcoming events.
-
-**Endpoint:** `POST /api/events`
-
-**Path Parameters:**
-
-| Parameter | Type    | Required | Description         |
-| --------- | ------- | -------- | ------------------- |
-| `title`      | String | Yes    | The name of the event |
-| `description`| String | No     | Detailed information about the event |
-| `start_time` | String (ISO) | Yes | Event start date and time |
-| `end_time` | String (ISO) | No | Event end date and time |
-| `venue_id` | Integer | Yes | ID of the venue where the event is held |
-| `category` | Integer | Yes | ID of the event caregory |  
-
-**Response Codes:**
-
-| Code | Description              |
-| ---- | ------------------------ |
-| 201  | Event created successfully |
-| 400  | Invalid input or validation error |
-| 500  | Internal server error    |
-
-**Response Body (201 Created):**
-
-Content-Type: `application/json`
-
-``` json
-{
-  "event_id": 1,
-  "title": "Event name",
-  "description": "Event description",
-  "start_time": "2026-03-15T19:00:00",
-  "end_time": "2026-03-15T23:00:00",
-  "venue": {
-    "venue_id": 1,
-    "name": "Venue name"
-  },
-  "event_status": {
-    "id": 1,
-    "status": "Active"
-  }
-}
-```
-**Example Request:**
-
-``` bash
-curl -X POST http://localhost:8080/api/events \
-     -H "Content-Type: application/json" \
-     -d '{
-       "title": "Event name",
-       "description": "Event description",
-       "start_time": "2026-07-15T18:00:00",
-       "end_time": "2026-03-15T23:00:00",
-       "venue_id": 1
-     }'
-```
-
-**Example Response (404 Not Found):**
-
-```json
-{
-  "status": 400,
-  "error": "Invalid event data: "
-}
-```
-</details>
-
----
 ```
 </details>
 
