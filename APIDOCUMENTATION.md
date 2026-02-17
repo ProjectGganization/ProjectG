@@ -76,6 +76,53 @@ curl -X GET http://localhost:8080/api/events/1
 <details>
 <summary>
 <span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Delete Event by ID
+</span>
+</summary>
+
+Delete a single event by its unique identifier.
+
+**Endpoint:** `DELETE /api/events/{id}`
+
+**Path Parameters:**
+
+| Parameter | Type    | Required | Description         |
+| --------- | ------- | -------- | ------------------- |
+| `id`      | Integer | Yes      | The unique event ID |
+
+**Response Codes:**
+
+| Code | Description                    |
+| ---- | ------------------------------ |
+| 204  | Event deleted successfully     |
+| 404  | Event not found                |
+| 500  | Internal server error          |
+
+**Response Body (204 No Content):**
+
+No body returned on successful deletion.
+
+**Example Request:**
+
+```bash
+curl -X DELETE http://localhost:8080/api/events/1
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 404,
+  "error": "Event not found"
+}
+```
+</details>
+
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
   Create New Event
 </span>
 </summary>
@@ -145,6 +192,10 @@ curl -X POST http://localhost:8080/api/events \
   "status": 400,
   "error": "Invalid event data: "
 }
+```
+</details>
+
+---
 ```
 </details>
 
