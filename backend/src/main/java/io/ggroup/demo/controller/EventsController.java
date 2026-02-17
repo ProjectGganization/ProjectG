@@ -59,6 +59,32 @@ public class EventsController {
                     .body(new ErrorResponse(404, "Event not found")));
     }
 
+    // DELETE /api/events/{id} - Delete event by ID
+    @Operation(summary = "Delete event by ID", description = "Deletes a single event by its ID")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "204",
+            description = "Event deleted successfully"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Event not found",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEventById(@PathVariable Integer id) {
+        if(eventRepository.existsById(id)){
+            eventRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "Event not found"));
+        }
+    }
+
     // ==================== TODO: Nämä tulisi luoda ====================
     //
     // 1. GET    /api/events       - Get all events (return List<Event>)
