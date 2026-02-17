@@ -36,6 +36,32 @@ public class EventsController {
         return ResponseEntity.ok(count);
     }
 
+    // GET /api/events - Get all events
+    @Operation(summary = "Get all events", description = "Returns a list of all events")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "All events found successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Event.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "No events found",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    @GetMapping
+    public ResponseEntity<?> getAllEvents() {
+        List<Event> events = eventRepository.findAll();
+        if (events.isEmpty()) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "No events found"));
+        } else {
+            return ResponseEntity.ok(events);
+        }
+    }
+
     // GET /api/events/{id} - Search event by ID
     @Operation(summary = "Get event by ID", description = "Returns a single event by its ID")
     @ApiResponses(value = {
