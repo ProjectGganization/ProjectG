@@ -11,7 +11,7 @@ Base URL: `/api/events`
 </span>
 </summary>
 
-Get all events.
+Get all events
 
 **Endpoint:** `GET /api/events`
 
