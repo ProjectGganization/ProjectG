@@ -254,3 +254,91 @@ curl -X POST http://localhost:8080/api/events \
 </details>
 
 ---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Update Event by ID
+</span>
+</summary>
+
+Update an existing event by its unique identifier. The server will use the path `id` as the event's id — do not rely on any `event_id` value in the body.
+
+**Endpoint:** `PUT /api/events/{id}`
+
+**Path Parameters:**
+
+| Parameter | Type    | Required | Description         |
+| --------- | ------- | -------- | ------------------- |
+| `id`      | Integer | Yes      | The unique event ID |
+
+**Request Body:**
+
+Content-Type: `application/json`
+
+Provide the event fields to update. Example body:
+
+```json
+{
+  "title": "Updated Event name",
+  "description": "Updated description",
+  "start_time": "2026-07-15T18:00:00",
+  "end_time": "2026-07-15T23:00:00",
+  "venue_id": 1,
+  "category": 2
+}
+```
+
+**Response Codes:**
+
+| Code | Description                    |
+| ---- | ------------------------------ |
+| 200  | Event updated successfully     |
+| 400  | Invalid input or validation error |
+| 404  | Event not found                |
+| 500  | Internal server error          |
+
+**Response Body (200 OK):**
+
+Content-Type: `application/json`
+
+```json
+{
+  "event_id": 1,
+  "title": "Updated Event name",
+  "description": "Updated description",
+  "start_time": "2026-07-15T18:00:00",
+  "end_time": "2026-07-15T23:00:00",
+  "venue": {
+    "venue_id": 1,
+    "name": "Venue name"
+  },
+  "event_status": {
+    "id": 1,
+    "status": "Active"
+  }
+}
+```
+
+**Example Request:**
+
+```bash
+curl -X PUT http://localhost:8080/api/events/1 \
+     -H "Content-Type: application/json" \
+     -d '{
+       "title": "Updated Event name",
+       "description": "Updated description",
+       "start_time": "2026-07-15T18:00:00",
+       "venue_id": 1
+     }'
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 404,
+  "error": "Event not found"
+}
+```
+</details>
