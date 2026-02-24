@@ -1,6 +1,6 @@
 package io.ggroup.demo.controller;
 
-import io.ggroup.demo.exception.EventNotFoundException;
+//import io.ggroup.demo.exception.EventNotFoundException;
 import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.Event;
 import io.ggroup.demo.repository.EventRepository;
