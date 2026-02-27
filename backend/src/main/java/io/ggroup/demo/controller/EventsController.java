@@ -115,7 +115,7 @@ public class EventsController {
                     .body(new ErrorResponse(404, "Event not found"));
         }
         try {
-            event.setId(id); 
+            event.setEventId(id); 
             Event updatedEvent = eventRepository.save(event);
             return ResponseEntity.ok(updatedEvent);
         } catch (Exception e) {
