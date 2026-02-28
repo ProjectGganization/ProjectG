@@ -1,6 +1,6 @@
 package io.ggroup.demo.controller;
 
-import io.ggroup.demo.exception.EventNotFoundException;
+//import io.ggroup.demo.exception.EventNotFoundException;
 import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.Event;
 import io.ggroup.demo.repository.EventRepository;
@@ -115,7 +115,7 @@ public class EventsController {
                     .body(new ErrorResponse(404, "Event not found"));
         }
         try {
-            event.setEventId(id); 
+            event.setId(id); 
             Event updatedEvent = eventRepository.save(event);
             return ResponseEntity.ok(updatedEvent);
         } catch (Exception e) {
