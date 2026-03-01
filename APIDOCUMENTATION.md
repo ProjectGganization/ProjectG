@@ -447,7 +447,7 @@ Content-Type: `application/json`
 }
 ```
 
-**Expample Request:**
+**Example Request:**
 
 ``` bash
 curl -X 'POST' \'http://localhost:8080/api/tickets' \
@@ -471,3 +471,217 @@ curl -X 'POST' \'http://localhost:8080/api/tickets' \
 </details>
 
 ---
+
+## Orders API
+
+Base URL: `/api/orders`
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get all Orders
+</span>
+</summary>
+
+Retrieve a list of all orders available in the system
+
+**Endpoint:** `GET /api/orders`
+
+**Response Codes:**
+
+| Code | Description              |
+| ---- | ------------------------ |
+| 200  | Orders found successfully |
+| 404  | No orders found |
+| 500  | Internal server error |
+
+**Response Body (200 OK):**
+
+Content-Type: `application/json`
+
+```json
+[
+  {
+    "orderId": 1,
+    "customer": {
+      "customerId": 3
+    },
+    "date": "2026-03-01T18:48:20.008Z",
+    "seller": {
+      "sellerId": 101
+    },
+    "isRefunded": true,
+    "isPaid": true,
+    "paymentMethod": {
+      "paymentMethod": "string"
+    }
+  }
+]
+```
+
+**Example Request:**
+
+``` bash
+curl -X GET http://localhost:8080/api/orders
+```
+
+**Example Response (404 Not Found):**
+```json
+{
+  "status": 404,
+  "error": "No orders found"
+}
+```
+</details>
+
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get Order by ID
+</span>
+</summary>
+Retrieve a single order by its unique identifier.
+
+**Endpoint:** `GET /api/orders/{id}`
+
+**Path Parameters:**
+
+| Parameter | Type    | Required | Description         |
+| --------- | ------- | -------- | ------------------- |
+| `id`      | Integer | Yes      | The unique order ID |
+
+**Response Codes:**
+
+| Code | Description              |
+| ---- | ------------------------ |
+| 200  | Order found successfully |
+| 404  | Order not found          |
+| 500  | Internal server error    |
+
+**Response Body (200 OK):**
+
+Content-Type: `application/json`
+
+```json
+{
+  "orderId": 1,
+  "customer": {
+    "customerId": 3
+  },
+  "date": "2026-03-01T18:48:20.008Z",
+  "seller": {
+    "sellerId": 101
+  },
+  "isRefunded": true,
+  "isPaid": true,
+  "paymentMethod": {
+    "paymentMethod": "string"
+  }
+}
+```
+
+**Example Request:**
+
+```bash
+curl -X GET http://localhost:8080/api/orders/1
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 404,
+  "error": "Order not found"
+}
+```
+</details>
+
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Create New Order
+</span>
+</summary>
+
+Create a new order.
+
+**Endpoint:** `POST /api/orders`
+
+**Request Body:**
+
+Content-Type: `application/json`
+
+Provide the order fields to create. Example body:
+
+```json
+{
+  "orderId": 1,
+  "customerId": 3,
+  "sellerId": 2,
+  "date": "2026-03-01T18:48:20.008Z",
+  "isRefunded": false,
+  "isPaid": true,
+  "paymentMethod": "bank"
+}
+```
+
+**Response Codes:**
+
+| Code | Description              |
+| ---- | ------------------------ |
+| 201  | Order created successfully |
+| 400  | Invalid input or validation error |
+| 500  | Internal server error    |
+
+**Response Body (201 Created):**
+
+Content-Type: `application/json`
+```json
+{
+  "orderId": 1,
+  "customer": {
+    "customerId": 3
+  },
+  "date": "2026-03-01T18:48:20.008Z",
+  "seller": {
+    "sellerId": 101
+  },
+  "isRefunded": true,
+  "isPaid": true,
+  "paymentMethod": {
+    "paymentMethod": "string"
+  }
+}
+```
+**Example Request:**
+
+``` bash
+curl -X POST http://localhost:8080/api/orders \
+     -H "Content-Type: application/json" \
+     -d '{
+       "orderId": 1,
+       "customerId": 3,
+       "sellerId": 2,
+       "isRefunded": false,
+       "isPaid": true,
+       "paymentMethod": "bank"
+     }'
+```
+
+**Example Response (400 Bad Request):**
+
+```json
+{
+  "status": 400,
+  "error": "Invalid input data: "
+}
+```
+</details>
+
+---
+
+</details>
