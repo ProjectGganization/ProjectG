@@ -342,3 +342,132 @@ curl -X PUT http://localhost:8080/api/events/1 \
 }
 ```
 </details>
+
+---
+
+## Tickets API
+
+Base URL: `/api/tickets`
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get all Tickets
+</span>
+</summary>
+
+Retrieve a list of all ticket types available in the system
+
+**Endpoint:** `GET /api/tickets`
+
+**Response Codes:**
+
+| Code | Description              |
+| ---- | ------------------------ |
+| 200  | Tickets found successfully |
+| 404  | No tickets found |
+| 500  | Internal server error |
+
+**Response Body (200 OK):**
+
+Content-Type: `application/json`
+
+```json
+{
+  "ticketId": 1,
+  "ticketType": {
+    "ticketType": "string"
+  },
+  "unitPrice": 10,
+  "inStock": 1,
+  "orderLimit": 1
+}
+```
+
+**Example Request:**
+
+``` bash
+curl -X GET http://localhost:8080/api/tickets
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 404,
+  "error": "No tickets found"
+}
+```
+</details>
+
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Create New Ticket
+</span>
+</summary>
+
+Create a new ticket for a specific event.
+
+**Endpoint:** `POST /api/tickets`
+
+**Path Parameters:**
+
+| Parameter | Type    | Required | Description         |
+| --------- | ------- | -------- | ------------------- |
+| `event_id` | Integer | Yes  | The ID of the event ticket belongs to |
+| `ticket_type`| String | Yes | Type of the ticket (e.g., Adult, Student) |
+| `unitprice` | Decimal | Yes | Price pet ticket |
+| `in_stock` | Integer | Yes  | Total number of tickets available |
+| `order_limit` | Integer | Yes | Max tickets per single order |
+
+**Response Codes:**
+
+| Code | Description              |
+| ---- | ------------------------ |
+| 201  | Ticket created successfully |
+| 400  | Invalid input or validation error |
+| 500  | Internal server error    |
+
+**Response Body (201 Created):**
+
+Content-Type: `application/json`
+
+``` json
+{
+  "ticketId": 1,
+  "ticketType": {
+    "ticketType": "string"
+  },
+  "unitPrice": 10,
+  "inStock": 1,
+  "orderLimit": 1
+}
+```
+
+**Expample Request:**
+
+``` bash
+curl -X 'POST' \'http://localhost:8080/api/tickets' \
+     -H 'accept: application/json' \
+     -H 'Content-Type: application/json' \
+     -d '{
+     "unitPrice": 12,
+     "inStock": 107,
+     "orderLimit": 107
+  }'
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 400,
+  "error": "Invalid input data: "
+}
+```
+</details>
+
+---
