@@ -342,3 +342,134 @@ curl -X PUT http://localhost:8080/api/events/1 \
 }
 ```
 </details>
+
+---
+
+
+## OrderDetails API
+
+Base URL: `/api/OrderDetails`
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get all Orders
+</span>
+</summary>
+
+Returns a list of all order details in the system.
+
+**Endpoint:** `GET /api/ordersdetails`
+
+
+**Response Codes:**
+
+| Code | Description              |
+| ---- | ------------------------ |
+| 200  | Order Details Found Successfully |
+| 404  | No Data Found |
+| 500  | Internal Server Error |
+
+
+**Response Body (200 OK):**
+
+Content-Type: `application/json`
+
+[
+  {
+    "id": 1,
+    "orderId": 1001,
+    "productId": 501,
+    "quantity": 2,
+    "price": 49.99
+  }
+]
+
+
+**Example Request:**
+
+``` bash
+curl -X GET http://localhost:8080/api/ordersdetails
+```
+
+**Example Response (404 Not Found):**
+```json
+
+{
+  "status": 404,
+  "message": "No order details found"
+}
+```
+</details>
+
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get Order by ID
+</span>
+</summary>
+
+Retrieve a single order detail by its unique identifier.
+
+
+**Endpoint:** `GET /api/orderdetails/{id}`
+
+
+**Path Parameters:**
+
+Parameter | Type    | Required | Description         |
+| --------- | ------- | -------- | ------------------- |
+| `id`      | Long | Yes      | The unique ID of the order detail resource |
+
+
+**Response Codes:**
+
+{
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 2,
+  "price": 49.99
+}
+
+**Response Body (201 OK):**
+
+Content-Type: `application/json`
+
+```json
+
+{
+  "id": 10,
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 2,
+  "price": 49.99
+}
+
+**Example Request:**
+
+```bash
+curl -X GET http://localhost:8080/api/orderdetails/15
+ -H "Content-Type: application/json" \
+  -d '{
+        "orderId": 3,
+        "productId": 7,
+        "quantity": 2,
+        "price": 19.90
+      }'
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 400,
+  "message": "Invalid order detail data: <error message>"
+}
+```
+</details>
+
+---
+
+
