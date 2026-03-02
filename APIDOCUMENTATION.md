@@ -700,7 +700,7 @@ Base URL: `/api/orderdetails`
 
 Returns a list of all order details available in the system
 
-**Endpoint:** `GET /api/orders`
+**Endpoint:** `GET /api/ordersdetails`
 
 **Response Codes:**
 
