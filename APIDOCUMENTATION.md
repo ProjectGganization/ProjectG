@@ -817,8 +817,4 @@ curl -X POST http://localhost:8080/api/orderdetails \
 
 ---
 
-<details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-</span>
-</summary>
+
