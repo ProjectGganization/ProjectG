@@ -694,7 +694,7 @@ Base URL: `/api/orderdetails`
 <details>
 <summary>
 <span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Get all Orders
+  Get all Order Details
 </span>
 </summary>
 
@@ -747,7 +747,7 @@ curl -X GET http://localhost:8080/api/orderdetails
 <details>
 <summary>
 <span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Get Order by ID
+  Get Order Details By ID
 </span>
 </summary>
 Creates a new order detail for an order.
