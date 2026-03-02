@@ -698,7 +698,7 @@ Base URL: `/api/orderdetails`
 </span>
 </summary>
 
-Returns a list of all order details available in the system
+Get all order details
 
 **Endpoint:** `GET /api/ordersdetails`
 
@@ -751,12 +751,12 @@ curl -X GET http://localhost:8080/api/orderdetails
 </summary>
 Creates a new order detail for an order.
 
-**Endpoint:** `GET /api/orderdetails/{id}`
+**Endpoint:** `POST /api/orderdetails/{id}`
 
 Request body
 
 {
-  "orderId": 1001,
+  "Id": 1001,
   "productId": 501,
   "quantity": 2,
   "price": 49.99
@@ -777,7 +777,7 @@ Retrieves a single order detail by its ID.
 | 404  | Order not found          |
 | 500  | Internal server error    |
 
-**Response Body (201 OK):**
+**Response Body (201 CREATED):**
 
 Content-Type: `application/json`
 
