@@ -34,6 +34,7 @@ private final OrderDetailsRepository orderDetailsRepository;
     }
 
     // GET /api/orderdetails - Get all order details
+    
     @Operation(summary = "get all order details", description = "Returns a list of all order details")
     @ApiResponses(value = {
        @ApiResponse(

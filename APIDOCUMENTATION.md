@@ -710,6 +710,7 @@ Get all order details
 | 404  | No Data Found |
 | 500  | Internal Server Error |
 
+
 **Response Body (200 OK):**
 
 Content-Type: `application/json`
