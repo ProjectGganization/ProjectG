@@ -61,6 +61,7 @@ private final OrderDetailsRepository orderDetailsRepository;
     }
 
     // Post /api/orderdetails - Create a new order detail
+    
     @Operation(summary = "Create a new order detail", description = "Creates a new order detail for an order")
     @ApiResponses(value = {
         @ApiResponse(
@@ -82,6 +83,7 @@ private final OrderDetailsRepository orderDetailsRepository;
 
     @PostMapping
     public ResponseEntity<?> createOrderDetail(@RequestBody OrderDetails orderDetails) {
+        
         try {
             OrderDetails savedDetail = orderDetailsRepository.save(orderDetails);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedDetail);
