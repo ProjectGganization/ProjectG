@@ -747,7 +747,7 @@ curl -X GET http://localhost:8080/api/orderdetails
 <details>
 <summary>
 <span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Get Order Details By ID
+  Create a new order detail
 </span>
 </summary>
 Creates a new order detail for an order.
