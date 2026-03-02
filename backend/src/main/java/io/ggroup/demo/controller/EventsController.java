@@ -3,7 +3,9 @@ package io.ggroup.demo.controller;
 //import io.ggroup.demo.exception.EventNotFoundException;
 import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.Event;
+import io.ggroup.demo.model.Venue;
 import io.ggroup.demo.repository.EventRepository;
+import io.ggroup.demo.repository.VenueRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,9 +24,11 @@ import java.util.List;
 public class EventsController {
 
     private final EventRepository eventRepository;
+    private final VenueRepository venueRepository;
 
-    public EventsController(EventRepository eventRepository) {
+    public EventsController(EventRepository eventRepository, VenueRepository venueRepository) {
         this.eventRepository = eventRepository;
+        this.venueRepository = venueRepository;
     }
 
     // Esimerkki toimivasta endpointista. Kun olet tehnyt oman endpointin valmiiksi
@@ -87,6 +91,11 @@ public class EventsController {
     })
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody Event event) {
+        ResponseEntity<?> venueValidation = validateAndAttachVenue(event);
+        if (venueValidation != null) {
+            return venueValidation;
+        }
+
         try {
             Event savedEvent = eventRepository.save(event);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedEvent);
@@ -114,6 +123,12 @@ public class EventsController {
                     .status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse(404, "Event not found"));
         }
+
+        ResponseEntity<?> venueValidation = validateAndAttachVenue(event);
+        if (venueValidation != null) {
+            return venueValidation;
+        }
+
         try {
             event.setEventId(id);
             Event updatedEvent = eventRepository.save(event);
@@ -155,5 +170,30 @@ public class EventsController {
     // 4. PUT /api/events/{id} - Update an existing event (return 404 if not found)
     // 5. DELETE /api/events/{id} - Delete an event (return 204 on success, 404 if
     // not found)
+
+    private ResponseEntity<?> validateAndAttachVenue(Event event) {
+        if (event.getVenue() == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(400, "Venue is required"));
+        }
+
+        Integer venueId = event.getVenue().getVenueId();
+        if (venueId == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(400, "Venue id is required"));
+        }
+
+        Venue existingVenue = venueRepository.findById(venueId).orElse(null);
+        if (existingVenue == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, "Venue not found"));
+        }
+
+        event.setVenue(existingVenue);
+        return null;
+    }
 
 }
