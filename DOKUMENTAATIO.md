@@ -26,7 +26,7 @@ Järjestelmän näkökulmasta asiakasryhmä on anonyymi (selailuvaiheessa) tai t
 Ylläpitäjä - Ylläpitäjä pitää huolen järjestelmän turvallisuudesta hallitsemalla ja valvomalla tapahtumia.  Ylläpitäjä pitää huolen myös käyttäjätilien oikeuksista ja luo tarvittaessa uusia käyttäjätilejä lipunmyyjille. Järjestelmän näkökulmasta ylläpitäjä on korkeimman tason käyttäjä.
 
 ### Käyttötapauskaavio
-![UML Käyttötapauskaavio](docs/UMLTicketGuru.png)
+![UML Käyttötapauskaavio](docs/photos/käyttötapauskaavio.png)
 
 ### Käyttäjätarinat
 #### Asiakas
@@ -317,11 +317,11 @@ quantity | int NOT NULL | Tilauksen lippujen määrä
 ---
 
 ### Käsitekaavio
-![Käsitekaavio](docs/Käsitekaavio.png)
+![Käsitekaavio](docs/photos/käsitekaavio.png)
 
 ### Luokkakaavio
 <img width="1003" height="463" alt="Näyttökuva 2026-02-10 170601" src="https://github.com/user-attachments/assets/9d8852f0-50f1-464d-b9f5-c00886a50c1a" />
 
 
 ### Relaatiotietokanta
-![Relaatiotietokanta](docs/relaatiokaavio.png)
+![Relaatiotietokanta](docs/photos/relaatiokaavio.png)
