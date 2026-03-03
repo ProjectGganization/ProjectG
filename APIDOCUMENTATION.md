@@ -253,9 +253,6 @@ curl -X POST http://localhost:8080/api/events \
 ```
 </details>
 
-<<<<<<< HEAD
----
-=======
 ---
 
 <details>
@@ -345,4 +342,3 @@ curl -X PUT http://localhost:8080/api/events/1 \
 }
 ```
 </details>
->>>>>>> f6a3d21e476afdcc53ec35c3b02cd492045ee680
