@@ -817,4 +817,136 @@ curl -X POST http://localhost:8080/api/orderdetails \
 
 ---
 
+## Customer API
+
+Base URL: `/api/customers`
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Create New Customer
+</span>
+</summary>
+
+Add a new customer to the system.
+
+**Endpoint:** `POST /api/customers`
+
+**Request Body:**
+
+Content-Type: `application/json`
+
+Provide the customer fields to create. Example body:
+
+```json
+{
+  "firstname": "John",
+  "lastname": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+358401234567"
+}
+```
+
+**Response Codes:**
+
+| Code | Description |
+| ---- | ----------- |
+| 201  | Customer created successfully |
+| 400  | Invalid input or validation error |
+
+**Response Body (201 Created):**
+
+Content-Type: `application/json`
+
+```json
+{
+  "customerId": 1,
+  "firstname": "John",
+  "lastname": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+358401234567"
+}
+```
+
+**Example Request:**
+
+```bash
+curl -X POST http://localhost:8080/api/customers \
+     -H "Content-Type: application/json" \
+     -d '{
+       "firstname": "John",
+       "lastname": "Doe",
+       "email": "john.doe@example.com",
+       "phone": "+358401234567"
+     }'
+```
+
+**Example Response (400 Bad Request):**
+
+```json
+{
+  "status": 400,
+  "error": "Invalid customer data: "
+}
+```
+</details>
+
+---
+
+<details>
+<summary>
+<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
+  Get Customer by ID
+</span>
+</summary>
+
+Retrieve a single customer by their unique identifier.
+
+**Endpoint:** `GET /api/customers/{id}`
+
+**Path Parameters:**
+
+| Parameter | Type    | Required | Description            |
+| --------- | ------- | -------- | ---------------------- |
+| `id`      | Integer | Yes      | The unique customer ID |
+
+**Response Codes:**
+
+| Code | Description               |
+| ---- | ------------------------- |
+| 200  | Customer found successfully |
+| 404  | Customer not found        |
+
+**Response Body (200 OK):**
+
+Content-Type: `application/json`
+
+```json
+{
+  "customerId": 1,
+  "firstname": "John",
+  "lastname": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+358401234567"
+}
+```
+
+**Example Request:**
+
+```bash
+curl -X GET http://localhost:8080/api/customers/1
+```
+
+**Example Response (404 Not Found):**
+
+```json
+{
+  "status": 404,
+  "error": "Customer not found"
+}
+```
+</details>
+
+---
+
 
