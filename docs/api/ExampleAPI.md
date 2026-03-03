@@ -30,6 +30,7 @@ HUOM! Tehdään jokaisen APIn dokumentaatio seuraavassa järjestyksesä.
 Content-Type: `application/json`
 
 ```json
+[
 {
   "example_id": 1,
   "title": "Example name",
@@ -40,6 +41,7 @@ Content-Type: `application/json`
     "status": "Active"
   }
 }
+]
 ```
 
 ### Example Request

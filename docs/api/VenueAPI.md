@@ -1,4 +1,4 @@
-## Venues API
+## Venue API
 
 Base URL: `/api/venues`
 

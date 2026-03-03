@@ -1,4 +1,4 @@
-## Events API
+## Event API
 
 Base URL: `/api/events`
 
