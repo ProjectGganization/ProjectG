@@ -1,6 +1,10 @@
 package io.ggroup.demo.controller;
 
+<<<<<<< HEAD
 import io.ggroup.demo.exception.EventNotFoundException;
+=======
+//import io.ggroup.demo.exception.EventNotFoundException;
+>>>>>>> f6a3d21e476afdcc53ec35c3b02cd492045ee680
 import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.Event;
 import io.ggroup.demo.repository.EventRepository;
@@ -97,6 +101,40 @@ public class EventsController {
         }
     }
 
+<<<<<<< HEAD
+=======
+    // PUT /api/events/{id} - Update an existing event
+    @Operation(summary = "Update an existing event", description = "Updates the details of an existing event")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Event updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Event.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid event data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Event not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateEvent(@PathVariable Integer id, @RequestBody Event event) {
+        if (!eventRepository.existsById(id)) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, "Event not found"));
+        }
+        try {
+            event.setEventId(id);
+            Event updatedEvent = eventRepository.save(event);
+            return ResponseEntity.ok(updatedEvent);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(400, "Invalid event data: " + e.getMessage()));
+        }
+    }
+
+
+
+
+>>>>>>> f6a3d21e476afdcc53ec35c3b02cd492045ee680
     // DELETE /api/events/{id} - Delete event by ID
     @Operation(summary = "Delete event by ID", description = "Deletes a single event by its ID")
     @ApiResponses(value = {
