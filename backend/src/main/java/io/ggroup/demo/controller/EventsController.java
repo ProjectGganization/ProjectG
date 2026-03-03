@@ -28,8 +28,7 @@ public class EventsController {
         this.venueRepository = venueRepository;
     }
 
-    // Esimerkki toimivasta endpointista. Kun olet tehnyt oman endpointin valmiiksi
-    // niin tämä endpoint näyttää uusien endpointtien määrän.
+    // Esimerkki toimivasta endpointista. Kun olet tehnyt oman endpointin valmiiksi niin tämä endpoint näyttää uusien endpointtien määrän.
     @Operation(summary = "Get event count", description = "Returns the total number of events")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved event count")
     @GetMapping("/count")
@@ -137,9 +136,6 @@ public class EventsController {
         }
     }
 
-
-
-
     // DELETE /api/events/{id} - Delete event by ID
     @Operation(summary = "Delete event by ID", description = "Deletes a single event by its ID")
     @ApiResponses(value = {
@@ -158,15 +154,6 @@ public class EventsController {
                     .body(new ErrorResponse(404, "Event not found"));
         }
     }
-
-    // ==================== TODO: Nämä tulisi luoda ====================
-    //
-    // 1. GET /api/events - Get all events (return List<Event>)
-    // 2. GET /api/events/{id} - Get a single event by ID (return 404 if not found)
-    // 3. POST /api/events - Create a new event (return 201 status)
-    // 4. PUT /api/events/{id} - Update an existing event (return 404 if not found)
-    // 5. DELETE /api/events/{id} - Delete an event (return 204 on success, 404 if
-    // not found)
 
     private ResponseEntity<?> validateAndAttachVenue(Event event) {
         if (event.getVenue() == null) {

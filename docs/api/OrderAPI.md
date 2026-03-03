@@ -4,6 +4,8 @@ Base URL: `/api/orders`
 1. Get All Orders
 2. Get Order By ID
 3. Create New Order
+4. Update Order By ID
+5. Delete Order By ID
 
 <details>
   <summary><strong>Get All Orders</strong></summary>
@@ -176,4 +178,136 @@ curl -X POST http://localhost:8080/api/orders \
 }
 ```
 
+</details>
+
+<details>
+  <summary><strong>Update Order By ID</strong></summary>
+
+**Endpoint:** `PUT /api/orders/{id}`
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique order ID   |
+
+### Request Body
+Content-Type: `application/json`
+
+Provide the order fields to update.
+
+```json
+{
+  "customer": {
+    "customerId": 3
+  },
+  "date": "2026-03-01T18:48:20.008Z",
+  "seller": {
+    "sellerId": 101
+  },
+  "isRefunded": true,
+  "isPaid": true,
+  "paymentMethod": {
+    "paymentMethod": "string"
+  }
+}
+```
+
+### Response Codes
+| Code | Description                       |
+|------|-----------------------------------|
+| 200  | Order updated successfully        |
+| 400  | Invalid input or validation error |
+| 404  | Order not found                   |
+| 500  | Internal server error             |
+
+### Response Body (200 OK)
+Content-Type: `application/json`
+
+```json
+{
+  "orderId": 1,
+  "customer": {
+    "customerId": 3,
+    "firstname": "Jane",
+    "lastname": "Doe"
+  },
+  "date": "2026-03-01T18:48:20.008Z",
+  "seller": {
+    "sellerId": 101,
+    "name": "EventSeller Oy"
+  },
+  "isRefunded": true,
+  "isPaid": true,
+  "paymentMethod": {
+    "paymentMethod": "string"
+  }
+}
+```
+
+### Example Request
+```bash
+curl -X PUT http://localhost:8080/api/orders/1 \
+     -H "Content-Type: application/json" \
+     -d '{
+       "customer": { "customerId": 3 },
+       "date": "2026-03-01T18:48:20.008Z",
+       "seller": { "sellerId": 101 },
+       "isRefunded": true,
+       "isPaid": true,
+       "paymentMethod": { "paymentMethod": "string" }
+     }'
+
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "Order not found"
+}
+```
+
+### Example Response (400 Bad Request)
+```json
+{
+  "status": 400,
+  "error": "Invalid input data: "
+}
+```
+
+</details>
+
+<details>
+  <summary><strong>Delete Order By ID</strong></summary>
+
+**Endpoint:** `DELETE /api/orders/{id}`
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique order ID   |
+
+
+### Response Codes
+| Code | Description                     |
+|------|---------------------------------|
+| 204  | Order deleted successfully      |
+| 404  | Order not found                 |
+| 500  | Internal server error           |
+
+### Response Body (204 No Content)
+No body returned on successful deletion.
+
+### Example Request
+```bash
+curl -X DELETE http://localhost:8080/api/orders/1
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "Order not found"
+}
+```
 </details>

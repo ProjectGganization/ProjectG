@@ -67,7 +67,7 @@ public class OrdersController {
             .body(new ErrorResponse(404, "Order not found")));
 }
 
-// POST /api/orders - Create a new order
+    // POST /api/orders - Create a new order
     @Operation(summary = "Create a new order", description = "Adds a new order to the system")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Order created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Order.class))),
@@ -82,6 +82,62 @@ public class OrdersController {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400, "Invalid order data: " + e.getMessage()));
+        }
+    }
+
+    // UPDATE /api/orders/{id} - Update an existing order
+    @Operation(summary = "Update an existing order", description = "Updates information for an existing order")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Order updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Order.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid order data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Order not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateOrder(@PathVariable Integer id, @RequestBody Order order) {
+        if (!orderRepository.existsById(id)) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "Order not found"));
+        }
+
+/*         ResponseEntity<?> customerValidation = validateAndAttachCustomer(order);
+        if (customerValidation != null) {
+            return customerValidation;
+        }
+
+        ResponseEntity<?> itemValidation = validateAndAttachItems(order);
+        if (itemValidation != null) {
+            return itemValidation;
+        } */
+
+        try {
+            order.setOrderId(id);
+
+            Order updatedOrder = orderRepository.save(order);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(400, "Invalid order data: " + e.getMessage()));
+        }
+
+    }
+
+    // DELETE /api/orders/{id} - Delete order by ID
+    @Operation(summary = "Delete order by ID", description = "Deletes a single order by its ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Order deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Order not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteOrderById(@PathVariable Integer id) {
+        if (!orderRepository.existsById(id)) {
+            orderRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "Order not found"));
         }
     }
 }
