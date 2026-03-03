@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.List;
@@ -69,6 +71,28 @@ public class IssuedTicketController {
                 .orElseGet(() -> ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
                         .body(new ErrorResponse(404, "Issued ticket not found")));
+    }
+
+    // Create a new issued ticket
+    @Operation(summary = "Create a new issued ticket", description = "Adds a new issued ticket to the system")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Issued ticket created successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = IssuedTicket.class))
+        ),
+        @ApiResponse(responseCode = "400", description = "Invalid issued ticket data",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    @PostMapping
+    public ResponseEntity<?> createIssuedTicket(@RequestBody IssuedTicket ticket) {
+        try {
+            IssuedTicket saved = issuedTicketRepository.save(ticket);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(400, "Invalid issued ticket data: " + e.getMessage()));
+        }
     }
 }
 
