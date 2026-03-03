@@ -947,6 +947,8 @@ curl -X GET http://localhost:8080/api/customers/1
 ```
 </details>
 
+pliis tuu takas
+
 ---
 
 
