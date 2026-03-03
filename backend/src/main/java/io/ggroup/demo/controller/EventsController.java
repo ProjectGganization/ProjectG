@@ -1,6 +1,10 @@
 package io.ggroup.demo.controller;
 
+<<<<<<< HEAD
+import io.ggroup.demo.exception.EventNotFoundException;
+=======
 //import io.ggroup.demo.exception.EventNotFoundException;
+>>>>>>> f6a3d21e476afdcc53ec35c3b02cd492045ee680
 import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.Event;
 import io.ggroup.demo.model.Venue;
@@ -106,6 +110,8 @@ public class EventsController {
         }
     }
 
+<<<<<<< HEAD
+=======
     // PUT /api/events/{id} - Update an existing event
     @Operation(summary = "Update an existing event", description = "Updates the details of an existing event")
     @ApiResponses(value = {
@@ -143,6 +149,7 @@ public class EventsController {
 
 
 
+>>>>>>> f6a3d21e476afdcc53ec35c3b02cd492045ee680
     // DELETE /api/events/{id} - Delete event by ID
     @Operation(summary = "Delete event by ID", description = "Deletes a single event by its ID")
     @ApiResponses(value = {
