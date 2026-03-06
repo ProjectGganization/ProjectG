@@ -41,6 +41,49 @@ curl -X GET http://localhost:8080/api/issuedtickets
 </details>
 
 <details>
+  <summary><strong>Get Issued Ticket By ID</strong></summary>
+
+**Endpoint:** `GET /api/issuedtickets/{id}`
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique issued ticket ID |
+
+### Response Codes
+| Code | Description                     |
+|------| --------------------------------|
+| 200  | Issued ticket found successfully|
+| 404  | Issued ticket not found         |
+| 500  | Internal server error           |
+
+### Response Body (200 OK)
+Content-Type: `application/json`
+
+```json
+{
+  "issuedTicketId": 1,
+  "order": { "orderId": 42 },
+  "qrCode": "ABC123DEF456",
+  "ticket": { "ticketId": 7 }
+}
+```
+
+### Example Request
+```bash
+curl -X GET http://localhost:8080/api/issuedtickets/1
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "Issued ticket not found"
+}
+```
+</details>
+
+<details>
   <summary><strong>Create New Issued Ticket</strong></summary>
 
 **Endpoint:** `POST /api/issuedtickets`
@@ -93,19 +136,31 @@ curl -X POST http://localhost:8080/api/issuedtickets \
 </details>
 
 <details>
-  <summary><strong>Get Issued Ticket By ID</strong></summary>
+  <summary><strong>Update Issued Ticket</strong></summary>
 
-**Endpoint:** `GET /api/issuedtickets/{id}`
+**Endpoint:** `PUT /api/issuedtickets/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
 | `id`      | Integer | Yes      | The unique issued ticket ID |
 
+### Request Body
+Content-Type: `application/json`
+
+```json
+{
+  "order": { "orderId": 42 },
+  "qrCode": "ABC123DEF456",
+  "ticket": { "ticketId": 7 }
+}
+```
+
 ### Response Codes
 | Code | Description                     |
-|------| --------------------------------|
-| 200  | Issued ticket found successfully|
+|------|---------------------------------|
+| 200  | Issued ticket updated successfully |
+| 400  | Invalid issued ticket data      |
 | 404  | Issued ticket not found         |
 | 500  | Internal server error           |
 
@@ -123,14 +178,52 @@ Content-Type: `application/json`
 
 ### Example Request
 ```bash
-curl -X GET http://localhost:8080/api/issuedtickets/1
+curl -X PUT http://localhost:8080/api/issuedtickets/1 \
+  -H "Content-Type: application/json" \
+  -d '{"order": {"orderId": 42}, "qrCode": "ABC123DEF456", "ticket": {"ticketId": 7}}'
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Issued ticket not found"
+  "error": "IssuedTicket not found"
 }
 ```
+
+</details>
+
+<details>
+  <summary><strong>Delete Issued Ticket</strong></summary>
+
+**Endpoint:** `DELETE /api/issuedtickets/{id}`
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique issued ticket ID |
+
+### Response Codes
+| Code | Description                     |
+|------|---------------------------------|
+| 204  | Issued ticket deleted successfully |
+| 404  | Issued ticket not found         |
+| 500  | Internal server error           |
+
+### Response Body (204 No Content)
+No content returned on successful deletion.
+
+### Example Request
+```bash
+curl -X DELETE http://localhost:8080/api/issuedtickets/1
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "IssuedTicket not found"
+}
+```
+
 </details>
