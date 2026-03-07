@@ -6,12 +6,12 @@ Base URL: `/api/examples`
 
 <!-- Step 3: Alla olevasta Example API rungosta voi poimia itselleen sopivat mallit -->
 
-HUOM! Tehdään jokaisen APIn dokumentaatio seuraavassa järjestyksesä.
+<!-- HUOM! Tehdään jokaisen APIn dokumentaatio seuraavassa järjestyksesä.
 1. Get All Examples
 2. Get Example By ID
 3. Create New Example
 4. Update Example By ID
-5. Delete Example By ID
+5. Delete Example By ID -->
 
 <!-- 1. Get All Examples -->
 <details>

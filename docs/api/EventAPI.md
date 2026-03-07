@@ -1,12 +1,5 @@
 ## Event API
-
 Base URL: `/api/events`
-
-1. Get All Events
-2. Get Event By ID
-3. Create New Event
-4. Update Event By ID
-5. Delete Event By ID
 
 <details>
   <summary><strong>Get All Events</strong></summary>

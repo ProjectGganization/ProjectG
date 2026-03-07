@@ -1,12 +1,5 @@
 ## Venue API
-
 Base URL: `/api/venues`
-
-1. Get All Venues
-2. Get Venue By ID
-3. Create New Venue
-4. Update Venue By ID
-5. Delete Venue By ID
 
 <details>
   <summary><strong>Get All Venues</strong></summary>

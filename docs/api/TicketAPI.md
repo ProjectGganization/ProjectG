@@ -1,10 +1,6 @@
 ## Ticket API
 Base URL: `/api/examples`
 
-1. Get All Tickets
-2. 
-3. Create New Ticket
-
 <details>
   <summary><strong>Get All Tickets</strong></summary>
 

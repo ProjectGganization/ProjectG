@@ -28,12 +28,12 @@ Base URL: `/api/examples`
 
 <!-- Step 3: Alla olevasta Example API rungosta voi poimia itselleen sopivat mallit -->
 
-HUOM! Tehdään jokaisen APIn dokumentaatio seuraavassa järjestyksesä.
+<!-- HUOM! Tehdään jokaisen APIn dokumentaatio seuraavassa järjestyksesä.
 1. Get All Examples
 2. Get Example By ID
 3. Create New Example
 4. Update Example By ID
-5. Delete Example By ID
+5. Delete Example By ID -->
 
 <!-- 1. Get All Examples -->
 <details>
@@ -313,21 +313,14 @@ curl -X DELETE http://localhost:8080/api/examples/1
 <!-- node build.js -komento päivittää tiedoston nimeltä APIDOCUMENTATION.generated.md, joka copypastaa docs/api tiedostot sinne"
 HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! -->
 
-<!-- Vinkki vitonen Ctrl+Shift+V voi avulla pystyy previewaa APIDOCUMENTATION.generated.md :) -->
+<!-- Vinkki vitonen: Ctrl+Shift+V voi avulla pystyy previewaa esim. APIDOCUMENTATION.generated.md :) -->
 
 ## 🎭 Event API
 <details>
   <summary><strong>Expand Event API</strong></summary>
 
 ## Event API
-
 Base URL: `/api/events`
-
-1. Get All Events
-2. Get Event By ID
-3. Create New Event
-4. Update Event By ID
-5. Delete Event By ID
 
 <details>
   <summary><strong>Get All Events</strong></summary>
@@ -659,14 +652,7 @@ curl -X DELETE http://localhost:8080/api/events/1
   <summary><strong>Expand Venue API</strong></summary>
 
 ## Venue API
-
 Base URL: `/api/venues`
-
-1. Get All Venues
-2. Get Venue By ID
-3. Create New Venue
-4. Update Venue By ID
-5. Delete Venue By ID
 
 <details>
   <summary><strong>Get All Venues</strong></summary>
@@ -980,10 +966,6 @@ curl -X DELETE http://localhost:8080/api/venues/1
 ## Ticket API
 Base URL: `/api/examples`
 
-1. Get All Tickets
-2. 
-3. Create New Ticket
-
 <details>
   <summary><strong>Get All Tickets</strong></summary>
 
@@ -1262,14 +1244,7 @@ curl -X DELETE http://localhost:8080/api/examples/1
   <summary><strong>Expand Issued Ticket API</strong></summary>
 
 ## IssuedTicket API
-
 Base URL: `/api/issuedtickets`
-
-1. Get All Issued Tickets
-2. Get Issued Ticket By ID
-3. Create New Issued Ticket
-4. Update Issued Ticket By ID
-5. Delete Issued Ticket By ID
 
 <details>
   <summary><strong>Get All Issued Tickets</strong></summary>
@@ -2105,14 +2080,7 @@ curl -X DELETE http://localhost:8080/api/examples/1
   <summary><strong>Expand Postal Code API</strong></summary>
 
 ## Postal Code API
-
 Base URL: `/api/postalcodes`
-
-1. Get All Postal Codes
-2. Get Postal Code By ID
-3. Create New Postal Code
-4. Update Postal Code By ID
-5. Delete Postal Code By ID
 
 <details>
   <summary><strong>Get All Postal Codes</strong></summary>
