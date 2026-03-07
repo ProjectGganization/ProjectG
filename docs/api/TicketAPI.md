@@ -46,7 +46,7 @@ curl -X GET http://localhost:8080/api/tickets
 
 <!-- 2. Get Example By ID -->
 <details>
-  <summary><strong>Get Example By ID</strong></summary>
+  <summary><strong>Get </strong></summary>
 
 **Endpoint:** `GET /api/examples/{id}`
 
@@ -159,7 +159,7 @@ curl -X POST http://localhost:8080/api/examples \
 
 <!-- 4. Update Example By ID -->
 <details>
-  <summary><strong>Update Example By ID</strong></summary>
+  <summary><strong>Update </strong></summary>
 
 **Endpoint:** `PUT /api/examples/{id}`
 
@@ -238,7 +238,7 @@ curl -X PUT http://localhost:8080/api/examples/1 \
 
 <!-- 5. Delete Example By ID -->
 <details>
-  <summary><strong>Delete Example By ID</strong></summary>
+  <summary><strong>Delete </strong></summary>
 
 **Endpoint:** `DELETE /api/examples/{id}`
 

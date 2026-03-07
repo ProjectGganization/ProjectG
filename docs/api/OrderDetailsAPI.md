@@ -1,12 +1,6 @@
 ## Order Details API
 Base URL: `/api/orderdetails`
 
-1. Get All Order Details
-2. Get 
-3. Create New Order Details
-4. Update 
-5. Delete 
-
 <details>
   <summary><strong>Get All Order Details</strong></summary>
 
@@ -50,7 +44,7 @@ curl -X GET http://localhost:8080/api/orderdetails
 
 <!-- 2. Get Example By ID -->
 <details>
-  <summary><strong>Get Example By ID</strong></summary>
+  <summary><strong>Get </strong></summary>
 
 **Endpoint:** `GET /api/examples/{id}`
 
@@ -160,7 +154,7 @@ curl -X POST http://localhost:8080/api/orderdetails \
 
 <!-- 4. Update Example By ID -->
 <details>
-  <summary><strong>Update Example By ID</strong></summary>
+  <summary><strong>Update </strong></summary>
 
 **Endpoint:** `PUT /api/examples/{id}`
 
@@ -239,7 +233,7 @@ curl -X PUT http://localhost:8080/api/examples/1 \
 
 <!-- 5. Delete Example By ID -->
 <details>
-  <summary><strong>Delete Example By ID</strong></summary>
+  <summary><strong>Delete </strong></summary>
 
 **Endpoint:** `DELETE /api/examples/{id}`
 
