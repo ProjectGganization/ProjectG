@@ -1,5 +1,4 @@
 ## IssuedTicket API
-
 Base URL: `/api/issuedtickets`
 
 <details>

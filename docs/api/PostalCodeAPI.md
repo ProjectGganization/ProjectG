@@ -1,12 +1,5 @@
 ## Postal Code API
-
 Base URL: `/api/postalcodes`
-
-1. Get All Postal Codes
-2. Get Postal Code By ID
-3. Create New Postal Code
-4. Update Postal Code By ID
-5. Delete Postal Code By ID
 
 <details>
   <summary><strong>Get All Postal Codes</strong></summary>

@@ -2,6 +2,8 @@ package io.ggroup.demo.controller;
 
 import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.Order;
+import io.ggroup.demo.model.Customer;
+import io.ggroup.demo.repository.CustomerRepository;
 import io.ggroup.demo.repository.OrderRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +23,11 @@ import java.util.List;
 public class OrdersController {
 
     private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
-    public OrdersController(OrderRepository orderRepository) {
+    public OrdersController(OrderRepository orderRepository, CustomerRepository customerRepository) {
         this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
     }
 
     // GET /api/orders - Get all orders
@@ -75,6 +79,10 @@ public class OrdersController {
     })
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody Order order) {
+        // Validation
+        ResponseEntity<?> customerValidation = validateAndAttachCustomer(order);
+        if (customerValidation != null) return customerValidation;
+    
         try {
             Order savedOrder = orderRepository.save(order);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
@@ -99,16 +107,9 @@ public class OrdersController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(404, "Order not found"));
         }
-
-/*         ResponseEntity<?> customerValidation = validateAndAttachCustomer(order);
-        if (customerValidation != null) {
-            return customerValidation;
-        }
-
-        ResponseEntity<?> itemValidation = validateAndAttachItems(order);
-        if (itemValidation != null) {
-            return itemValidation;
-        } */
+        // Validation
+        ResponseEntity<?> customerValidation = validateAndAttachCustomer(order);
+        if (customerValidation != null) return customerValidation;
 
         try {
             order.setOrderId(id);
@@ -131,7 +132,7 @@ public class OrdersController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrderById(@PathVariable Integer id) {
-        if (!orderRepository.existsById(id)) {
+        if (orderRepository.existsById(id)) {
             orderRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } else {
@@ -139,5 +140,31 @@ public class OrdersController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(404, "Order not found"));
         }
+    }
+
+    // CustomerID validation
+    private ResponseEntity<?> validateAndAttachCustomer(Order order) {
+        if (order.getCustomer() == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Customer is required"));
+        }
+
+        Integer customerId = order.getCustomer().getCustomerId();
+        if (customerId == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Customer id is required"));
+        }
+
+        Customer existingCustomer = customerRepository.findById(customerId).orElse(null);
+        if (existingCustomer == null) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "Customer with id " + customerId + " does not exist"));
+        }
+
+        order.setCustomer(existingCustomer);
+        return null;
     }
 }
