@@ -1,8 +1,6 @@
 package io.ggroup.demo.controller;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -96,9 +94,15 @@ public class IssuedTicketController {
         )
     })
     @PostMapping
-    public ResponseEntity<?> createIssuedTicket(@RequestBody IssuedTicket ticket) {
+    public ResponseEntity<?> createIssuedTicket(@RequestBody IssuedTicket issuedTicket) {
+
+        ResponseEntity<?> validation = validateAndAttachForeignKeys(issuedTicket);
+        if(validation != null){
+            return validation;
+        }
+
         try {
-            IssuedTicket saved = issuedTicketRepository.save(ticket);
+            IssuedTicket saved = issuedTicketRepository.save(issuedTicket);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
             return ResponseEntity
@@ -106,6 +110,7 @@ public class IssuedTicketController {
                     .body(new ErrorResponse(400, "Invalid issued ticket data: " + e.getMessage()));
         }
     }
+
     // Update an existing IssuedTicket
     @Operation(summary = "Update an existing IssuedTicket", description = "Updates the details of existing issuedticket")
     @ApiResponses(value = {
