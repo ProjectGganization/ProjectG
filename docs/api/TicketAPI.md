@@ -1,29 +1,16 @@
-<!-- Step 1: Luo uusi md-tiedosto kansioon nimeltä docs/api nimeämällä tiedosti oman APIn mukaan esim. ExampleAPI.md -->
-
-<!-- Step 2: Kirjoita koko tiedostolle otsikko seuraavasti ja kerro base URL -->
-## Example API
+## Ticket API
 Base URL: `/api/examples`
 
-<!-- Step 3: Alla olevasta Example API rungosta voi poimia itselleen sopivat mallit -->
-
-<!-- HUOM! Tehdään jokaisen APIn dokumentaatio seuraavassa järjestyksesä.
-1. Get All Examples
-2. Get Example By ID
-3. Create New Example
-4. Update Example By ID
-5. Delete Example By ID -->
-
-<!-- 1. Get All Examples -->
 <details>
-  <summary><strong>Get All Examples</strong></summary>
+  <summary><strong>Get All Tickets</strong></summary>
 
-**Endpoint:** `GET /api/examples`
+**Endpoint:** `GET /api/tickets`
 
 ### Response Codes
 | Code | Description                     |
 |------|---------------------------------|
-| 200  | All examples found successfully |
-| 404  | No examples found               |
+| 200  | All tickets found successfully  |
+| 404  | No tickets found                |
 | 500  | Internal server error           |
 
 ### Response Body (200 OK)
@@ -32,48 +19,46 @@ Content-Type: `application/json`
 ```json
 [
 {
-  "example_id": 1,
-  "title": "Example name",
-  "description": "Example description",
-  "date": "2026-03-15T19:00:00",
-  "example_status": {
-    "id": 1,
-    "status": "Active"
-  }
+  "ticketId": 1,
+  "ticketType": {
+    "ticketType": "string"
+  },
+  "unitPrice": 10,
+  "inStock": 1,
+  "orderLimit": 1
 }
 ]
 ```
 
 ### Example Request
 ```bash
-curl -X GET http://localhost:8080/api/examples
+curl -X GET http://localhost:8080/api/tickets
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "No examples found"
+  "error": "No tickets found"
 }
 ```
 </details>
 
-<!-- 2. Get Example By ID -->
 <details>
-  <summary><strong>Get Example By ID</strong></summary>
+  <summary><strong>Get Ticket By ID </strong></summary>
 
-**Endpoint:** `GET /api/examples/{id}`
+**Endpoint:** `GET /api/tickets/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique ticket ID |
 
 ### Response Codes
 | Code | Description                     |
 |------| --------------------------------|
-| 200  | Example found successfully      |
-| 404  | Example not found               |
+| 200  | Ticket found successfully      |
+| 404  | Ticket not found               |
 | 500  | Internal server error           |
 
 ### Response Body (200 OK)
@@ -82,8 +67,8 @@ Content-Type: `application/json`
 ```json
 {
   "example_id": 1,
-  "title": "Example name",
-  "description": "Example description",
+  "title": "Spring Music Festival",
+  "description": "Live event in city center",
   "date": "2026-03-15T19:00:00",
   "example_status": {
     "id": 1,
@@ -94,42 +79,43 @@ Content-Type: `application/json`
 
 ### Example Request
 ```bash
-curl -X GET http://localhost:8080/api/examples/1
+curl -X GET http://localhost:8080/api/tickets/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Ticket not found"
 }
 ```
 </details>
 
-<!-- 3. Create New Example -->
 <details>
-  <summary><strong>Create New Example</strong></summary>
+  <summary><strong>Create New Ticket</strong></summary>
 
-**Endpoint:** `POST /api/examples`
+**Endpoint:** `POST /api/tickets`
 
 ### Request Body
 Content-Type: `application/json`
 
-Provide the example fields to create.
+Provide the ticket fields to create.
 
 ```json
 {
-  "title": "Esimerkillinen nimi",
-  "description": "Hauska esimerkki",
-  "date": "2026-01-10T18:12:02",
-  "example_status": 2
+  "ticketType": {
+    "ticketType": "string"
+  },
+  "unitPrice": 10,
+  "inStock": 1,
+  "orderLimit": 1
 }
 ```
 
 ### Response Codes
 | Code | Description                       |
 |------|-----------------------------------|
-| 201  | Example created successfully      |
+| 201  | Ticket created successfully       |
 | 400  | Invalid input or validation error |
 | 500  | Internal server error             |
 
@@ -138,26 +124,24 @@ Content-Type: `application/json`
 
 ```json
 {
-  "example_id": 1,
-  "title": "Esimerkillinen nimi",
-  "description": "Hauska esimerkki",
-  "date": "2026-01-10T18:12:02",
-  "example_status": {
-    "id": 2,
-    "status": "Inactive"
-  }
+  "ticketId": 1,
+  "ticketType": {
+    "ticketType": "string"
+  },
+  "unitPrice": 10,
+  "inStock": 1,
+  "orderLimit": 1
 }
 ```
 
 ### Example Request
 ```bash
-curl -X POST http://localhost:8080/api/examples \
+curl -X POST http://localhost:8080/api/tickets \
      -H "Content-Type: application/json" \
      -d '{
-       "title": "Esimerkillinen nimi",
-       "description": "Hauska esimerkki",
-       "date": "2026-01-10T18:12:02",
-       "example_status": 2
+     "unitPrice": 12,
+     "inStock": 107,
+     "orderLimit": 107
      }'
 ```
 
@@ -171,16 +155,15 @@ curl -X POST http://localhost:8080/api/examples \
 
 </details>
 
-<!-- 4. Update Example By ID -->
 <details>
-  <summary><strong>Update Example By ID</strong></summary>
+  <summary><strong>Update Ticket by ID </strong></summary>
 
-**Endpoint:** `PUT /api/examples/{id}`
+**Endpoint:** `PUT /api/tickets/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique ticket ID |
 
 ### Request Body
 Content-Type: `application/json`
@@ -199,9 +182,9 @@ Provide the example fields to update.
 ### Response Codes
 | Code | Description                       |
 |------|-----------------------------------|
-| 200  | Example updated successfully      |
+| 200  | Ticket updated successfully      |
 | 400  | Invalid input or validation error |
-| 404  | Example not found                 |
+| 404  | Ticket not found                 |
 | 500  | Internal server error             |
 
 ### Response Body (200 OK)
@@ -222,7 +205,7 @@ Content-Type: `application/json`
 
 ### Example Request
 ```bash
-curl -X PUT http://localhost:8080/api/examples/1 \
+curl -X PUT http://localhost:8080/api/tickets/1 \
      -H "Content-Type: application/json" \
      -d '{
        "title": "Päivitetty nimi",
@@ -236,7 +219,7 @@ curl -X PUT http://localhost:8080/api/examples/1 \
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Ticket not found"
 }
 ```
 
@@ -250,23 +233,22 @@ curl -X PUT http://localhost:8080/api/examples/1 \
 
 </details>
 
-<!-- 5. Delete Example By ID -->
 <details>
-  <summary><strong>Delete Example By ID</strong></summary>
+  <summary><strong>Delete Ticket By ID</strong></summary>
 
-**Endpoint:** `DELETE /api/examples/{id}`
+**Endpoint:** `DELETE /api/tickets/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique ticket ID |
 
 
 ### Response Codes
 | Code | Description                     |
 |------|---------------------------------|
-| 204  | Example deleted successfully    |
-| 404  | Example not found               |
+| 204  | Ticket deleted successfully    |
+| 404  | Ticket not found               |
 | 500  | Internal server error           |
 
 ### Response Body (204 No Content)
@@ -274,14 +256,14 @@ No body returned on successful deletion.
 
 ### Example Request
 ```bash
-curl -X DELETE http://localhost:8080/api/examples/1
+curl -X DELETE http://localhost:8080/api/tickets/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Ticket not found"
 }
 ```
 </details>

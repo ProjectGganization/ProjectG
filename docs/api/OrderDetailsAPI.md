@@ -1,29 +1,16 @@
-<!-- Step 1: Luo uusi md-tiedosto kansioon nimeltä docs/api nimeämällä tiedosti oman APIn mukaan esim. ExampleAPI.md -->
+## Order Details API
+Base URL: `/api/orderdetails`
 
-<!-- Step 2: Kirjoita koko tiedostolle otsikko seuraavasti ja kerro base URL -->
-## Example API
-Base URL: `/api/examples`
-
-<!-- Step 3: Alla olevasta Example API rungosta voi poimia itselleen sopivat mallit -->
-
-<!-- HUOM! Tehdään jokaisen APIn dokumentaatio seuraavassa järjestyksesä.
-1. Get All Examples
-2. Get Example By ID
-3. Create New Example
-4. Update Example By ID
-5. Delete Example By ID -->
-
-<!-- 1. Get All Examples -->
 <details>
-  <summary><strong>Get All Examples</strong></summary>
+  <summary><strong>Get All Order Details</strong></summary>
 
-**Endpoint:** `GET /api/examples`
+**Endpoint:** `GET /api/orderdetails`
 
 ### Response Codes
 | Code | Description                     |
 |------|---------------------------------|
-| 200  | All examples found successfully |
-| 404  | No examples found               |
+| 200  | All order details found successfully |
+| 404  | No order details found               |
 | 500  | Internal server error           |
 
 ### Response Body (200 OK)
@@ -31,36 +18,33 @@ Content-Type: `application/json`
 
 ```json
 [
-{
-  "example_id": 1,
-  "title": "Example name",
-  "description": "Example description",
-  "date": "2026-03-15T19:00:00",
-  "example_status": {
+  {
     "id": 1,
-    "status": "Active"
+    "orderId": 1001,
+    "productId": 501,
+    "quantity": 2,
+    "price": 49.99
   }
-}
 ]
 ```
 
 ### Example Request
 ```bash
-curl -X GET http://localhost:8080/api/examples
+curl -X GET http://localhost:8080/api/orderdetails
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "No examples found"
+  "error": "No order details found"
 }
 ```
 </details>
 
 <!-- 2. Get Example By ID -->
 <details>
-  <summary><strong>Get Example By ID</strong></summary>
+  <summary><strong>Get </strong></summary>
 
 **Endpoint:** `GET /api/examples/{id}`
 
@@ -106,30 +90,30 @@ curl -X GET http://localhost:8080/api/examples/1
 ```
 </details>
 
-<!-- 3. Create New Example -->
+<!-- 3. Create New Order Details -->
 <details>
-  <summary><strong>Create New Example</strong></summary>
+  <summary><strong>Create New Order Details</strong></summary>
 
-**Endpoint:** `POST /api/examples`
+**Endpoint:** `POST /api/orderdetails`
 
 ### Request Body
 Content-Type: `application/json`
 
-Provide the example fields to create.
+Provide the order details fields to create.
 
 ```json
-{
-  "title": "Esimerkillinen nimi",
-  "description": "Hauska esimerkki",
-  "date": "2026-01-10T18:12:02",
-  "example_status": 2
-}
+  {
+    "orderId": 1001,
+    "productId": 501,
+    "quantity": 2,
+    "price": 49.99
+  }
 ```
 
 ### Response Codes
 | Code | Description                       |
 |------|-----------------------------------|
-| 201  | Example created successfully      |
+| 201  | Order Details created successfully      |
 | 400  | Invalid input or validation error |
 | 500  | Internal server error             |
 
@@ -137,27 +121,24 @@ Provide the example fields to create.
 Content-Type: `application/json`
 
 ```json
-{
-  "example_id": 1,
-  "title": "Esimerkillinen nimi",
-  "description": "Hauska esimerkki",
-  "date": "2026-01-10T18:12:02",
-  "example_status": {
-    "id": 2,
-    "status": "Inactive"
+  {
+    "id": 1,
+    "orderId": 1001,
+    "productId": 501,
+    "quantity": 2,
+    "price": 49.99
   }
-}
 ```
 
 ### Example Request
 ```bash
-curl -X POST http://localhost:8080/api/examples \
+curl -X POST http://localhost:8080/api/orderdetails \
      -H "Content-Type: application/json" \
      -d '{
-       "title": "Esimerkillinen nimi",
-       "description": "Hauska esimerkki",
-       "date": "2026-01-10T18:12:02",
-       "example_status": 2
+        "orderId": 1001,
+        "productId": 501,
+        "quantity": 2,
+        "price": 49.99
      }'
 ```
 
@@ -173,7 +154,7 @@ curl -X POST http://localhost:8080/api/examples \
 
 <!-- 4. Update Example By ID -->
 <details>
-  <summary><strong>Update Example By ID</strong></summary>
+  <summary><strong>Update </strong></summary>
 
 **Endpoint:** `PUT /api/examples/{id}`
 
@@ -252,7 +233,7 @@ curl -X PUT http://localhost:8080/api/examples/1 \
 
 <!-- 5. Delete Example By ID -->
 <details>
-  <summary><strong>Delete Example By ID</strong></summary>
+  <summary><strong>Delete </strong></summary>
 
 **Endpoint:** `DELETE /api/examples/{id}`
 

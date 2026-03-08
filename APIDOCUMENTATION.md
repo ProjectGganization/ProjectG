@@ -1,346 +1,88 @@
 # API Documentation
 
-## Events API
+<!-- Tämä tiedosto rakennettu siten, että se sisältää upotukset docs/api tiedostoihin kutsutun 
+!INCLUDE komennon avulla, joka on toteutettu nyt Noden kanssa. -->
 
-Base URL: `/api/events`
+## 📑 Table of Contents
+- [Example API](#example-api)
+- [Event API](#event-api)
+- [Venue API](#venue-api)
+- [Ticket API](#ticket-api)
+- [Issued Ticket API](#issued-ticket-api)
+- [Order API](#order-api)
+- [Order Details API](#order-details-api)
+- [Postal Code](#postal-code-api)
 
+<!-- Step 1: Luo otsikko esim. ## Example API ja lisää siihen upotus seuraavasti: -->
+<!-- Step 2: Aja terminaalista komento node build.js -->
+<!-- Step 3: Kirjaa otsikko yllä olevaan Table Of Contents -->
+## 📝 Example API
 <details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Get all Events
-</span>
-</summary>
+  <summary><strong>Expand Example API</strong></summary>
 
-Get all events
+!INCLUDE "docs/api/ExampleAPI.md"
 
-**Endpoint:** `GET /api/events`
-
-**Response Codes:**
-
-| Code | Description              |
-| ---- | ------------------------ |
-| 200  | All events found successfully |
-| 404  | No events found |
-| 500  | Internal server error |
-
-**Response Body (200 OK):**
-
-Content-Type: `application/json`
-
-``` json
-{
-  "event_id": 1,
-  "title": "Event name",
-  "description": "Event description",
-  "start_time": "2026-03-15T19:00:00",
-  "end_time": "2026-03-15T23:00:00",
-  "venue": {
-    "venue_id": 1,
-    "name": "Venue name"
-  },
-  "event_status": {
-    "id": 1,
-    "status": "Active"
-  }
-}
-```
-**Example Request:**
-
-``` bash
-curl -X GET http://localhost:8080/api/events
-```
-
-**Example Response (404 Not Found):**
-
-```json
-{
-  "status": 404,
-  "error": "No events found"
-}
-```
 </details>
 
----
+<!-- node build.js -komento päivittää tiedoston nimeltä APIDOCUMENTATION.generated.md, joka copypastaa docs/api tiedostot sinne"
+HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! -->
 
+<!-- Vinkki vitonen: Ctrl+Shift+V voi avulla pystyy previewaa esim. APIDOCUMENTATION.generated.md :) -->
+
+## 🎭 Event API
 <details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Get Event by ID
-</span>
-</summary>
+  <summary><strong>Expand Event API</strong></summary>
 
-Retrieve a single event by its unique identifier.
+!INCLUDE "docs/api/EventAPI.md"
 
-**Endpoint:** `GET /api/events/{id}`
-
-**Path Parameters:**
-
-| Parameter | Type    | Required | Description         |
-| --------- | ------- | -------- | ------------------- |
-| `id`      | Integer | Yes      | The unique event ID |
-
-**Response Codes:**
-
-| Code | Description              |
-| ---- | ------------------------ |
-| 200  | Event found successfully |
-| 404  | Event not found          |
-| 500  | Internal server error    |
-
-**Response Body (200 OK):**
-
-Content-Type: `application/json`
-
-```json
-{
-  "id": 1,
-  "name": "Event Name",
-  "description": "Event Description",
-  "startDate": "2026-03-15T19:00:00",
-  "endDate": "2026-03-15T23:00:00",
-  "venue": {
-    "id": 1,
-    "name": "Venue Name"
-  },
-  "category": {
-    "id": 1,
-    "name": "Category Name"
-  },
-  "eventStatus": {
-    "id": 1,
-    "status": "Active"
-  }
-}
-```
-
-**Example Request:**
-
-```bash
-curl -X GET http://localhost:8080/api/events/1
-```
-
-**Example Response (404 Not Found):**
-
-```json
-{
-  "status": 404,
-  "error": "Event not found"
-}
-```
 </details>
 
----
-
+## 🏟️ Venue API
 <details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Delete Event by ID
-</span>
-</summary>
+  <summary><strong>Expand Venue API</strong></summary>
 
-Delete a single event by its unique identifier.
+!INCLUDE "docs/api/VenueAPI.md"
 
-**Endpoint:** `DELETE /api/events/{id}`
-
-**Path Parameters:**
-
-| Parameter | Type    | Required | Description         |
-| --------- | ------- | -------- | ------------------- |
-| `id`      | Integer | Yes      | The unique event ID |
-
-**Response Codes:**
-
-| Code | Description                    |
-| ---- | ------------------------------ |
-| 204  | Event deleted successfully     |
-| 404  | Event not found                |
-| 500  | Internal server error          |
-
-**Response Body (204 No Content):**
-
-No body returned on successful deletion.
-
-**Example Request:**
-
-```bash
-curl -X DELETE http://localhost:8080/api/events/1
-```
-
-**Example Response (404 Not Found):**
-
-```json
-{
-  "status": 404,
-  "error": "Event not found"
-}
-```
 </details>
 
----
-
+## 🎫 Ticket API
 <details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Create New Event
-</span>
-</summary>
+  <summary><strong>Expand Ticket API</strong></summary>
 
-Add a new event. This endpoint is used by administrators to manage upcoming events.
+!INCLUDE "docs/api/TicketAPI.md"
 
-**Endpoint:** `POST /api/events`
-
-**Path Parameters:**
-
-| Parameter | Type    | Required | Description         |
-| --------- | ------- | -------- | ------------------- |
-| `title`      | String | Yes    | The name of the event |
-| `description`| String | No     | Detailed information about the event |
-| `start_time` | String (ISO) | Yes | Event start date and time |
-| `end_time` | String (ISO) | No | Event end date and time |
-| `venue_id` | Integer | Yes | ID of the venue where the event is held |
-| `category` | Integer | Yes | ID of the event caregory |  
-
-**Response Codes:**
-
-| Code | Description              |
-| ---- | ------------------------ |
-| 201  | Event created successfully |
-| 400  | Invalid input or validation error |
-| 500  | Internal server error    |
-
-**Response Body (201 Created):**
-
-Content-Type: `application/json`
-
-``` json
-{
-  "event_id": 1,
-  "title": "Event name",
-  "description": "Event description",
-  "start_time": "2026-03-15T19:00:00",
-  "end_time": "2026-03-15T23:00:00",
-  "venue": {
-    "venue_id": 1,
-    "name": "Venue name"
-  },
-  "event_status": {
-    "id": 1,
-    "status": "Active"
-  }
-}
-```
-**Example Request:**
-
-``` bash
-curl -X POST http://localhost:8080/api/events \
-     -H "Content-Type: application/json" \
-     -d '{
-       "title": "Event name",
-       "description": "Event description",
-       "start_time": "2026-07-15T18:00:00",
-       "end_time": "2026-03-15T23:00:00",
-       "venue_id": 1
-     }'
-```
-
-**Example Response (404 Not Found):**
-
-```json
-{
-  "status": 400,
-  "error": "Invalid event data: "
-}
-```
 </details>
 
----
-
+## 🎟️ Issued Ticket API
 <details>
-<summary>
-<span style="font-size: 1.5em; font-weight: bold; font-style: italic;">
-  Update Event by ID
-</span>
-</summary>
+  <summary><strong>Expand Issued Ticket API</strong></summary>
 
-Update an existing event by its unique identifier. The server will use the path `id` as the event's id — do not rely on any `event_id` value in the body.
+!INCLUDE "docs/api/IssuedTicketAPI.md"
 
-**Endpoint:** `PUT /api/events/{id}`
+</details>
 
-**Path Parameters:**
+## 🛒 Order API
+<details>
+  <summary><strong>Expand Order API</strong></summary>
 
-| Parameter | Type    | Required | Description         |
-| --------- | ------- | -------- | ------------------- |
-| `id`      | Integer | Yes      | The unique event ID |
+!INCLUDE "docs/api/OrderAPI.md"
 
-**Request Body:**
+</details>
 
-Content-Type: `application/json`
+## 📦 Order Details API
+<details>
+  <summary><strong>Expand Order Details API</strong></summary>
 
-Provide the event fields to update. Example body:
+!INCLUDE "docs/api/OrderDetailsAPI.md"
 
-```json
-{
-  "title": "Updated Event name",
-  "description": "Updated description",
-  "start_time": "2026-07-15T18:00:00",
-  "end_time": "2026-07-15T23:00:00",
-  "venue_id": 1,
-  "category": 2
-}
-```
+</details>
 
-**Response Codes:**
+## 🏙️ Postal Code API
+<details>
+  <summary><strong>Expand Postal Code API</strong></summary>
 
-| Code | Description                    |
-| ---- | ------------------------------ |
-| 200  | Event updated successfully     |
-| 400  | Invalid input or validation error |
-| 404  | Event not found                |
-| 500  | Internal server error          |
+!INCLUDE "docs/api/PostalCodeAPI.md"
 
-**Response Body (200 OK):**
-
-Content-Type: `application/json`
-
-```json
-{
-  "event_id": 1,
-  "title": "Updated Event name",
-  "description": "Updated description",
-  "start_time": "2026-07-15T18:00:00",
-  "end_time": "2026-07-15T23:00:00",
-  "venue": {
-    "venue_id": 1,
-    "name": "Venue name"
-  },
-  "event_status": {
-    "id": 1,
-    "status": "Active"
-  }
-}
-```
-
-**Example Request:**
-
-```bash
-curl -X PUT http://localhost:8080/api/events/1 \
-     -H "Content-Type: application/json" \
-     -d '{
-       "title": "Updated Event name",
-       "description": "Updated description",
-       "start_time": "2026-07-15T18:00:00",
-       "venue_id": 1
-     }'
-```
-
-**Example Response (404 Not Found):**
-
-```json
-{
-  "status": 404,
-  "error": "Event not found"
-}
-```
 </details>
 
 ---
