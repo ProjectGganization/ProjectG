@@ -10,8 +10,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import io.ggroup.demo.service.UsersDetailsService;
+
 @Configuration
 public class SecurityConfig {
+
+    private final UsersDetailsService usersDetailsService;
+
+    public SecurityConfig(UsersDetailsService usersDetailsService) {
+        this.usersDetailsService = usersDetailsService;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -95,6 +103,7 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .userDetailsService(usersDetailsService)
                 .logout(Customizer.withDefaults());
 
         return http.build();
