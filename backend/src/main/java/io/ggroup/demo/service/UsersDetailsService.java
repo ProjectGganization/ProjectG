@@ -27,6 +27,17 @@ public class UsersDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
+        // Check if email is admin email
+        if (email.equals("admin@test.com")) {
+            var admin = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No account found with email: " + email));
+
+            return User.withUsername(admin.getEmail())
+                    .password(admin.getPasswordHash())
+                    .roles("ADMIN")
+                    .build();
+        }
+
         // Search users table
         var user = userRepository.findByEmail(email);
         if (user.isPresent()) {

@@ -1,6 +1,5 @@
 package io.ggroup.demo.config;
 
-import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,13 +29,14 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(PathRequest.toH2Console()))
+                        .ignoringRequestMatchers("/h2-console/**"))
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
 
                         // Public pages
-                        .requestMatchers("/", "/login", "/register", "/h2-console/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").hasRole("ADMIN")
+                        .requestMatchers("/", "/h2-console/**").permitAll()
 
                         // Public GET endpoints
                         .requestMatchers(HttpMethod.GET,
@@ -102,7 +102,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/swagger-ui/index.html", true)
+                        .permitAll()
+                )
+                .httpBasic(Customizer.withDefaults())
                 .userDetailsService(usersDetailsService)
                 .logout(Customizer.withDefaults());
 
