@@ -12,6 +12,7 @@
 - [Order API](#order-api)
 - [Order Details API](#order-details-api)
 - [Postal Code](#postal-code-api)
+- [User API](#user-api)
 
 <!-- Step 1: Luo otsikko esim. ## Example API ja lisää siihen upotus seuraavasti: -->
 <!-- Step 2: Aja terminaalista komento node build.js -->
@@ -82,5 +83,13 @@ HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! --
   <summary><strong>Expand Postal Code API</strong></summary>
 
 !INCLUDE "docs/api/PostalCodeAPI.md"
+
+</details>
+
+## 🧍User API
+<details>
+  <summary><strong>Expand User API</strong></summary>
+
+!INCLUDE "docs/api/UserAPI.md"
 
 </details>
