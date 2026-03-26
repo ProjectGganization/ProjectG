@@ -1,23 +1,23 @@
 package io.ggroup.demo.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import io.ggroup.demo.model.ErrorResponse;
+
+import java.util.List;
+
 import io.ggroup.demo.model.IssuedTicket;
-import io.ggroup.demo.model.Order;
 import io.ggroup.demo.model.Ticket;
+import io.ggroup.demo.model.Order;
+import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.repository.IssuedTicketRepository;
 import io.ggroup.demo.repository.OrderRepository;
 import io.ggroup.demo.repository.TicketRepository;
@@ -194,21 +194,19 @@ public class IssuedTicketController {
     // Delete IssuedTicket by ID
     @Operation(summary = "Delete existing IssuedTicket", description = "Delete existing IssuedTicket by its ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "IssuedTicket deleted succesfully", content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted issued ticket with id {id}\"}"))),
+        @ApiResponse(responseCode = "204", description = "IssuedTicket deleted succesfully"),
         @ApiResponse(responseCode = "404", description = "IssuedTicket not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteIssuedTicketById(@PathVariable Integer id){
-        if (issuedTicketRepository.existsById(id)){
-            issuedTicketRepository.deleteById(id);
-             return ResponseEntity.ok(
-                Map.of("message", "Successfully deleted issued ticket with id " + id) 
-             );
+    public ResponseEntity<?> deleteIssuedTicketById(@PathVariable Integer Id){
+        if (issuedTicketRepository.existsById(Id)){
+            issuedTicketRepository.deleteById(Id);
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse(404, "IssuedTicket not found"));
+            .status(HttpStatus.NOT_FOUND)
+            .body(new ErrorResponse(404, "IssuedTicket not found"));
         }
     }
 }

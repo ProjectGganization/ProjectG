@@ -1840,20 +1840,20 @@ curl -X GET http://localhost:8080/api/orderdetails
 
 <!-- 2. Get Example By ID -->
 <details>
-  <summary><strong>Get Order Details By Id </strong></summary>
+  <summary><strong>Get </strong></summary>
 
-**Endpoint:** `GET /api/orderdetails/{id}`
+**Endpoint:** `GET /api/examples/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique order detail example ID |
+| `id`      | Integer | Yes      | The unique example ID |
 
 ### Response Codes
 | Code | Description                     |
 |------| --------------------------------|
-| 200  | Order details found successfully     |
-| 404  | Order details not found             |
+| 200  | Example found successfully      |
+| 404  | Example not found               |
 | 500  | Internal server error           |
 
 ### Response Body (200 OK)
@@ -1861,25 +1861,27 @@ Content-Type: `application/json`
 
 ```json
 {
-  "id": 1,
-  "orderId": 1001,
-  "productId": 501,
-  "quantity": 2,
-  "price": 49.99
+  "example_id": 1,
+  "title": "Example name",
+  "description": "Example description",
+  "date": "2026-03-15T19:00:00",
+  "example_status": {
+    "id": 1,
+    "status": "Active"
+  }
 }
-
 ```
 
 ### Example Request
 ```bash
-curl -X GET http://localhost:8080/api/orderdetails/1
+curl -X GET http://localhost:8080/api/examples/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Order details not found"
+  "error": "Example not found"
 }
 ```
 </details>
@@ -1948,14 +1950,14 @@ curl -X POST http://localhost:8080/api/orderdetails \
 
 <!-- 4. Update Example By ID -->
 <details>
-  <summary><strong>Update Order Details </strong></summary>
+  <summary><strong>Update </strong></summary>
 
-**Endpoint:** `PUT /api/orderdetails/{id}`
+**Endpoint:** `PUT /api/examples/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique order detail ID |
+| `id`      | Integer | Yes      | The unique example ID |
 
 ### Request Body
 Content-Type: `application/json`
@@ -1964,19 +1966,19 @@ Provide the example fields to update.
 
 ```json
 {
-  "orderId": 1001,
-  "productId": 501,
-  "quantity": 3,
-  "price": 49.99
+  "title": "Päivitetty nimi",
+  "description": "Päivi sano moi",
+  "date": "2026-01-10T18:12:02",
+  "example_status": 1
 }
 ```
 
 ### Response Codes
 | Code | Description                       |
 |------|-----------------------------------|
-| 200  | Order details updated successfully     |
-| 400  | Invalid input |
-| 404  | Order details not found                |
+| 200  | Example updated successfully      |
+| 400  | Invalid input or validation error |
+| 404  | Example not found                 |
 | 500  | Internal server error             |
 
 ### Response Body (200 OK)
@@ -1984,32 +1986,34 @@ Content-Type: `application/json`
 
 ```json
 {
-  "id": 1,
-  "orderId": 1001,
-  "productId": 501,
-  "quantity": 3,
-  "price": 49.99
+  "example_id": 1,
+  "title": "Päivitetty nimi",
+  "description": "Päivi sano moi",
+  "date": "2026-01-10T18:11:01",
+  "example_status": {
+    "id": 1,
+    "status": "Active"
+  }
 }
-
 ```
 
 ### Example Request
 ```bash
-curl -X PUT http://localhost:8080/api/orderdetails/1 \
--H "Content-Type: application/json" \
--d '{
-  "orderId": 1001,
-  "productId": 501,
-  "quantity": 3,
-  "price": 49.99
-}'
+curl -X PUT http://localhost:8080/api/examples/1 \
+     -H "Content-Type: application/json" \
+     -d '{
+       "title": "Päivitetty nimi",
+       "description": "Päivi sano moi",
+       "date": "2026-01-10T18:11:01",
+       "example_status": 1
+     }'
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Oder details not found"
+  "error": "Example not found"
 }
 ```
 
@@ -2025,21 +2029,21 @@ curl -X PUT http://localhost:8080/api/orderdetails/1 \
 
 <!-- 5. Delete Example By ID -->
 <details>
-  <summary><strong>Delete Order Details </strong></summary>
+  <summary><strong>Delete </strong></summary>
 
-**Endpoint:** `DELETE /api/orderdetails/{id}`
+**Endpoint:** `DELETE /api/examples/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique order detail ID |
+| `id`      | Integer | Yes      | The unique example ID |
 
 
 ### Response Codes
 | Code | Description                     |
 |------|---------------------------------|
-| 204  | Order details deleted successfully    |
-| 404  | Order details not found               |
+| 204  | Example deleted successfully    |
+| 404  | Example not found               |
 | 500  | Internal server error           |
 
 ### Response Body (204 No Content)
@@ -2047,14 +2051,14 @@ No body returned on successful deletion.
 
 ### Example Request
 ```bash
-curl -X DELETE http://localhost:8080/api/orderdetails/1
+curl -X DELETE http://localhost:8080/api/examples/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Order details not found"
+  "error": "Example not found"
 }
 ```
 </details>
