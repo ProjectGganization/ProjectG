@@ -12,6 +12,7 @@
 - [Order API](#order-api)
 - [Order Details API](#order-details-api)
 - [Postal Code](#postal-code-api)
+- [User API](#user-api)
 
 <!-- Step 1: Luo otsikko esim. ## Example API ja lisää siihen upotus seuraavasti: -->
 <!-- Step 2: Aja terminaalista komento node build.js -->
@@ -1840,20 +1841,20 @@ curl -X GET http://localhost:8080/api/orderdetails
 
 <!-- 2. Get Example By ID -->
 <details>
-  <summary><strong>Get </strong></summary>
+  <summary><strong>Get Order Details By Id </strong></summary>
 
-**Endpoint:** `GET /api/examples/{id}`
+**Endpoint:** `GET /api/orderdetails/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique order detail example ID |
 
 ### Response Codes
 | Code | Description                     |
 |------| --------------------------------|
-| 200  | Example found successfully      |
-| 404  | Example not found               |
+| 200  | Order details found successfully     |
+| 404  | Order details not found             |
 | 500  | Internal server error           |
 
 ### Response Body (200 OK)
@@ -1861,27 +1862,25 @@ Content-Type: `application/json`
 
 ```json
 {
-  "example_id": 1,
-  "title": "Example name",
-  "description": "Example description",
-  "date": "2026-03-15T19:00:00",
-  "example_status": {
-    "id": 1,
-    "status": "Active"
-  }
+  "id": 1,
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 2,
+  "price": 49.99
 }
+
 ```
 
 ### Example Request
 ```bash
-curl -X GET http://localhost:8080/api/examples/1
+curl -X GET http://localhost:8080/api/orderdetails/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Order details not found"
 }
 ```
 </details>
@@ -1950,14 +1949,14 @@ curl -X POST http://localhost:8080/api/orderdetails \
 
 <!-- 4. Update Example By ID -->
 <details>
-  <summary><strong>Update </strong></summary>
+  <summary><strong>Update Order Details </strong></summary>
 
-**Endpoint:** `PUT /api/examples/{id}`
+**Endpoint:** `PUT /api/orderdetails/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique order detail ID |
 
 ### Request Body
 Content-Type: `application/json`
@@ -1966,19 +1965,19 @@ Provide the example fields to update.
 
 ```json
 {
-  "title": "Päivitetty nimi",
-  "description": "Päivi sano moi",
-  "date": "2026-01-10T18:12:02",
-  "example_status": 1
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 3,
+  "price": 49.99
 }
 ```
 
 ### Response Codes
 | Code | Description                       |
 |------|-----------------------------------|
-| 200  | Example updated successfully      |
-| 400  | Invalid input or validation error |
-| 404  | Example not found                 |
+| 200  | Order details updated successfully     |
+| 400  | Invalid input |
+| 404  | Order details not found                |
 | 500  | Internal server error             |
 
 ### Response Body (200 OK)
@@ -1986,34 +1985,32 @@ Content-Type: `application/json`
 
 ```json
 {
-  "example_id": 1,
-  "title": "Päivitetty nimi",
-  "description": "Päivi sano moi",
-  "date": "2026-01-10T18:11:01",
-  "example_status": {
-    "id": 1,
-    "status": "Active"
-  }
+  "id": 1,
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 3,
+  "price": 49.99
 }
+
 ```
 
 ### Example Request
 ```bash
-curl -X PUT http://localhost:8080/api/examples/1 \
-     -H "Content-Type: application/json" \
-     -d '{
-       "title": "Päivitetty nimi",
-       "description": "Päivi sano moi",
-       "date": "2026-01-10T18:11:01",
-       "example_status": 1
-     }'
+curl -X PUT http://localhost:8080/api/orderdetails/1 \
+-H "Content-Type: application/json" \
+-d '{
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 3,
+  "price": 49.99
+}'
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Oder details not found"
 }
 ```
 
@@ -2029,21 +2026,21 @@ curl -X PUT http://localhost:8080/api/examples/1 \
 
 <!-- 5. Delete Example By ID -->
 <details>
-  <summary><strong>Delete </strong></summary>
+  <summary><strong>Delete Order Details </strong></summary>
 
-**Endpoint:** `DELETE /api/examples/{id}`
+**Endpoint:** `DELETE /api/orderdetails/{id}`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique order detail ID |
 
 
 ### Response Codes
 | Code | Description                     |
 |------|---------------------------------|
-| 204  | Example deleted successfully    |
-| 404  | Example not found               |
+| 204  | Order details deleted successfully    |
+| 404  | Order details not found               |
 | 500  | Internal server error           |
 
 ### Response Body (204 No Content)
@@ -2051,14 +2048,14 @@ No body returned on successful deletion.
 
 ### Example Request
 ```bash
-curl -X DELETE http://localhost:8080/api/examples/1
+curl -X DELETE http://localhost:8080/api/orderdetails/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Order details not found"
 }
 ```
 </details>
@@ -2335,5 +2332,186 @@ curl -X DELETE http://localhost:8080/api/postalcodes/00100
 
 </details>
 
+
+</details>
+
+## 🧍User API
+<details>
+  <summary><strong>Expand User API</strong></summary>
+
+## User API
+Base URL: `/api/user`
+
+<details>
+  <summary><strong>Get All Users</strong></summary>
+
+**Endpoint:** `GET /api/users`
+
+### Response Codes
+| Code | Description                     |
+|------|---------------------------------|
+| 200  | All users found successfully |
+| 404  | No users found               |
+
+### Response Body (200 OK)
+Content-Type: `application/json`
+
+```json
+[
+{
+  "userId": 1,
+  "email": "matti.meikalainen@esimerkki.com",
+  "accountCreated": "2026-03-18",
+  "statusName": "Active"
+}
+]
+```
+
+### Example Request
+```bash
+curl -X GET http://localhost:8080/api/users
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "No users found"
+}
+```
+</details>
+
+<details>
+  <summary><strong>Get User By ID</strong></summary>
+
+**Endpoint:** `GET /api/users/{id}`
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique user ID |
+
+### Response Codes
+| Code | Description                     |
+|------| --------------------------------|
+| 200  | User found successfully      |
+| 404  | User not found               |
+
+### Response Body (200 OK)
+Content-Type: `application/json`
+
+```json
+{
+  "userId": 1,
+  "email": "matti.meikalainen@esimerkki.com",
+  "accountCreated": "2026-03-18",
+  "statusName": "Active"
+}
+```
+
+### Example Request
+```bash
+curl -X GET http://localhost:8080/api/users/1
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "User not found"
+}
+```
+</details>
+
+<details>
+  <summary><strong>Create New User</strong></summary>
+
+**Endpoint:** `POST /api/users`
+
+### Request Body
+Content-Type: `application/json`
+
+Provide the example fields to create.
+
+```json
+{
+ "email": "matti.meikalainen@esimerkki.com",
+  "password": "vahvaSalasana1",
+  "accountStatus": "Active"
+}
+```
+
+### Response Codes
+| Code | Description                       |
+|------|-----------------------------------|
+| 201  | User created successfully      |
+| 400  | Invalid user data |
+
+### Response Body (201 Created)
+Content-Type: `application/json`
+
+```json
+{
+  "userId": 1,
+  "email": "matti.meikalainen@esimerkki.com",
+  "accountCreated": "2026-03-18",
+  "statusName": "Active"
+}
+```
+
+### Example Request
+```bash
+curl -X POST http://localhost:8080/api/users \
+     -H "Content-Type: application/json" \
+     -d '{
+       "email": "matti.meikalainen@esimerkki.com",
+       "password": "vahvaSalasana1",
+       "accountStatus": "Active",
+     }'
+```
+
+### Example Response (400 Bad Request)
+```json
+{
+  "status": 400,
+  "error": "Invalid user data: "
+}
+```
+
+</details>
+
+<details>
+  <summary><strong>Delete User By ID</strong></summary>
+
+**Endpoint:** `DELETE /api/users/{id}`
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique user ID |
+
+
+### Response Codes
+| Code | Description                     |
+|------|---------------------------------|
+| 204  | User deleted successfully    |
+| 404  | User not found               |
+
+### Response Body (204 No Content)
+No body returned on successful deletion.
+
+### Example Request
+```bash
+curl -X DELETE http://localhost:8080/api/users/1
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "User not found"
+}
+```
+</details>
 
 </details>
