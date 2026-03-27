@@ -320,7 +320,6 @@ HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! --
 <details>
   <summary><strong>Expand Event API</strong></summary>
 
-## Event API
 Base URL: `/api/events`
 
 <details>
@@ -652,7 +651,6 @@ curl -X DELETE http://localhost:8080/api/events/1
 <details>
   <summary><strong>Expand Venue API</strong></summary>
 
-## Venue API
 Base URL: `/api/venues`
 
 <details>
@@ -964,7 +962,6 @@ curl -X DELETE http://localhost:8080/api/venues/1
 <details>
   <summary><strong>Expand Ticket API</strong></summary>
 
-## Ticket API
 Base URL: `/api/examples`
 
 <details>
@@ -1240,7 +1237,6 @@ curl -X DELETE http://localhost:8080/api/tickets/1
 <details>
   <summary><strong>Expand Issued Ticket API</strong></summary>
 
-## IssuedTicket API
 Base URL: `/api/issuedtickets`
 
 <details>
@@ -1475,7 +1471,6 @@ curl -X DELETE http://localhost:8080/api/issuedtickets/1
 <details>
   <summary><strong>Expand Order API</strong></summary>
 
-## Order API
 Base URL: `/api/orders`
 
 1. Get All Orders
@@ -1795,7 +1790,6 @@ curl -X DELETE http://localhost:8080/api/orders/1
 <details>
   <summary><strong>Expand Order Details API</strong></summary>
 
-## Order Details API
 Base URL: `/api/orderdetails`
 
 <details>
@@ -2066,7 +2060,6 @@ curl -X DELETE http://localhost:8080/api/orderdetails/1
 <details>
   <summary><strong>Expand Postal Code API</strong></summary>
 
-## Postal Code API
 Base URL: `/api/postalcodes`
 
 <details>
@@ -2339,7 +2332,6 @@ curl -X DELETE http://localhost:8080/api/postalcodes/00100
 <details>
   <summary><strong>Expand User API</strong></summary>
 
-## User API
 Base URL: `/api/user`
 
 <details>
