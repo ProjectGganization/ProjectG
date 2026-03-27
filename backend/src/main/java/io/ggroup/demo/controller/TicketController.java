@@ -1,6 +1,7 @@
 package io.ggroup.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -128,7 +129,9 @@ public class TicketController {
     // DELETE /api/tickets/{id} - Delete ticket by ID
     @Operation(summary = "Delete ticket by ID", description = "Deletes a single ticket by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Ticket deleted successfully"),
+            @ApiResponse(responseCode = "204", description = "Ticket deleted successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted ticket with id {id}\"}"))),
+
             @ApiResponse(responseCode = "404", description = "Ticket not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/{id}")
@@ -136,7 +139,7 @@ public class TicketController {
         if (ticketRepository.existsById(id)) {
             try {
                 ticketRepository.deleteById(id);
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.ok(Map.of ("message", "Successfully deleted ticket with id " + id));
             } catch (Exception e) {
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)

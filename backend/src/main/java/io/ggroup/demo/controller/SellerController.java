@@ -1,6 +1,7 @@
 package io.ggroup.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -142,7 +143,7 @@ public class SellerController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a seller", description = "Deletes a seller by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Seller deleted successfully"),
+        @ApiResponse(responseCode = "200", description = "Seller deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted seller with id {id}\"}"))),
         @ApiResponse(responseCode = "404", description = "Seller not found",
                 content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = ErrorResponse.class)))
@@ -152,7 +153,7 @@ public class SellerController {
     if (sellerRepository.existsById(id)) { 
         try {
             sellerRepository.deleteById(id);
-            return ResponseEntity.noContent().build(); 
+            return ResponseEntity.ok(Map.of("message", "Successfully deleted seller with id " + id)); 
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
