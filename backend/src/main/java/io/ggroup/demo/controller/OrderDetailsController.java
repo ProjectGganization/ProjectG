@@ -2,6 +2,7 @@ package io.ggroup.demo.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -164,10 +165,10 @@ private final OrderDetailsRepository orderDetailsRepository;
     @Operation(summary = "Delete order detail by ID", description = "Deletes a single order detail by its orderId and ticketId")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "204",
-            description = "Order detail deleted successfully"
-        ),
-        @ApiResponse(
+            responseCode = "200",
+            description = "Order detail deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted order detail with id {id}\"}"))),
+        
+@ApiResponse(
             responseCode = "404",
             description = "Order detail not found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
@@ -181,11 +182,16 @@ private final OrderDetailsRepository orderDetailsRepository;
         @PathVariable Integer ticketId) {
         
         OrderDetails.OrderDetailsId id = new OrderDetails.OrderDetailsId(orderId, ticketId);
-        return orderDetailsRepository.findById(id).map(existing -> {
-            orderDetailsRepository.delete(existing);
-            return ResponseEntity.ok().build();
-        }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(404, "Order detail not found")));
+          if (orderDetailsRepository.existsById(id)){
+            orderDetailsRepository.deleteById(id);
+             return ResponseEntity.ok(
+                Map.of("message", "Successfully deleted order detail with id " + id) 
+             );
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(404, "Order detail not found"));
+        }
     }
 }
 

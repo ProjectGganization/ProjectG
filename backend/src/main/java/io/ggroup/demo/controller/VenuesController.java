@@ -1,16 +1,8 @@
 package io.ggroup.demo.controller;
 
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.PostalCode;
-import io.ggroup.demo.model.Venue;
-import io.ggroup.demo.repository.PostalCodeRepository;
-import io.ggroup.demo.repository.VenueRepository;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.ggroup.demo.model.ErrorResponse;
+import io.ggroup.demo.model.PostalCode;
+import io.ggroup.demo.model.Venue;
+import io.ggroup.demo.repository.PostalCodeRepository;
+import io.ggroup.demo.repository.VenueRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/venues")
@@ -130,14 +132,15 @@ public class VenuesController {
 
 	@Operation(summary = "Delete venue by ID", description = "Deletes a single venue by its ID")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "204", description = "Venue deleted successfully"),
+			@ApiResponse(responseCode = "204", description = "Venue deleted successfully",
+					content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted venue with id {id}\"}"))),
 			@ApiResponse(responseCode = "404", description = "Venue not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
 	})
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteVenueById(@PathVariable Integer id) {
 		if (venueRepository.existsById(id)) {
 			venueRepository.deleteById(id);
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.ok(Map.of("message", "Successfully deleted venue with id " + id));
 		}
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)

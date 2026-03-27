@@ -1,5 +1,20 @@
 package io.ggroup.demo.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.ggroup.demo.model.ErrorResponse;
 import io.ggroup.demo.model.PostalCode;
 import io.ggroup.demo.repository.PostalCodeRepository;
@@ -9,12 +24,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/postalcodes")
@@ -108,21 +117,21 @@ public class PostalCodeController {
 
     @Operation(summary = "Delete postal code by ID", description = "Deletes a single postal code by its value")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Postal code deleted successfully"),
+            @ApiResponse(responseCode = "204", description = "Postal code deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted postal code with id {id}\"}"))),
             @ApiResponse(responseCode = "400", description = "Postal code is in use", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Postal code not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/{postalCode}")
     public ResponseEntity<?> deletePostalCodeById(@PathVariable String postalCode) {
         if (!postalCodeRepository.existsById(postalCode)) {
-            return ResponseEntity
+            return ResponseEntity 
                     .status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse(404, "Postal code not found"));
         }
 
         try {
             postalCodeRepository.deleteById(postalCode);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(Map.of("message", "Successfully deleted postal code with id " + postalCode));
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

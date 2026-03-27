@@ -6,6 +6,8 @@ import io.ggroup.demo.model.OrderDetails;
 
 public interface OrderDetailsRepository extends JpaRepository<OrderDetails, OrderDetails.OrderDetailsId> {
 
+    public Object findById(String id);
+
     /* boolean isEmpty();
 
     boolean exists(Integer id); */
