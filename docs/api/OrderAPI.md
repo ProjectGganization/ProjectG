@@ -1,16 +1,22 @@
 ## Order API
 Base URL: `/api/orders`
 
-1. Get All Orders
-2. Get Order By ID
-3. Create New Order
-4. Update Order By ID
-5. Delete Order By ID
+**Permissions**
+
+| Endpoint           | Method | Required Role     |
+| ------------------ | ------ | ----------------- |
+| `/api/orders`      | GET    | `ANYONE`          |
+| `/api/orders/{id}` | GET    | `ANYONE`          |
+| `/api/orders`      | POST   | `ANYONE`          |
+| `/api/orders/{id}` | PUT    | `ADMIN`, `SELLER` |
+| `/api/orders/{id}` | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Orders</strong></summary>
 
 **Endpoint:** `GET /api/orders`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 | Code | Description                     |
@@ -60,6 +66,8 @@ curl -X GET http://localhost:8080/api/orders
   <summary><strong>Get Order By ID</strong></summary>
 
 **Endpoint:** `GET /api/orders/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -112,6 +120,8 @@ curl -X GET http://localhost:8080/api/orders/1
   <summary><strong>Create New Order</strong></summary>
 
 **Endpoint:** `POST /api/orders`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -184,6 +194,8 @@ curl -X POST http://localhost:8080/api/orders \
   <summary><strong>Update Order By ID</strong></summary>
 
 **Endpoint:** `PUT /api/orders/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -281,6 +293,8 @@ curl -X PUT http://localhost:8080/api/orders/1 \
   <summary><strong>Delete Order By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/orders/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |

@@ -1,10 +1,22 @@
 ## Postal Code API
 Base URL: `/api/postalcodes`
 
+**Permissions**
+
+| Endpoint                 | Method | Required Role     |
+| ------------------------ | ------ | ----------------- |
+| `/api/postalcodes`       | GET    | `ANYONE`          |
+| `/api/postalcodes/{id}`  | GET    | `ANYONE`          |
+| `/api/postalcodes`       | POST   | `ADMIN`           |
+| `/api/postalcodes/{id}`  | PUT    | `ADMIN`           |
+| `/api/postalcodes/{id}`  | DELETE | `ADMIN`           |
+
 <details>
   <summary><strong>Get All Postal Codes</strong></summary>
 
 **Endpoint:** `GET /api/postalcodes`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 
@@ -48,6 +60,8 @@ curl -X GET http://localhost:8080/api/postalcodes
   <summary><strong>Get Postal Code By ID</strong></summary>
 
 **Endpoint:** `GET /api/postalcodes/{postalCode}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 
@@ -95,6 +109,8 @@ curl -X GET http://localhost:8080/api/postalcodes/00100
   <summary><strong>Create New Postal Code</strong></summary>
 
 **Endpoint:** `POST /api/postalcodes`
+
+**Access Control** `ADMIN`
 
 ### Request Body
 
@@ -154,6 +170,8 @@ curl -X POST http://localhost:8080/api/postalcodes \
   <summary><strong>Update Postal Code By ID</strong></summary>
 
 **Endpoint:** `PUT /api/postalcodes/{postalCode}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 
@@ -227,6 +245,8 @@ curl -X PUT http://localhost:8080/api/postalcodes/00100 \
   <summary><strong>Delete Postal Code By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/postalcodes/{postalCode}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 

@@ -5,6 +5,7 @@
 
 ## 📑 Table of Contents
 - [Example API](#example-api)
+- [Customer API](#customer-api)
 - [Event API](#event-api)
 - [Venue API](#venue-api)
 - [Ticket API](#ticket-api)
@@ -29,6 +30,14 @@
 HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! -->
 
 <!-- Vinkki vitonen: Ctrl+Shift+V voi avulla pystyy previewaa esim. APIDOCUMENTATION.generated.md :) -->
+
+## 🧍 Customer API
+<details>
+  <summary><strong>Expand Event API</strong></summary>
+
+!INCLUDE "docs/api/CustomerAPI.md"
+
+</details>
 
 ## 🎭 Event API
 <details>
@@ -86,7 +95,7 @@ HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! --
 
 </details>
 
-## 🧍User API
+## 🧑‍💻 User API
 <details>
   <summary><strong>Expand User API</strong></summary>
 
