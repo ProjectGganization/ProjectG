@@ -1,10 +1,22 @@
 ## Customer API
 Base URL: `/api/customers`
 
+**Permissions**
+
+| Endpoint              | Method | Required Role               |
+| --------------------- | ------ | --------------------------- |
+| `/api/customers`      | GET    | `ANYONE`                    |
+| `/api/customers/{id}` | GET    | `ANYONE`(Customer only own) |
+| `/api/customers`      | POST   | `ANYONE`                    |
+| `/api/customers/{id}` | PUT    | `ANYONE`(Customer only own) |
+| `/api/customers/{id}` | DELETE | `ADMIN`                     |
+
 <details>
   <summary><strong>Get All Customers</strong></summary>
 
 **Endpoint:** `GET /api/customers`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 | Code | Description                     |
@@ -45,6 +57,8 @@ curl -X GET http://localhost:8080/api/customers
   <summary><strong>Get Customer By ID</strong></summary>
 
 **Endpoint:** `GET /api/customers/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER` (Only own)
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -88,6 +102,8 @@ curl -X GET http://localhost:8080/api/examples/1
   <summary><strong>Create New Customer</strong></summary>
 
 **Endpoint:** `POST /api/customers`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -149,6 +165,8 @@ curl -X POST http://localhost:8080/api/customers \
   <summary><strong>Update Customer By ID</strong></summary>
 
 **Endpoint:** `PUT /api/customers/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER` (Only own)
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -225,6 +243,8 @@ curl -X PUT http://localhost:8080/api/customers/1 \
   <summary><strong>Delete Customer By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/examples/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
