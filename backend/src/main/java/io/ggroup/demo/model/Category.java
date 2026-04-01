@@ -1,43 +1,27 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+
+// Tämä luokka kuvaa tietokannan taulua category
+// Taulussa on vain yksi sarake, joka toimii myös taulun pääavaimena
+// Taulussa on eri tapahtumien kategoriat esim. music, sport
 
 @Entity
-@Table(name = "categories")
+@Table(name = "category")
 public class Category {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
-    private Integer categoryId;
+    @Column(name = "category", length = 50)
+    private String category;
 
-    @NotNull
-    @Column(name = "category_name", nullable = false, length = 100)
-    private String categoryName;
-
-    // Constructors
     public Category() {
     }
 
-    public Category(String categoryName) {
-        this.categoryName = categoryName;
+    public Category(String category) {
+        this.category = category;
     }
 
-    // Getters and Setters
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public String getCategory() {
+        return category;
     }
 }

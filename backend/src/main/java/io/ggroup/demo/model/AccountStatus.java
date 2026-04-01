@@ -1,18 +1,19 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+
+// Tämä luokka kuvaa tietokannan taulua accountstatus
+// Taulussa on vain yksi sarake, joka toimii myös taulun pääavaimena
+// Ainoat mahdolliset arvot active/inactive
 
 @Entity
-@Table(name = "account_status")
+@Table(name = "accountstatus")
 public class AccountStatus {
     
     @Id
-    @NotNull
-    @Column(name = "account_status", nullable = false)
+    @Column(name = "account_status")
     private String accountStatus;
 
-    // Constructors
     public AccountStatus() {
     }
 
@@ -20,12 +21,7 @@ public class AccountStatus {
         this.accountStatus = accountStatus;
     }
 
-    // Getters and Setters
     public String getAccountStatus() {
         return accountStatus;
-    }
-
-    public void setAccountStatus(String accountStatus) {
-        this.accountStatus = accountStatus;
     }
 }

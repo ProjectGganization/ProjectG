@@ -44,7 +44,7 @@ public class Event {
 
     // Foreign key to Category
     @ManyToOne
-    @JoinColumn(name = "category", referencedColumnName = "category_id")
+    @JoinColumn(name = "category", referencedColumnName = "category")
     private Category category;
 
     // Constructors
