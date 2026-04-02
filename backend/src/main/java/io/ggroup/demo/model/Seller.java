@@ -1,15 +1,6 @@
 package io.ggroup.demo.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "sellers")
@@ -20,18 +11,17 @@ public class Seller {
     @Column(name = "seller_id")
     private Integer sellerId;
 
-    @NotNull
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "email", length = 250)
+    @Column(name = "email", nullable = false, length = 250)
     private String email;
 
     @Column(name = "phone", length = 25)
     private String phone;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // Constructors
@@ -47,10 +37,6 @@ public class Seller {
     // Getters and Setters
     public Integer getSellerId() {
         return sellerId;
-    }
-
-    public void setSellerId(Integer sellerId) {
-        this.sellerId = sellerId;
     }
 
     public String getName() {
@@ -84,21 +70,5 @@ public class Seller {
     public void setUser(User user) {
         this.user = user;
     }
-
-    public static boolean isEmpty() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
-    }
-
-    public Object getEvent() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEvent'");
-    }
-
-    public void setEvent(Event existingEvent) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setEvent'");
-    }
-
    
 }

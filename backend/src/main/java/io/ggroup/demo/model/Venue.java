@@ -1,7 +1,6 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "venues")
@@ -12,17 +11,14 @@ public class Venue {
     @Column(name = "venue_id")
     private Integer venueId;
 
-    @NotNull
     @Column(name = "name", nullable = false, length = 250)
     private String name;
 
-    @NotNull
     @Column(name = "address", nullable = false, length = 250)
     private String address;
 
-    // Foreign key to PostalCode (optional, can be null)
     @ManyToOne
-    @JoinColumn(name = "postal_code", referencedColumnName = "postal_code")
+    @JoinColumn(name = "postalcode", nullable = false)
     private PostalCode postalCode;
 
     // Constructors
@@ -38,10 +34,6 @@ public class Venue {
     // Getters and Setters
     public Integer getVenueId() {
         return venueId;
-    }
-
-    public void setVenueId(Integer venueId) {
-        this.venueId = venueId;
     }
 
     public String getName() {

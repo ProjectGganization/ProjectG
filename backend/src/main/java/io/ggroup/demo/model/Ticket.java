@@ -1,7 +1,6 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -13,26 +12,21 @@ public class Ticket {
     @Column(name = "ticket_id")
     private Integer ticketId;
 
-    // Foreign key to TicketType
     @ManyToOne
-    @JoinColumn(name = "ticket_type", referencedColumnName = "ticket_type")
+    @JoinColumn(name = "ticket_type", nullable = false)
     private TicketType ticketType;
 
-    // Foreign key to Event
     @ManyToOne
-    @JoinColumn(name = "event_id", referencedColumnName = "event_id")
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @NotNull
     @Column(name = "unitprice", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
 
-    @NotNull
     @Column(name = "in_stock", nullable = false)
     private Integer inStock;
 
-    @NotNull
-    @Column(name = "order_limit", nullable = false)
+    @Column(name = "order_limit")
     private Integer orderLimit;
 
     // Constructors
@@ -50,10 +44,6 @@ public class Ticket {
     // Getters and Setters
     public Integer getTicketId() {
         return ticketId;
-    }
-
-    public void setTicketId(Integer ticketId) {
-        this.ticketId = ticketId;
     }
 
     public TicketType getTicketType() {
