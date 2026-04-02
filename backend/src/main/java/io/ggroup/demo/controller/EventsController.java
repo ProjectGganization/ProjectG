@@ -1,23 +1,14 @@
 package io.ggroup.demo.controller;
+
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.Event;
-import io.ggroup.demo.model.Venue;
-import io.ggroup.demo.repository.EventRepository;
-import io.ggroup.demo.repository.VenueRepository;
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +21,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Event API", description = "Endpoints for managing events")
 public class EventsController {
 
-    public static final String id = null;
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
 
@@ -125,10 +115,11 @@ public class EventsController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEvent(@PathVariable Integer id, @RequestBody Event event) {
-        if (!eventRepository.existsById(id)) {
+        Event existingEvent = eventRepository.findById(id).orElse(null);
+        if (existingEvent == null) {
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse(404, "Event not found"));
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "Event not found with ID: " + id));
         }
 
         ResponseEntity<?> venueValidation = validateAndAttachVenue(event);
@@ -136,15 +127,41 @@ public class EventsController {
             return venueValidation;
         }
 
-        try {
-            event.setEventId(id);
-            Event updatedEvent = eventRepository.save(event);
-            return ResponseEntity.ok(updatedEvent);
-        } catch (Exception e) {
+        if (event.getEventStatus() == null) {
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(400, "Invalid event data: " + e.getMessage()));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Event status is required"));
         }
+
+        if (event.getCategory() == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Category is required"));
+        }
+
+        if (event.getEndTime() == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "End time is required"));
+        }
+
+        if (event.getStartTime() == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Start time is required"));
+        }
+
+        existingEvent.setTitle(event.getTitle());
+        existingEvent.setDescription(event.getDescription());
+        existingEvent.setPhoto(event.getPhoto());
+        existingEvent.setStartTime(event.getStartTime());
+        existingEvent.setEndTime(event.getEndTime());
+        existingEvent.setEventStatus(event.getEventStatus());
+        existingEvent.setVenue(event.getVenue());
+        existingEvent.setCategory(event.getCategory());
+
+        Event updatedEvent = eventRepository.save(existingEvent);
+        return ResponseEntity.ok(updatedEvent);
     }
 
     // DELETE /api/events/{id} - Delete event by ID

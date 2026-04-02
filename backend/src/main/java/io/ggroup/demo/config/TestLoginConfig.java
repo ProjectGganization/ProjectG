@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
-
 @Configuration
 public class TestLoginConfig {
     // admin@test.com salasana admin123
@@ -22,7 +20,6 @@ public class TestLoginConfig {
                 User admin = new User();
                 admin.setEmail("admin@test.com");
                 admin.setPasswordHash(encoder.encode("admin123"));
-                admin.setAccountCreated(LocalDate.now());
 
                 userRepo.save(admin);
 
@@ -40,7 +37,6 @@ public class TestLoginConfig {
                 User seller = new User();
                 seller.setEmail("seller@test.com");
                 seller.setPasswordHash(encoder.encode("seller123"));
-                seller.setAccountCreated(LocalDate.now());
 
                 userRepo.save(seller);
 
@@ -58,7 +54,6 @@ public class TestLoginConfig {
                 User customer = new User();
                 customer.setEmail("customer@test.com");
                 customer.setPasswordHash(encoder.encode("customer123"));
-                customer.setAccountCreated(LocalDate.now());
 
                 userRepo.save(customer);
 

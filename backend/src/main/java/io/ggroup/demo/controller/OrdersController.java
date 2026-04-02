@@ -3,22 +3,12 @@ package io.ggroup.demo.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
-import io.ggroup.demo.model.Customer;
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.Order;
-import io.ggroup.demo.repository.CustomerRepository;
-import io.ggroup.demo.repository.OrderRepository;
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -111,26 +101,45 @@ public class OrdersController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable Integer id, @RequestBody Order order) {
-        if (!orderRepository.existsById(id)) {
+        Order existingOrder = orderRepository.findById(id).orElse(null);
+        if (existingOrder == null) {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(404, "Order not found"));
         }
-        // Validation
+
         ResponseEntity<?> customerValidation = validateAndAttachCustomer(order);
-        if (customerValidation != null) return customerValidation;
-
-        try {
-            order.setOrderId(id);
-
-            Order updatedOrder = orderRepository.save(order);
-            return ResponseEntity.ok(updatedOrder);
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(400, "Invalid order data: " + e.getMessage()));
+        if (customerValidation != null) {
+            return customerValidation;
         }
 
+        if (order.getCustomer() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Customer is required"));
+        }
+
+        if (order.getDate() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Date is required"));
+        }
+
+        if (order.getSeller() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Seller is required"));
+        }
+
+        existingOrder.setCustomer(order.getCustomer());  // tämä on validateAndAttachCustomer() kautta DB-entity
+        existingOrder.setDate(order.getDate());
+        existingOrder.setSeller(order.getSeller());
+        existingOrder.setIsRefunded(order.getIsRefunded());
+        existingOrder.setIsPaid(order.getIsPaid());
+        existingOrder.setPaymentMethod(order.getPaymentMethod());
+
+        Order updatedOrder = orderRepository.save(existingOrder);
+        return ResponseEntity.ok(updatedOrder);
     }
 
     // DELETE /api/orders/{id} - Delete order by ID
