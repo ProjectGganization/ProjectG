@@ -1,7 +1,6 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,45 +12,38 @@ public class Event {
     @Column(name = "event_id")
     private Integer eventId;
 
-    @NotNull
     @Column(name = "title", nullable = false, length = 250)
     private String title;
 
     @Column(name = "description", length = 250)
     private String description;
 
-    @Lob
-    @Column(name = "photo")
-    private byte[] photo;
+    @Column(name = "photo", length = 260)
+    private String photo;
 
-    @NotNull
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
-    // Foreign key to EventStatus
     @ManyToOne
-    @JoinColumn(name = "event_status", referencedColumnName = "event_status")
+    @JoinColumn(name = "event_status", nullable = false)
     private EventStatus eventStatus;
 
-    // Foreign key to Venue
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "venue_id", referencedColumnName = "venue_id")
+    @JoinColumn(name = "venue_id", nullable = false)
     private Venue venue;
 
-    // Foreign key to Category
     @ManyToOne
-    @JoinColumn(name = "category", referencedColumnName = "category_id")
+    @JoinColumn(name = "category", nullable = false)
     private Category category;
 
     // Constructors
     public Event() {
     }
 
-    public Event(String title, String description, byte[] photo, LocalDateTime startTime, LocalDateTime endTime, 
+    public Event(String title, String description, String photo, LocalDateTime startTime, LocalDateTime endTime, 
                  EventStatus eventStatus, Venue venue, Category category) {
         this.title = title;
         this.description = description;
@@ -66,10 +58,6 @@ public class Event {
     // Getters and Setters
     public Integer getEventId() {
         return eventId;
-    }
-
-    public void setEventId(Integer eventId) {
-        this.eventId = eventId;
     }
 
     public String getTitle() {
@@ -88,11 +76,11 @@ public class Event {
         this.description = description;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

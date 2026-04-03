@@ -1,10 +1,22 @@
 ## Ticket API
-Base URL: `/api/examples`
+Base URL: `/api/tickets`
+
+**Permissions**
+
+| Endpoint            | Method | Required Role     |
+| ------------------- | ------ | ----------------- |
+| `/api/tickets`      | GET    | `ANYONE`          |
+| `/api/tickets/{id}` | GET    | `ANYONE`          |
+| `/api/tickets`      | POST   | `ADMIN`, `SELLER` |
+| `/api/tickets/{id}` | PUT    | `ADMIN`, `SELLER` |
+| `/api/tickets/{id}` | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Tickets</strong></summary>
 
 **Endpoint:** `GET /api/tickets`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 | Code | Description                     |
@@ -48,6 +60,8 @@ curl -X GET http://localhost:8080/api/tickets
   <summary><strong>Get Ticket By ID </strong></summary>
 
 **Endpoint:** `GET /api/tickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -95,6 +109,8 @@ curl -X GET http://localhost:8080/api/tickets/1
   <summary><strong>Create New Ticket</strong></summary>
 
 **Endpoint:** `POST /api/tickets`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -159,6 +175,8 @@ curl -X POST http://localhost:8080/api/tickets \
   <summary><strong>Update Ticket by ID </strong></summary>
 
 **Endpoint:** `PUT /api/tickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -237,6 +255,8 @@ curl -X PUT http://localhost:8080/api/tickets/1 \
   <summary><strong>Delete Ticket By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/tickets/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |

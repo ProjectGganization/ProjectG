@@ -1,28 +1,20 @@
 package io.ggroup.demo.controller;
 
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.PostalCode;
-import io.ggroup.demo.model.Venue;
-import io.ggroup.demo.repository.PostalCodeRepository;
-import io.ggroup.demo.repository.VenueRepository;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/venues")
@@ -106,7 +98,8 @@ public class VenuesController {
 	})
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateVenue(@PathVariable Integer id, @RequestBody Venue venue) {
-		if (!venueRepository.existsById(id)) {
+		Venue existingVenue = venueRepository.findById(id).orElse(null);
+		if (existingVenue == null) {
 			return ResponseEntity
 					.status(HttpStatus.NOT_FOUND)
 					.body(new ErrorResponse(404, "Venue not found"));
@@ -117,27 +110,43 @@ public class VenuesController {
 			return postalCodeValidation;
 		}
 
-		try {
-			venue.setVenueId(id);
-			Venue updatedVenue = venueRepository.save(venue);
-			return ResponseEntity.ok(updatedVenue);
-		} catch (Exception e) {
+		if (venue.getName() != null) {
 			return ResponseEntity
-					.status(HttpStatus.BAD_REQUEST)
-					.body(new ErrorResponse(400, "Invalid venue data: " + e.getMessage()));
+				.status(HttpStatus.BAD_REQUEST)
+				.body(new ErrorResponse(400, "Name is required"));
 		}
+
+		if (venue.getAddress() != null) {
+			return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(new ErrorResponse(400, "Address is required"));
+		}
+
+		if (venue.getPostalCode() != null) {
+			return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(new ErrorResponse(400, "Postal code is required"));
+		}
+
+		existingVenue.setName(venue.getName());
+		existingVenue.setAddress(venue.getAddress());
+		existingVenue.setPostalCode(venue.getPostalCode());
+
+		Venue updatedVenue = venueRepository.save(existingVenue);
+		return ResponseEntity.ok(updatedVenue);
 	}
 
 	@Operation(summary = "Delete venue by ID", description = "Deletes a single venue by its ID")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "204", description = "Venue deleted successfully"),
+			@ApiResponse(responseCode = "204", description = "Venue deleted successfully",
+					content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted venue with id {id}\"}"))),
 			@ApiResponse(responseCode = "404", description = "Venue not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
 	})
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteVenueById(@PathVariable Integer id) {
 		if (venueRepository.existsById(id)) {
 			venueRepository.deleteById(id);
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.ok(Map.of("message", "Successfully deleted venue with id " + id));
 		}
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)

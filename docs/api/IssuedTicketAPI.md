@@ -1,10 +1,22 @@
 ## IssuedTicket API
 Base URL: `/api/issuedtickets`
 
+**Permissions**
+
+| Endpoint                   | Method | Required Role     |
+| -------------------------- | ------ | ----------------- |
+| `/api/issuedtickets`       | GET    | `ADMIN`, `SELLER` |
+| `/api/issuedtickets/{id}`  | GET    | `ADMIN`, `SELLER` |
+| `/api/issuedtickets`       | POST   | `ADMIN`, `SELLER` |
+| `/api/issuedtickets/{id}`  | PUT    | `ADMIN`, `SELLER` |
+| `/api/issuedtickets/{id}`  | DELETE | `ADMIN`           |
+
 <details>
   <summary><strong>Get All Issued Tickets</strong></summary>
 
 **Endpoint:** `GET /api/issuedtickets`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Response Codes
 | Code | Description                     |
@@ -43,6 +55,8 @@ curl -X GET http://localhost:8080/api/issuedtickets
   <summary><strong>Get Issued Ticket By ID</strong></summary>
 
 **Endpoint:** `GET /api/issuedtickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -86,6 +100,8 @@ curl -X GET http://localhost:8080/api/issuedtickets/1
   <summary><strong>Create New Issued Ticket</strong></summary>
 
 **Endpoint:** `POST /api/issuedtickets`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -138,6 +154,8 @@ curl -X POST http://localhost:8080/api/issuedtickets \
   <summary><strong>Update Issued Ticket</strong></summary>
 
 **Endpoint:** `PUT /api/issuedtickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -196,6 +214,8 @@ curl -X PUT http://localhost:8080/api/issuedtickets/1 \
   <summary><strong>Delete Issued Ticket</strong></summary>
 
 **Endpoint:** `DELETE /api/issuedtickets/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |

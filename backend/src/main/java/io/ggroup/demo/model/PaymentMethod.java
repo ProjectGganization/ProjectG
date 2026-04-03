@@ -2,15 +2,18 @@ package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
 
+// Tämä luokka kuvaa tietokannan taulua paymentmethod
+// Taulussa on vain yksi sarake, joka toimii myös taulun pääavaimena
+// Ainoat mahdolliset arvot card/bank/cash
+
 @Entity
-@Table(name = "payment_methods")
+@Table(name = "paymentmethod")
 public class PaymentMethod {
 
     @Id
-    @Column(name = "payment_method")
+    @Column(name = "paymentmethod")
     private String paymentMethod;
 
-    // Constructors
     public PaymentMethod() {
     }
 
@@ -18,12 +21,7 @@ public class PaymentMethod {
         this.paymentMethod = paymentMethod;
     }
 
-    // Getters and Setters
     public String getPaymentMethod() {
         return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
     }
 }

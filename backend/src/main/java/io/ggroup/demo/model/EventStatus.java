@@ -1,18 +1,19 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+
+// Tämä luokka kuvaa tietokannan taulua eventstatus
+// Taulussa on vain yksi sarake, joka toimii myös taulun pääavaimena
+// Ainoat mahdolliset arvot upcoming/ongoing/finished
 
 @Entity
-@Table(name = "event_status")
+@Table(name = "eventstatus")
 public class EventStatus {
     
     @Id
-    @NotNull
-    @Column(name = "event_status", nullable = false)
+    @Column(name = "event_status")
     private String eventStatus;
 
-    // Constructors
     public EventStatus() {
     }
 
@@ -20,12 +21,7 @@ public class EventStatus {
         this.eventStatus = eventStatus;
     }
 
-    // Getters and Setters
     public String getEventStatus() {
         return eventStatus;
-    }
-
-    public void setEventStatus(String eventStatus) {
-        this.eventStatus = eventStatus;
     }
 }

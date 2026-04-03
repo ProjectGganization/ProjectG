@@ -1,10 +1,22 @@
 ## Event API
 Base URL: `/api/events`
 
+**Permissions**
+
+| Endpoint           | Method | Required Role     |
+| ------------------ | ------ | ----------------- |
+| `/api/events`      | GET    | `ANYONE`          |
+| `/api/events/{id}` | GET    | `ANYONE`          |
+| `/api/events`      | POST   | `ADMIN`, `SELLER` |
+| `/api/events/{id}`  | PUT    | `ADMIN`, `SELLER` |
+| `/api/events/{id}`  | DELETE | `ADMIN`           |
+
 <details>
   <summary><strong>Get All Events</strong></summary>
 
 **Endpoint:** `GET /api/events`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 
@@ -56,6 +68,7 @@ curl -X GET http://localhost:8080/api/events
   <summary><strong>Get Event By ID</strong></summary>
 
 **Endpoint:** `GET /api/events/{id}`
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 
@@ -111,6 +124,8 @@ curl -X GET http://localhost:8080/api/events/1
   <summary><strong>Create New Event</strong></summary>
 
 **Endpoint:** `POST /api/events`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Request Body
 
@@ -196,6 +211,8 @@ curl -X POST http://localhost:8080/api/events \
   <summary><strong>Update Event By ID</strong></summary>
 
 **Endpoint:** `PUT /api/events/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 
@@ -287,6 +304,8 @@ curl -X PUT http://localhost:8080/api/events/1 \
   <summary><strong>Delete Event By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/events/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 
