@@ -1,7 +1,6 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "customers")
@@ -12,24 +11,20 @@ public class Customer {
     @Column(name = "customer_id")
     private Integer customerId;
 
-    @NotNull
-    @Column(name = "firstname", nullable = false, length = 50)
+    @Column(name = "firstname", nullable = false, length = 100)
     private String firstname;
 
-    @NotNull
     @Column(name = "lastname", nullable = false, length = 100)
     private String lastname;
 
-    @NotNull
     @Column(name = "email", nullable = false, length = 250)
     private String email;
 
-    @NotNull
     @Column(name = "phone", nullable = false, length = 25)
     private String phone;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     // Constructors
@@ -46,10 +41,6 @@ public class Customer {
     // Getters and Setters
     public Integer getCustomerId() {
         return customerId;
-    }
-
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
     }
 
     public String getFirstname() {

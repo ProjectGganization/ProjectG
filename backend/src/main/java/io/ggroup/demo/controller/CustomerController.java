@@ -1,19 +1,18 @@
 package io.ggroup.demo.controller;
 
-import io.ggroup.demo.dto.CreateCustomerRequest;
-import io.ggroup.demo.dto.CustomerResponse;
-import io.ggroup.demo.model.Customer;
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.repository.CustomerRepository;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import io.ggroup.demo.dto.*;
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -137,23 +136,22 @@ public class CustomerController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
-        if (!customerRepository.existsById(id)) {
+        Customer existingCustomer = customerRepository.findById(id).orElse(null);
+        if (existingCustomer == null) {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(404, "Customer not found"));
+                .body(new ErrorResponse(404, "Customer not found with ID: " + id));
         }
+  
+        existingCustomer.setFirstname(customer.getFirstname());
+        existingCustomer.setLastname(customer.getLastname());
+        existingCustomer.setEmail(customer.getEmail());
+        existingCustomer.setPhone(customer.getPhone());
 
-        try {
-            customer.setCustomerId(id);
+        existingCustomer.setUser(customer.getUser());
 
-            Customer updatedCustomer = customerRepository.save(customer);
-            return ResponseEntity.ok(updatedCustomer);
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(400, "Invalid customer data: " + e.getMessage()));
-        }
-
+        Customer updatedCustomer = customerRepository.save(existingCustomer);
+        return ResponseEntity.ok(updatedCustomer);
     }
 
     // DELETE /api/customers/{id} - Delete customer by ID

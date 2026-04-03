@@ -1,25 +1,15 @@
 package io.ggroup.demo.controller;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
-import io.ggroup.demo.dto.CreateUserRequest;
-import io.ggroup.demo.dto.UserResponse;
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.User;
-import io.ggroup.demo.repository.AccountStatusRepository;
-import io.ggroup.demo.repository.UserRepository;
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+import io.ggroup.demo.dto.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,7 +42,6 @@ public class UserController {
         try {
             User newUser = new User();
             newUser.setEmail(request.getEmail());
-            newUser.setAccountCreated(LocalDate.now());
             // newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
             // (MUUTA TÄMÄ KUN SECURITYCONFIG TEHTY)
             newUser.setPasswordHash("HASH_" + request.getPassword()); // HOX!! TILAPÄINEN RATKAISU, POISTA KUN
@@ -67,7 +56,6 @@ public class UserController {
             UserResponse response = new UserResponse();
             response.setUserId(savedUser.getUserId());
             response.setEmail(savedUser.getEmail());
-            response.setAccountCreated(savedUser.getAccountCreated());
             if (newUser.getAccountStatus() != null) {
                 response.setStatusName(newUser.getAccountStatus().getAccountStatus());
             }
@@ -101,7 +89,6 @@ public class UserController {
                 UserResponse response = new UserResponse();
                 response.setUserId(user.getUserId());
                 response.setEmail(user.getEmail());
-                response.setAccountCreated(user.getAccountCreated());
                 if (user.getAccountStatus() != null) {
                     response.setStatusName(user.getAccountStatus().getAccountStatus());
                 }
@@ -138,7 +125,6 @@ public class UserController {
             UserResponse res = new UserResponse();
             res.setUserId(user.getUserId());
             res.setEmail(user.getEmail());
-            res.setAccountCreated(user.getAccountCreated());
             if (user.getAccountStatus() != null) {
                 res.setStatusName(user.getAccountStatus().getAccountStatus());
             }

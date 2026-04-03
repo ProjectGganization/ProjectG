@@ -1,8 +1,8 @@
 package io.ggroup.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "orders")
@@ -13,36 +13,32 @@ public class Order {
     @Column(name = "order_id")
     private Integer orderId;
 
-    // Foreign key to Customer
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @NotNull
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    // Foreign key to Seller
     @ManyToOne
-    @JoinColumn(name = "seller_id", referencedColumnName = "seller_id")
+    @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 
-    @Column(name = "is_refunded")
-    private Boolean isRefunded;
+    @Column(name = "is_refunded", nullable = false)
+    private boolean isRefunded;
 
-    @Column(name = "is_paid")
-    private Boolean isPaid;
+    @Column(name = "is_paid", nullable = false)
+    private boolean isPaid;
 
-    // Foreign key to PaymentMethod
     @ManyToOne
-    @JoinColumn(name = "payment_method", referencedColumnName = "payment_method")
+    @JoinColumn(name = "paymentmethod")
     private PaymentMethod paymentMethod;
 
     // Constructors
     public Order() {
     }
 
-    public Order(Customer customer, LocalDateTime date, Seller seller, Boolean isRefunded, Boolean isPaid, PaymentMethod paymentMethod) {
+    public Order(Customer customer, LocalDateTime date, Seller seller, boolean isRefunded, boolean isPaid, PaymentMethod paymentMethod) {
         this.customer = customer;
         this.date = date;
         this.seller = seller;
@@ -54,10 +50,6 @@ public class Order {
     // Getters and Setters
     public Integer getOrderId() {
         return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
     }
 
     public Customer getCustomer() {
@@ -84,19 +76,19 @@ public class Order {
         this.seller = seller;
     }
 
-    public Boolean getIsRefunded() {
+    public boolean getIsRefunded() {
         return isRefunded;
     }
 
-    public void setIsRefunded(Boolean isRefunded) {
+    public void setIsRefunded(boolean isRefunded) {
         this.isRefunded = isRefunded;
     }
 
-    public Boolean getIsPaid() {
+    public boolean getIsPaid() {
         return isPaid;
     }
 
-    public void setIsPaid(Boolean isPaid) {
+    public void setIsPaid(boolean isPaid) {
         this.isPaid = isPaid;
     }
 

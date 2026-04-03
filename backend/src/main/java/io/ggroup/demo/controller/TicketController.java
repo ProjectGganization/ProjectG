@@ -3,22 +3,12 @@ package io.ggroup.demo.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.Event;
-import io.ggroup.demo.model.Ticket;
-import io.ggroup.demo.repository.EventRepository;
-import io.ggroup.demo.repository.TicketRepository;
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -105,25 +95,49 @@ public class TicketController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTicket(@PathVariable Integer id, @RequestBody Ticket ticket) {
-        if (!ticketRepository.existsById(id)) {
+        Ticket existingTicket = ticketRepository.findById(id).orElse(null);
+        if (existingTicket == null) {
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse(404, "Ticket not found"));
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "Ticket not found"));
         }
 
         ResponseEntity<?> eventValidation = validateAndAttachEvent(ticket);
         if (eventValidation != null) {
             return eventValidation;
         }
-        try {
-            ticket.setTicketId(id);
-            Ticket updatedTicket = ticketRepository.save(ticket);
-            return ResponseEntity.ok(updatedTicket);
-        } catch (Exception e) {
+
+        if (ticket.getTicketType() != null) {
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(400, "Invalid ticket data: " + e.getMessage()));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Ticket type is required"));
         }
+
+        if (ticket.getEvent() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Event is required"));
+        }
+
+        if (ticket.getUnitPrice() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Unit price is required"));
+        }
+
+        if (ticket.getInStock() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "In stock quantity is required"));
+        }
+
+        existingTicket.setTicketType(ticket.getTicketType());
+        existingTicket.setEvent(ticket.getEvent());
+        existingTicket.setUnitPrice(ticket.getUnitPrice());
+        existingTicket.setInStock(ticket.getInStock());
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+        return ResponseEntity.ok(updatedTicket);
     }
 
     // DELETE /api/tickets/{id} - Delete ticket by ID
