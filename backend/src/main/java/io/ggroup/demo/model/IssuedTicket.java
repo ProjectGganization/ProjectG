@@ -4,26 +4,24 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "issued_tickets")
+@Table(name = "issuedtickets")
 public class IssuedTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "issued_ticket_id")
+    @Column(name = "issuedticket_id")
     private Integer issuedTicketId;
 
-    // Foreign key to Order
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    @JoinColumn(name = "order_id", nullable = false )
     private Order order;
 
     @NotNull
-    @Column(name = "qr_code", nullable = false, length = 250)
+    @Column(name = "qr_code", nullable = false, unique = true, length = 250)
     private String qrCode;
 
-    // Foreign key to Ticket
     @ManyToOne
-    @JoinColumn(name = "ticket_id", referencedColumnName = "ticket_id")
+    @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 
     // Constructors

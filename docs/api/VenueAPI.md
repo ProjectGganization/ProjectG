@@ -1,10 +1,22 @@
 ## Venue API
 Base URL: `/api/venues`
 
+**Permissions**
+
+| Endpoint           | Method | Required Role     |
+| ------------------ | ------ | ----------------- |
+| `/api/venues`      | GET    | `ANYONE`          |
+| `/api/venues/{id}` | GET    | `ANYONE`          |
+| `/api/venues`      | POST   | `ADMIN`           |
+| `/api/venues/{id}` | PUT    | `ADMIN`           |
+| `/api/venues/{id}` | DELETE | `ADMIN`           |
+
 <details>
   <summary><strong>Get All Venues</strong></summary>
 
 **Endpoint:** `GET /api/venues`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 
@@ -53,6 +65,8 @@ curl -X GET http://localhost:8080/api/venues
   <summary><strong>Get Venue By ID</strong></summary>
 
 **Endpoint:** `GET /api/venues/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 
@@ -105,6 +119,8 @@ curl -X GET http://localhost:8080/api/venues/1
   <summary><strong>Create New Venue</strong></summary>
 
 **Endpoint:** `POST /api/venues`
+
+**Access Control** `ADMIN`
 
 ### Request Body
 
@@ -183,6 +199,8 @@ curl -X POST http://localhost:8080/api/venues \
   <summary><strong>Update Venue By ID</strong></summary>
 
 **Endpoint:** `PUT /api/venues/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 
@@ -267,6 +285,8 @@ curl -X PUT http://localhost:8080/api/venues/1 \
   <summary><strong>Delete Venue By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/venues/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 

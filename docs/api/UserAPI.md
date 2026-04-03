@@ -1,10 +1,22 @@
 ## User API
 Base URL: `/api/user`
 
+**Permissions**
+
+| Endpoint           | Method | Required Role               |
+| ------------------ | ------ | --------------------------- |
+| `/api/user`        | GET    | `ADMIN`                     |
+| `/api/user/{id}`   | GET    | `ADMIN`, `SELLER`(Only own) |
+| `/api/user`        | POST   | `ADMIN`                     |
+| `/api/user/{id}`   | PUT    | `ADMIN`                     |
+| `/api/user/{id}`   | DELETE | `ADMIN`                     |
+
 <details>
   <summary><strong>Get All Users</strong></summary>
 
 **Endpoint:** `GET /api/users`
+
+**Access Control** `ADMIN`
 
 ### Response Codes
 | Code | Description                     |
@@ -44,6 +56,8 @@ curl -X GET http://localhost:8080/api/users
   <summary><strong>Get User By ID</strong></summary>
 
 **Endpoint:** `GET /api/users/{id}`
+
+**Access Control** `ADMIN`, `SELLER`(Only own)
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -86,6 +100,8 @@ curl -X GET http://localhost:8080/api/users/1
   <summary><strong>Create New User</strong></summary>
 
 **Endpoint:** `POST /api/users`
+
+**Access Control** `ADMIN`
 
 ### Request Body
 Content-Type: `application/json`
@@ -143,6 +159,8 @@ curl -X POST http://localhost:8080/api/users \
   <summary><strong>Delete User By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/users/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |

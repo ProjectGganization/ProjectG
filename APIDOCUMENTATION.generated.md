@@ -5,6 +5,7 @@
 
 ## 📑 Table of Contents
 - [Example API](#example-api)
+- [Customer API](#customer-api)
 - [Event API](#event-api)
 - [Venue API](#venue-api)
 - [Ticket API](#ticket-api)
@@ -316,17 +317,311 @@ HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! --
 
 <!-- Vinkki vitonen: Ctrl+Shift+V voi avulla pystyy previewaa esim. APIDOCUMENTATION.generated.md :) -->
 
+## 🧍 Customer API
+<details>
+  <summary><strong>Expand Event API</strong></summary>
+
+Base URL: `/api/customers`
+
+**Permissions**
+
+| Endpoint              | Method | Required Role               |
+| --------------------- | ------ | --------------------------- |
+| `/api/customers`      | GET    | `ANYONE`                    |
+| `/api/customers/{id}` | GET    | `ANYONE`(Customer only own) |
+| `/api/customers`      | POST   | `ANYONE`                    |
+| `/api/customers/{id}` | PUT    | `ANYONE`(Customer only own) |
+| `/api/customers/{id}` | DELETE | `ADMIN`                     |
+
+<details>
+  <summary><strong>Get All Customers</strong></summary>
+
+**Endpoint:** `GET /api/customers`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
+
+### Response Codes
+| Code | Description                     |
+|------|---------------------------------|
+| 200  | All customers found successfully |
+| 404  | No customers found               |
+| 500  | Internal server error           |
+
+### Response Body (200 OK)
+Content-Type: `application/json`
+
+```json
+[
+{
+  "customerId": 1,
+  "firstname": "John",
+  "email": "john.doe@example.com",
+  "phone": "+358401234567"
+}
+]
+```
+
+### Example Request
+```bash
+curl -X GET http://localhost:8080/api/customers
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "No customers found"
+}
+```
+</details>
+
+<details>
+  <summary><strong>Get Customer By ID</strong></summary>
+
+**Endpoint:** `GET /api/customers/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER` (Only own)
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique customer ID |
+
+### Response Codes
+| Code | Description                     |
+|------| --------------------------------|
+| 200  | Customer found successfully      |
+| 404  | Customer not found               |
+| 500  | Internal server error           |
+
+### Response Body (200 OK)
+Content-Type: `application/json`
+
+```json
+{
+  "customerId": 1,
+  "firstname": "John",
+  "email": "john.doe@example.com",
+  "phone": "+358401234567"
+}
+```
+
+### Example Request
+```bash
+curl -X GET http://localhost:8080/api/examples/1
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "Customer not found"
+}
+```
+</details>
+
+<details>
+  <summary><strong>Create New Customer</strong></summary>
+
+**Endpoint:** `POST /api/customers`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
+
+### Request Body
+Content-Type: `application/json`
+
+Provide the customer fields to create.
+
+```json
+{
+    "firstname": "Matti",
+    "lastname": "Mallikas",
+    "email": "matti@hotmail.com",
+    "phone": "001"
+}
+```
+
+### Response Codes
+| Code | Description                       |
+|------|-----------------------------------|
+| 201  | Customer created successfully      |
+| 400  | Invalid input or validation error |
+| 500  | Internal server error             |
+
+### Response Body (201 Created)
+Content-Type: `application/json`
+
+```json
+{
+    "customerId": 1,
+    "firstname": "Matti",
+    "lastname": "Mallikas",
+    "email": "matti@hotmail.com",
+    "phone": "001"
+}
+```
+
+### Example Request
+```bash
+curl -X POST http://localhost:8080/api/customers \
+     -H "Content-Type: application/json" \
+     -d '{
+        "firstname": "Matti",
+        "lastname": "Mallikas",
+        "email": "matti@hotmail.com",
+        "phone": "001"
+     }'
+```
+
+### Example Response (400 Bad Request)
+```json
+{
+  "status": 400,
+  "error": "Invalid input data: "
+}
+```
+
+</details>
+
+<details>
+  <summary><strong>Update Customer By ID</strong></summary>
+
+**Endpoint:** `PUT /api/customers/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER` (Only own)
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique customer ID |
+
+### Request Body
+Content-Type: `application/json`
+
+Provide the customer fields to update.
+
+```json
+{
+    "firstname": "Matti",
+    "lastname": "Mallikas",
+    "email": "matti@hotmail.com",
+    "phone": "001"
+}
+```
+
+### Response Codes
+| Code | Description                       |
+|------|-----------------------------------|
+| 200  | Customer updated successfully      |
+| 400  | Invalid input or validation error |
+| 404  | Customer not found                 |
+| 500  | Internal server error             |
+
+### Response Body (200 OK)
+Content-Type: `application/json`
+
+```json
+{
+  "customerId": 1,
+  "firstname": "John",
+  "lastname": "Mallikas",
+  "email": "john.mallikas@example.com",
+  "phone": "+358401234567"
+}
+```
+
+### Example Request
+```bash
+curl -X PUT http://localhost:8080/api/customers/1 \
+     -H "Content-Type: application/json" \
+     -d '{
+        "customerId": 1,
+        "firstname": "John",
+        "lastname": "Mallikas",
+        "email": "john.mallikas@example.com",
+        "phone": "+358401234567"
+     }'
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "Customer not found"
+}
+```
+
+### Example Response (400 Bad Request)
+```json
+{
+  "status": 400,
+  "error": "Invalid input data: "
+}
+```
+
+</details>
+
+<details>
+  <summary><strong>Delete Customer By ID</strong></summary>
+
+**Endpoint:** `DELETE /api/examples/{id}`
+
+**Access Control** `ADMIN`
+
+### Path Parameters
+| Parameter | Type    | Required | Description           |
+|-----------|---------|----------|-----------------------|
+| `id`      | Integer | Yes      | The unique customer ID |
+
+
+### Response Codes
+| Code | Description                     |
+|------|---------------------------------|
+| 204  | Customer deleted successfully    |
+| 404  | Customer not found               |
+| 500  | Internal server error           |
+
+### Response Body (204 No Content)
+No body returned on successful deletion.
+
+### Example Request
+```bash
+curl -X DELETE http://localhost:8080/api/customers/3
+```
+
+### Example Response (404 Not Found)
+```json
+{
+  "status": 404,
+  "error": "Customer with id 3 not found"
+}
+```
+</details>
+
+</details>
+
 ## 🎭 Event API
 <details>
   <summary><strong>Expand Event API</strong></summary>
 
-## Event API
 Base URL: `/api/events`
+
+**Permissions**
+
+| Endpoint           | Method | Required Role     |
+| ------------------ | ------ | ----------------- |
+| `/api/events`      | GET    | `ANYONE`          |
+| `/api/events/{id}` | GET    | `ANYONE`          |
+| `/api/events`      | POST   | `ADMIN`, `SELLER` |
+| `/api/events/{id}`  | PUT    | `ADMIN`, `SELLER` |
+| `/api/events/{id}`  | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Events</strong></summary>
 
 **Endpoint:** `GET /api/events`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 
@@ -378,6 +673,7 @@ curl -X GET http://localhost:8080/api/events
   <summary><strong>Get Event By ID</strong></summary>
 
 **Endpoint:** `GET /api/events/{id}`
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 
@@ -433,6 +729,8 @@ curl -X GET http://localhost:8080/api/events/1
   <summary><strong>Create New Event</strong></summary>
 
 **Endpoint:** `POST /api/events`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Request Body
 
@@ -518,6 +816,8 @@ curl -X POST http://localhost:8080/api/events \
   <summary><strong>Update Event By ID</strong></summary>
 
 **Endpoint:** `PUT /api/events/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 
@@ -610,6 +910,8 @@ curl -X PUT http://localhost:8080/api/events/1 \
 
 **Endpoint:** `DELETE /api/events/{id}`
 
+**Access Control** `ADMIN`
+
 ### Path Parameters
 
 | Parameter | Type    | Required | Description         |
@@ -652,13 +954,24 @@ curl -X DELETE http://localhost:8080/api/events/1
 <details>
   <summary><strong>Expand Venue API</strong></summary>
 
-## Venue API
 Base URL: `/api/venues`
+
+**Permissions**
+
+| Endpoint           | Method | Required Role     |
+| ------------------ | ------ | ----------------- |
+| `/api/venues`      | GET    | `ANYONE`          |
+| `/api/venues/{id}` | GET    | `ANYONE`          |
+| `/api/venues`      | POST   | `ADMIN`           |
+| `/api/venues/{id}` | PUT    | `ADMIN`           |
+| `/api/venues/{id}` | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Venues</strong></summary>
 
 **Endpoint:** `GET /api/venues`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 
@@ -707,6 +1020,8 @@ curl -X GET http://localhost:8080/api/venues
   <summary><strong>Get Venue By ID</strong></summary>
 
 **Endpoint:** `GET /api/venues/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 
@@ -759,6 +1074,8 @@ curl -X GET http://localhost:8080/api/venues/1
   <summary><strong>Create New Venue</strong></summary>
 
 **Endpoint:** `POST /api/venues`
+
+**Access Control** `ADMIN`
 
 ### Request Body
 
@@ -837,6 +1154,8 @@ curl -X POST http://localhost:8080/api/venues \
   <summary><strong>Update Venue By ID</strong></summary>
 
 **Endpoint:** `PUT /api/venues/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 
@@ -922,6 +1241,8 @@ curl -X PUT http://localhost:8080/api/venues/1 \
 
 **Endpoint:** `DELETE /api/venues/{id}`
 
+**Access Control** `ADMIN`
+
 ### Path Parameters
 
 | Parameter | Type    | Required | Description         |
@@ -964,13 +1285,24 @@ curl -X DELETE http://localhost:8080/api/venues/1
 <details>
   <summary><strong>Expand Ticket API</strong></summary>
 
-## Ticket API
-Base URL: `/api/examples`
+Base URL: `/api/tickets`
+
+**Permissions**
+
+| Endpoint            | Method | Required Role     |
+| ------------------- | ------ | ----------------- |
+| `/api/tickets`      | GET    | `ANYONE`          |
+| `/api/tickets/{id}` | GET    | `ANYONE`          |
+| `/api/tickets`      | POST   | `ADMIN`, `SELLER` |
+| `/api/tickets/{id}` | PUT    | `ADMIN`, `SELLER` |
+| `/api/tickets/{id}` | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Tickets</strong></summary>
 
 **Endpoint:** `GET /api/tickets`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 | Code | Description                     |
@@ -1014,6 +1346,8 @@ curl -X GET http://localhost:8080/api/tickets
   <summary><strong>Get Ticket By ID </strong></summary>
 
 **Endpoint:** `GET /api/tickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -1061,6 +1395,8 @@ curl -X GET http://localhost:8080/api/tickets/1
   <summary><strong>Create New Ticket</strong></summary>
 
 **Endpoint:** `POST /api/tickets`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -1125,6 +1461,8 @@ curl -X POST http://localhost:8080/api/tickets \
   <summary><strong>Update Ticket by ID </strong></summary>
 
 **Endpoint:** `PUT /api/tickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -1204,6 +1542,8 @@ curl -X PUT http://localhost:8080/api/tickets/1 \
 
 **Endpoint:** `DELETE /api/tickets/{id}`
 
+**Access Control** `ADMIN`
+
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
@@ -1240,13 +1580,24 @@ curl -X DELETE http://localhost:8080/api/tickets/1
 <details>
   <summary><strong>Expand Issued Ticket API</strong></summary>
 
-## IssuedTicket API
 Base URL: `/api/issuedtickets`
+
+**Permissions**
+
+| Endpoint                   | Method | Required Role     |
+| -------------------------- | ------ | ----------------- |
+| `/api/issuedtickets`       | GET    | `ADMIN`, `SELLER` |
+| `/api/issuedtickets/{id}`  | GET    | `ADMIN`, `SELLER` |
+| `/api/issuedtickets`       | POST   | `ADMIN`, `SELLER` |
+| `/api/issuedtickets/{id}`  | PUT    | `ADMIN`, `SELLER` |
+| `/api/issuedtickets/{id}`  | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Issued Tickets</strong></summary>
 
 **Endpoint:** `GET /api/issuedtickets`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Response Codes
 | Code | Description                     |
@@ -1285,6 +1636,8 @@ curl -X GET http://localhost:8080/api/issuedtickets
   <summary><strong>Get Issued Ticket By ID</strong></summary>
 
 **Endpoint:** `GET /api/issuedtickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -1328,6 +1681,8 @@ curl -X GET http://localhost:8080/api/issuedtickets/1
   <summary><strong>Create New Issued Ticket</strong></summary>
 
 **Endpoint:** `POST /api/issuedtickets`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -1380,6 +1735,8 @@ curl -X POST http://localhost:8080/api/issuedtickets \
   <summary><strong>Update Issued Ticket</strong></summary>
 
 **Endpoint:** `PUT /api/issuedtickets/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -1439,6 +1796,8 @@ curl -X PUT http://localhost:8080/api/issuedtickets/1 \
 
 **Endpoint:** `DELETE /api/issuedtickets/{id}`
 
+**Access Control** `ADMIN`
+
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
@@ -1475,19 +1834,24 @@ curl -X DELETE http://localhost:8080/api/issuedtickets/1
 <details>
   <summary><strong>Expand Order API</strong></summary>
 
-## Order API
 Base URL: `/api/orders`
 
-1. Get All Orders
-2. Get Order By ID
-3. Create New Order
-4. Update Order By ID
-5. Delete Order By ID
+**Permissions**
+
+| Endpoint           | Method | Required Role     |
+| ------------------ | ------ | ----------------- |
+| `/api/orders`      | GET    | `ANYONE`          |
+| `/api/orders/{id}` | GET    | `ANYONE`          |
+| `/api/orders`      | POST   | `ANYONE`          |
+| `/api/orders/{id}` | PUT    | `ADMIN`, `SELLER` |
+| `/api/orders/{id}` | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Orders</strong></summary>
 
 **Endpoint:** `GET /api/orders`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 | Code | Description                     |
@@ -1537,6 +1901,8 @@ curl -X GET http://localhost:8080/api/orders
   <summary><strong>Get Order By ID</strong></summary>
 
 **Endpoint:** `GET /api/orders/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -1589,6 +1955,8 @@ curl -X GET http://localhost:8080/api/orders/1
   <summary><strong>Create New Order</strong></summary>
 
 **Endpoint:** `POST /api/orders`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -1661,6 +2029,8 @@ curl -X POST http://localhost:8080/api/orders \
   <summary><strong>Update Order By ID</strong></summary>
 
 **Endpoint:** `PUT /api/orders/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -1759,6 +2129,8 @@ curl -X PUT http://localhost:8080/api/orders/1 \
 
 **Endpoint:** `DELETE /api/orders/{id}`
 
+**Access Control** `ADMIN`
+
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
@@ -1795,13 +2167,24 @@ curl -X DELETE http://localhost:8080/api/orders/1
 <details>
   <summary><strong>Expand Order Details API</strong></summary>
 
-## Order Details API
 Base URL: `/api/orderdetails`
+
+**Permissions**
+
+| Endpoint                  | Method | Required Role     |
+| ------------------------- | ------ | ----------------- |
+| `/api/orderdetails`       | GET    | `ANYONE`          |
+| `/api/orderdetails/{id}`  | GET    | `ANYONE`          |
+| `/api/orderdetails`       | POST   | `ADMIN`, `SELLER` |
+| `/api/orderdetails/{id}`  | PUT    | `ADMIN`, `SELLER` |
+| `/api/orderdetails/{id}`  | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Order Details</strong></summary>
 
 **Endpoint:** `GET /api/orderdetails`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 | Code | Description                     |
@@ -1841,20 +2224,22 @@ curl -X GET http://localhost:8080/api/orderdetails
 
 <!-- 2. Get Example By ID -->
 <details>
-  <summary><strong>Get </strong></summary>
+  <summary><strong>Get Order Details By Id </strong></summary>
 
-**Endpoint:** `GET /api/examples/{id}`
+**Endpoint:** `GET /api/orderdetails/{id}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique order detail example ID |
 
 ### Response Codes
 | Code | Description                     |
 |------| --------------------------------|
-| 200  | Example found successfully      |
-| 404  | Example not found               |
+| 200  | Order details found successfully     |
+| 404  | Order details not found             |
 | 500  | Internal server error           |
 
 ### Response Body (200 OK)
@@ -1862,27 +2247,25 @@ Content-Type: `application/json`
 
 ```json
 {
-  "example_id": 1,
-  "title": "Example name",
-  "description": "Example description",
-  "date": "2026-03-15T19:00:00",
-  "example_status": {
-    "id": 1,
-    "status": "Active"
-  }
+  "id": 1,
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 2,
+  "price": 49.99
 }
+
 ```
 
 ### Example Request
 ```bash
-curl -X GET http://localhost:8080/api/examples/1
+curl -X GET http://localhost:8080/api/orderdetails/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Order details not found"
 }
 ```
 </details>
@@ -1892,6 +2275,8 @@ curl -X GET http://localhost:8080/api/examples/1
   <summary><strong>Create New Order Details</strong></summary>
 
 **Endpoint:** `POST /api/orderdetails`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Request Body
 Content-Type: `application/json`
@@ -1951,14 +2336,16 @@ curl -X POST http://localhost:8080/api/orderdetails \
 
 <!-- 4. Update Example By ID -->
 <details>
-  <summary><strong>Update </strong></summary>
+  <summary><strong>Update Order Details </strong></summary>
 
-**Endpoint:** `PUT /api/examples/{id}`
+**Endpoint:** `PUT /api/orderdetails/{id}`
+
+**Access Control** `ADMIN`, `SELLER`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique order detail ID |
 
 ### Request Body
 Content-Type: `application/json`
@@ -1967,19 +2354,19 @@ Provide the example fields to update.
 
 ```json
 {
-  "title": "Päivitetty nimi",
-  "description": "Päivi sano moi",
-  "date": "2026-01-10T18:12:02",
-  "example_status": 1
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 3,
+  "price": 49.99
 }
 ```
 
 ### Response Codes
 | Code | Description                       |
 |------|-----------------------------------|
-| 200  | Example updated successfully      |
-| 400  | Invalid input or validation error |
-| 404  | Example not found                 |
+| 200  | Order details updated successfully     |
+| 400  | Invalid input |
+| 404  | Order details not found                |
 | 500  | Internal server error             |
 
 ### Response Body (200 OK)
@@ -1987,34 +2374,32 @@ Content-Type: `application/json`
 
 ```json
 {
-  "example_id": 1,
-  "title": "Päivitetty nimi",
-  "description": "Päivi sano moi",
-  "date": "2026-01-10T18:11:01",
-  "example_status": {
-    "id": 1,
-    "status": "Active"
-  }
+  "id": 1,
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 3,
+  "price": 49.99
 }
+
 ```
 
 ### Example Request
 ```bash
-curl -X PUT http://localhost:8080/api/examples/1 \
-     -H "Content-Type: application/json" \
-     -d '{
-       "title": "Päivitetty nimi",
-       "description": "Päivi sano moi",
-       "date": "2026-01-10T18:11:01",
-       "example_status": 1
-     }'
+curl -X PUT http://localhost:8080/api/orderdetails/1 \
+-H "Content-Type: application/json" \
+-d '{
+  "orderId": 1001,
+  "productId": 501,
+  "quantity": 3,
+  "price": 49.99
+}'
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Oder details not found"
 }
 ```
 
@@ -2030,21 +2415,23 @@ curl -X PUT http://localhost:8080/api/examples/1 \
 
 <!-- 5. Delete Example By ID -->
 <details>
-  <summary><strong>Delete </strong></summary>
+  <summary><strong>Delete Order Details </strong></summary>
 
-**Endpoint:** `DELETE /api/examples/{id}`
+**Endpoint:** `DELETE /api/orderdetails/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | Integer | Yes      | The unique example ID |
+| `id`      | Integer | Yes      | The unique order detail ID |
 
 
 ### Response Codes
 | Code | Description                     |
 |------|---------------------------------|
-| 204  | Example deleted successfully    |
-| 404  | Example not found               |
+| 204  | Order details deleted successfully    |
+| 404  | Order details not found               |
 | 500  | Internal server error           |
 
 ### Response Body (204 No Content)
@@ -2052,14 +2439,14 @@ No body returned on successful deletion.
 
 ### Example Request
 ```bash
-curl -X DELETE http://localhost:8080/api/examples/1
+curl -X DELETE http://localhost:8080/api/orderdetails/1
 ```
 
 ### Example Response (404 Not Found)
 ```json
 {
   "status": 404,
-  "error": "Example not found"
+  "error": "Order details not found"
 }
 ```
 </details>
@@ -2070,13 +2457,24 @@ curl -X DELETE http://localhost:8080/api/examples/1
 <details>
   <summary><strong>Expand Postal Code API</strong></summary>
 
-## Postal Code API
 Base URL: `/api/postalcodes`
+
+**Permissions**
+
+| Endpoint                 | Method | Required Role     |
+| ------------------------ | ------ | ----------------- |
+| `/api/postalcodes`       | GET    | `ANYONE`          |
+| `/api/postalcodes/{id}`  | GET    | `ANYONE`          |
+| `/api/postalcodes`       | POST   | `ADMIN`           |
+| `/api/postalcodes/{id}`  | PUT    | `ADMIN`           |
+| `/api/postalcodes/{id}`  | DELETE | `ADMIN`           |
 
 <details>
   <summary><strong>Get All Postal Codes</strong></summary>
 
 **Endpoint:** `GET /api/postalcodes`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Response Codes
 
@@ -2120,6 +2518,8 @@ curl -X GET http://localhost:8080/api/postalcodes
   <summary><strong>Get Postal Code By ID</strong></summary>
 
 **Endpoint:** `GET /api/postalcodes/{postalCode}`
+
+**Access Control** `ADMIN`, `SELLER`, `CUSTOMER`
 
 ### Path Parameters
 
@@ -2167,6 +2567,8 @@ curl -X GET http://localhost:8080/api/postalcodes/00100
   <summary><strong>Create New Postal Code</strong></summary>
 
 **Endpoint:** `POST /api/postalcodes`
+
+**Access Control** `ADMIN`
 
 ### Request Body
 
@@ -2226,6 +2628,8 @@ curl -X POST http://localhost:8080/api/postalcodes \
   <summary><strong>Update Postal Code By ID</strong></summary>
 
 **Endpoint:** `PUT /api/postalcodes/{postalCode}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 
@@ -2300,6 +2704,8 @@ curl -X PUT http://localhost:8080/api/postalcodes/00100 \
 
 **Endpoint:** `DELETE /api/postalcodes/{postalCode}`
 
+**Access Control** `ADMIN`
+
 ### Path Parameters
 
 | Parameter    | Type   | Required | Description               |
@@ -2339,17 +2745,28 @@ curl -X DELETE http://localhost:8080/api/postalcodes/00100
 
 </details>
 
-## 🧍User API
+## 🧑‍💻 User API
 <details>
   <summary><strong>Expand User API</strong></summary>
 
-## User API
 Base URL: `/api/user`
+
+**Permissions**
+
+| Endpoint           | Method | Required Role               |
+| ------------------ | ------ | --------------------------- |
+| `/api/user`        | GET    | `ADMIN`                     |
+| `/api/user/{id}`   | GET    | `ADMIN`, `SELLER`(Only own) |
+| `/api/user`        | POST   | `ADMIN`                     |
+| `/api/user/{id}`   | PUT    | `ADMIN`                     |
+| `/api/user/{id}`   | DELETE | `ADMIN`                     |
 
 <details>
   <summary><strong>Get All Users</strong></summary>
 
 **Endpoint:** `GET /api/users`
+
+**Access Control** `ADMIN`
 
 ### Response Codes
 | Code | Description                     |
@@ -2389,6 +2806,8 @@ curl -X GET http://localhost:8080/api/users
   <summary><strong>Get User By ID</strong></summary>
 
 **Endpoint:** `GET /api/users/{id}`
+
+**Access Control** `ADMIN`, `SELLER`(Only own)
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |
@@ -2431,6 +2850,8 @@ curl -X GET http://localhost:8080/api/users/1
   <summary><strong>Create New User</strong></summary>
 
 **Endpoint:** `POST /api/users`
+
+**Access Control** `ADMIN`
 
 ### Request Body
 Content-Type: `application/json`
@@ -2488,6 +2909,8 @@ curl -X POST http://localhost:8080/api/users \
   <summary><strong>Delete User By ID</strong></summary>
 
 **Endpoint:** `DELETE /api/users/{id}`
+
+**Access Control** `ADMIN`
 
 ### Path Parameters
 | Parameter | Type    | Required | Description           |

@@ -1,15 +1,14 @@
 package io.ggroup.demo.model;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "postal_codes")
+@Table(name = "postalcodes")
 public class PostalCode {
     
     @Id
-    @Column(name = "postal_code", length = 5)
+    @Column(name = "postalcode", length = 5)
     private String postalCode;
 
     @NotNull

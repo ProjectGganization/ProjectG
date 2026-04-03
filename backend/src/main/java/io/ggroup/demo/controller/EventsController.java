@@ -1,19 +1,20 @@
 package io.ggroup.demo.controller;
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.Event;
-import io.ggroup.demo.model.Venue;
-import io.ggroup.demo.repository.EventRepository;
-import io.ggroup.demo.repository.VenueRepository;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
@@ -114,10 +115,11 @@ public class EventsController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEvent(@PathVariable Integer id, @RequestBody Event event) {
-        if (!eventRepository.existsById(id)) {
+        Event existingEvent = eventRepository.findById(id).orElse(null);
+        if (existingEvent == null) {
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse(404, "Event not found"));
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(404, "Event not found with ID: " + id));
         }
 
         ResponseEntity<?> venueValidation = validateAndAttachVenue(event);
@@ -125,29 +127,78 @@ public class EventsController {
             return venueValidation;
         }
 
-        try {
-            event.setEventId(id);
-            Event updatedEvent = eventRepository.save(event);
-            return ResponseEntity.ok(updatedEvent);
-        } catch (Exception e) {
+        if (event.getEventStatus() == null) {
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(400, "Invalid event data: " + e.getMessage()));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Event status is required"));
         }
+
+        if (event.getCategory() == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Category is required"));
+        }
+
+        if (event.getEndTime() == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "End time is required"));
+        }
+
+        if (event.getStartTime() == null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Start time is required"));
+        }
+
+        existingEvent.setTitle(event.getTitle());
+        existingEvent.setDescription(event.getDescription());
+        existingEvent.setPhoto(event.getPhoto());
+        existingEvent.setStartTime(event.getStartTime());
+        existingEvent.setEndTime(event.getEndTime());
+        existingEvent.setEventStatus(event.getEventStatus());
+        existingEvent.setVenue(event.getVenue());
+        existingEvent.setCategory(event.getCategory());
+
+        Event updatedEvent = eventRepository.save(existingEvent);
+        return ResponseEntity.ok(updatedEvent);
     }
 
     // DELETE /api/events/{id} - Delete event by ID
-    @Operation(summary = "Delete event by ID", description = "Deletes a single event by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Event deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Event not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+   @Operation(
+    summary = "Delete event by ID",
+    description = "Deletes a single event by its ID and returns a message containing the deleted ID"
+)
+@ApiResponses(value = {
+    @ApiResponse(
+        responseCode = "200",
+        description = "Event deleted successfully",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(
+                type = "object",
+                example = "{\"message\": \"Successfully deleted event with id {id}\"}"
+            )
+        )
+    ),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Event not found",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )
+    )
+})
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEventById(@PathVariable Integer id) {
-        if (eventRepository.existsById(id)) {
+         if (eventRepository.existsById(id)) {
             eventRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+
+            return ResponseEntity.ok(
+                Map.of("message", "Successfully deleted event with id " + id)
+            );
         } else {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -155,7 +206,8 @@ public class EventsController {
         }
     }
 
-    private ResponseEntity<?> validateAndAttachVenue(Event event) {
+
+        private ResponseEntity<?> validateAndAttachVenue(Event event) {
         if (event.getVenue() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -177,7 +229,7 @@ public class EventsController {
         }
 
         event.setVenue(existingVenue);
-        return null;
+        return null; // kaikki ok
     }
-
 }
+

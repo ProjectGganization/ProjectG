@@ -1,21 +1,20 @@
 package io.ggroup.demo.controller;
 
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.Order;
-import io.ggroup.demo.model.Customer;
-import io.ggroup.demo.repository.CustomerRepository;
-import io.ggroup.demo.repository.OrderRepository;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -102,39 +101,60 @@ public class OrdersController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable Integer id, @RequestBody Order order) {
-        if (!orderRepository.existsById(id)) {
+        Order existingOrder = orderRepository.findById(id).orElse(null);
+        if (existingOrder == null) {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(404, "Order not found"));
         }
-        // Validation
+
         ResponseEntity<?> customerValidation = validateAndAttachCustomer(order);
-        if (customerValidation != null) return customerValidation;
-
-        try {
-            order.setOrderId(id);
-
-            Order updatedOrder = orderRepository.save(order);
-            return ResponseEntity.ok(updatedOrder);
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(400, "Invalid order data: " + e.getMessage()));
+        if (customerValidation != null) {
+            return customerValidation;
         }
 
+        if (order.getCustomer() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Customer is required"));
+        }
+
+        if (order.getDate() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Date is required"));
+        }
+
+        if (order.getSeller() != null) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, "Seller is required"));
+        }
+
+        existingOrder.setCustomer(order.getCustomer());  // tämä on validateAndAttachCustomer() kautta DB-entity
+        existingOrder.setDate(order.getDate());
+        existingOrder.setSeller(order.getSeller());
+        existingOrder.setIsRefunded(order.getIsRefunded());
+        existingOrder.setIsPaid(order.getIsPaid());
+        existingOrder.setPaymentMethod(order.getPaymentMethod());
+
+        Order updatedOrder = orderRepository.save(existingOrder);
+        return ResponseEntity.ok(updatedOrder);
     }
 
     // DELETE /api/orders/{id} - Delete order by ID
     @Operation(summary = "Delete order by ID", description = "Deletes a single order by its ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Order deleted successfully"),
+        @ApiResponse(responseCode = "204", description = "Order deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted order with id {id}\"}"))),
         @ApiResponse(responseCode = "404", description = "Order not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrderById(@PathVariable Integer id) {
         if (orderRepository.existsById(id)) {
             orderRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(
+                Map.of("message", "Successfully deleted order with id " + id) 
+             );
         } else {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
