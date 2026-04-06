@@ -18,29 +18,41 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Inspect API", description = "Endpoints for managing ticket inspections")
 public class InspectController {
 
+    private final TicketTypeRepository ticketTypeRepository;
     private final IssuedTicketRepository issuedTicketRepository;
 
-    public InspectController(IssuedTicketRepository issuedTicketRepository) {
+    public InspectController(IssuedTicketRepository issuedTicketRepository, TicketTypeRepository ticketTypeRepository) {
         this.issuedTicketRepository = issuedTicketRepository;
+        this.ticketTypeRepository = ticketTypeRepository;
     }
 
     // GET /api/inspect/{qrCode} - Get issued ticket by QR code
     @Operation (summary = "Get issued ticket by QR code", description = "Returns a single issued ticket by its QR code")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Issued ticket found with QR code", 
-                    content = @Content(mediaType = "application/json", 
+        @ApiResponse(responseCode = "200", description = "Issued ticket found with QR code",
+                    content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IssuedTicket.class))),
         @ApiResponse(responseCode = "404", description = "Issued ticket not found with QR code",
                     content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/{qrCode}")
-    public ResponseEntity<?> getIssuedTicketByQr(@PathVariable String qrCode) {
+    public ResponseEntity<?> inspectTicket(@PathVariable String qrCode) {
         return issuedTicketRepository.findByQrCode(qrCode)
-        .map(issuedTicket -> ResponseEntity.ok((Object)issuedTicket))
-        .orElseGet (() -> ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse(404, "Issued ticket not found with QR code")));
-    }
+                .map(issuedTicket -> {
+                    if (issuedTicket.isUsed()) {
+                        return ResponseEntity
+                                .status(HttpStatus.CONFLICT)
+                                .body(new ErrorResponse(409, "Ticket has already been used"));
+                    }
 
+                    issuedTicket.setUsed(true);
+                    issuedTicketRepository.save(issuedTicket);
+
+                    return ResponseEntity.ok((Object) issuedTicket);
+                })
+                .orElseGet(() -> ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(new ErrorResponse(404, "Issued ticket not found with QR code")));
+    }
 }
