@@ -1,10 +1,10 @@
 # Stage 1: Build
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
-COPY pom.xml .
-COPY src src
-COPY mvnw .
-COPY .mvn .mvn
+COPY backend/pom.xml .
+COPY backend/src src
+COPY backend/mvnw .
+COPY backend/.mvn .mvn
 RUN chmod +x ./mvnw
 RUN ./mvnw clean package -DskipTests
 
