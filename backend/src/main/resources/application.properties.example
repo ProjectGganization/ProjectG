@@ -1,0 +1,25 @@
+spring.application.name=demo
+# Kun haluat vaihtaa H2 ja PostGreSQL-tietokannan välillä, kommentoi toisen tietokannan asetukset
+
+
+# H2 configuration
+# spring.h2.console.enabled=true
+# spring.h2.console.path=/h2-console
+# spring.datasource.url=jdbc:h2:mem:testdb
+
+
+# PostgreSQL configuration
+spring.datasource.url=jdbc:postgresql://<host>:<port>/<database>
+spring.datasource.username=<username>
+# Huom! oma salasana, joka on jokaiselle devaajalle eri
+spring.datasource.password=<password>
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+
+# JPA/Hibernate configuration
+# Kirjoita perään create-drop (jos on H2) tai sitten validate (jos on PostgreSQL)
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+# Kirjoita perään joko H2Dialect tai PostgreSQLDialect riippuen siitä, kumpaa tietokantaa käytät
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
