@@ -24,6 +24,9 @@ public class IssuedTicket {
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 
+    @Column(name = "used_at", nullable = false)
+    private boolean used = false;
+
     // Constructors
     public IssuedTicket() {
     }
@@ -65,5 +68,13 @@ public class IssuedTicket {
 
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
+    }
+
+    public boolean isUsed(){
+        return used;
+    }
+
+    public void setUsed(boolean used){
+        this.used = used;
     }
 }
