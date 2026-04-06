@@ -101,6 +101,9 @@ public class SecurityConfig {
                         // Delete only for admin
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
+                        // Seller and admin can inspect tickets
+                        .requestMatchers(HttpMethod.GET, "/api/inspect/**").hasAnyRole("SELLER", "ADMIN")
+
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/swagger-ui/index.html", true)

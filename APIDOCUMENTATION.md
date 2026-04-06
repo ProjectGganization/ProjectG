@@ -102,3 +102,11 @@ HUOM! Älä ikinä lisää mitään tiedostoon APIDOCUMENTATION.generated.md! --
 !INCLUDE "docs/api/UserAPI.md"
 
 </details>
+
+## 🕵️ Inspect API
+<details>
+  <summary><strong>Expand User API</strong></summary>
+
+!INCLUDE "docs/api/InspectAPI.md"
+
+</details>
