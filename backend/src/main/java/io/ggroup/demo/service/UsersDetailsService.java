@@ -38,15 +38,6 @@ public class UsersDetailsService implements UserDetailsService {
                     .build();
         }
 
-        // Search users table
-        var user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            return User.withUsername(user.get().getEmail())
-                    .password(user.get().getPasswordHash())
-                    .roles("USER")
-                    .build();
-        }
-
         // Search sellers table
         var seller = sellerRepository.findByEmail(email);
         if (seller.isPresent()) {
@@ -62,6 +53,15 @@ public class UsersDetailsService implements UserDetailsService {
             return User.withUsername(customer.get().getEmail())
                     .password(customer.get().getUser().getPasswordHash())
                     .roles("CUSTOMER")
+                    .build();
+        }
+
+        // Search users table
+        var user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return User.withUsername(user.get().getEmail())
+                    .password(user.get().getPasswordHash())
+                    .roles("USER")
                     .build();
         }
 
