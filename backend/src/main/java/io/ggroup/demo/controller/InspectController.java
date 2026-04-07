@@ -18,10 +18,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Inspect API", description = "Endpoints for managing ticket inspections")
 public class InspectController {
 
+    private final TicketTypeRepository ticketTypeRepository;
     private final IssuedTicketRepository issuedTicketRepository;
 
-    public InspectController(IssuedTicketRepository issuedTicketRepository) {
+    public InspectController(IssuedTicketRepository issuedTicketRepository, TicketTypeRepository ticketTypeRepository) {
         this.issuedTicketRepository = issuedTicketRepository;
+        this.ticketTypeRepository = ticketTypeRepository;
     }
 
     // GET /api/inspect/{qrCode} - Get issued ticket by QR code
