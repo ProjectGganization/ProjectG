@@ -41,16 +41,29 @@ public class InspectController {
     @GetMapping("/{qrCode}")
     public ResponseEntity<?> inspectTicket(@PathVariable String qrCode) {
         return issuedTicketRepository.findByQrCode(qrCode)
+                .map(issuedTicket -> ResponseEntity.ok((Object) issuedTicket))
+                .orElseGet(() -> ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(new ErrorResponse(404, "Issued ticket not found with QR code")));
+    }
+
+    @Operation(summary = "Mark ticket as used", description = "Marks a ticket as used by its QR code")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ticket marked as used"),
+        @ApiResponse(responseCode = "404", description = "Ticket not found"),
+        @ApiResponse(responseCode = "409", description = "Ticket has already been used")
+    })
+    @PutMapping("/{qrCode}/use")
+    public ResponseEntity<?> markTicketUsed(@PathVariable String qrCode) {
+        return issuedTicketRepository.findByQrCode(qrCode)
                 .map(issuedTicket -> {
                     if (issuedTicket.isUsed()) {
                         return ResponseEntity
                                 .status(HttpStatus.CONFLICT)
                                 .body(new ErrorResponse(409, "Ticket has already been used"));
                     }
-
                     issuedTicket.setUsed(true);
                     issuedTicketRepository.save(issuedTicket);
-
                     return ResponseEntity.ok((Object) issuedTicket);
                 })
                 .orElseGet(() -> ResponseEntity

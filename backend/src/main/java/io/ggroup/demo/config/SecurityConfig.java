@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "/api/tickets/**",
                                 "/api/venues/**",
                                 "/api/postalcodes/**",
-                                "/api/issuedtickets/public/**")
+                                "/api/issuedtickets/public/**",
+                                "/api/inspect/**")
                         .permitAll()
 
                         // Public purchase
@@ -53,6 +54,9 @@ public class SecurityConfig {
                                 "/api/orders/**",
                                 "/api/orderdetails/**")
                         .permitAll()
+
+                        // Public inspect mark-as-used
+                        .requestMatchers(HttpMethod.PUT, "/api/inspect/**").permitAll()
 
                         // Logged in users can view orders and receipts
                         .requestMatchers(HttpMethod.GET,
@@ -101,10 +105,7 @@ public class SecurityConfig {
                         // Delete only for admin
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
-                        // Seller and admin can inspect tickets
-                        .requestMatchers(HttpMethod.GET, "/api/inspect/**").hasAnyRole("SELLER", "ADMIN")
-
-                        .anyRequest().authenticated())
+.anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/swagger-ui/index.html", true)
                         .permitAll()
