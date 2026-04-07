@@ -221,17 +221,4 @@ public class IssuedTicketController {
                     .body(new ErrorResponse(404, "IssuedTicket not found"));
         }
     }
-
-    private String generatedQRCode(String text) throws Exception {
-        int width = 300;
-        int height = 300;
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-
-        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-        byte[] pngData = pngOutputStream.toByteArray();
-
-        return Base64.getEncoder().encodeToString(pngData);
-    }
 }
