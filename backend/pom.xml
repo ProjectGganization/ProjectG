@@ -77,6 +77,17 @@
 			<version>42.7.3</version>
 		    <scope>runtime</scope>
 		</dependency>
+        <!-- ZXing dependency for QR code generation and scanning -->
+		<dependency>
+   			<groupId>com.google.zxing</groupId>
+    		<artifactId>core</artifactId>
+   			<version>3.5.3</version>
+		</dependency>
+		<dependency>
+  			<groupId>com.google.zxing</groupId>
+    		<artifactId>javase</artifactId>
+    		<version>3.5.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -25,18 +25,13 @@ public class InspectController {
     }
 
     // GET /api/inspect/{qrCode} - Get issued ticket by QR code
-    @Operation (summary = "Get issued ticket by QR code", description = "Returns a single issued ticket by its QR code")
+    @Operation(summary = "Get issued ticket by QR code", description = "Returns a single issued ticket by its QR code")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Issued ticket found with QR code", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = IssuedTicket.class))),
+            @ApiResponse(responseCode = "200", description = "Issued ticket found with QR code", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IssuedTicket.class))),
 
-        @ApiResponse(responseCode = "404", description = "Issued ticket not found with QR code", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Issued ticket not found with QR code", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
 
-        @ApiResponse(responseCode = "409", description = "Ticket has already been used", content = @Content(mediaType = "applicaation/json",
-                    schema = @Schema(implementation = ErrorResponse.class)
-        )
-    )
+            @ApiResponse(responseCode = "409", description = "Ticket has already been used", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/{qrCode}")
     public ResponseEntity<?> inspectTicket(@PathVariable String qrCode) {
@@ -51,7 +46,7 @@ public class InspectController {
                     issuedTicket.setUsed(true);
                     issuedTicketRepository.save(issuedTicket);
 
-                    return ResponseEntity.ok((Object) issuedTicket);
+                    return ResponseEntity.ok(issuedTicket);
                 })
                 .orElseGet(() -> ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
