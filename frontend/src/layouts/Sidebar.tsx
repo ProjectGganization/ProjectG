@@ -1,11 +1,16 @@
+import { Link, useLocation } from 'react-router-dom';
+
 const navItems = [
-  { icon: 'dashboard', label: 'Dashboard', active: false },
-  { icon: 'calendar_today', label: 'Events', active: true },
-  { icon: 'confirmation_number', label: 'Orders', active: false },
-  { icon: 'settings', label: 'Settings', active: false },
+  { icon: 'dashboard', label: 'Dashboard', path: '/' },
+  { icon: 'calendar_today', label: 'Events', path: '/admin/events/create' },
+  { icon: 'confirmation_number', label: 'Orders', path: '/admin/orders' },
+  { icon: 'qr_code_scanner', label: 'Ticket Fetcher', path: '/admin/ticket-fetcher' },
+  { icon: 'settings', label: 'Settings', path: '/admin/settings' },
 ];
 
 const Sidebar = () => {
+  const { pathname } = useLocation();
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 flex flex-col p-4 bg-slate-50 border-r border-slate-200/50 z-50">
       <div className="mb-8 px-4">
@@ -15,18 +20,18 @@ const Sidebar = () => {
 
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => (
-          <a
+          <Link
             key={item.label}
-            href="#"
+            to={item.path}
             className={
-              item.active
+              pathname === item.path
                 ? 'flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-semibold text-sm tracking-tight'
                 : 'flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-200/50 transition-colors duration-200 text-sm font-medium tracking-tight'
             }
           >
             <span className="material-symbols-outlined">{item.icon}</span>
             {item.label}
-          </a>
+          </Link>
         ))}
       </nav>
 
