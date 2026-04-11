@@ -18,16 +18,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Inspect API", description = "Endpoints for managing ticket inspections")
 public class InspectController {
 
-    private final TicketTypeRepository ticketTypeRepository;
     private final IssuedTicketRepository issuedTicketRepository;
 
-    public InspectController(IssuedTicketRepository issuedTicketRepository, TicketTypeRepository ticketTypeRepository) {
+    public InspectController(IssuedTicketRepository issuedTicketRepository) {
         this.issuedTicketRepository = issuedTicketRepository;
-        this.ticketTypeRepository = ticketTypeRepository;
     }
 
     // GET /api/inspect/{qrCode} - Get issued ticket by QR code
-    @Operation (summary = "Get issued ticket by QR code", description = "Returns a single issued ticket by its QR code")
+    @Operation(summary = "Get issued ticket by QR code", description = "Returns a single issued ticket by its QR code")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Issued ticket found with QR code", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IssuedTicket.class))),
