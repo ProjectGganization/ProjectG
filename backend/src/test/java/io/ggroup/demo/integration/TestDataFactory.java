@@ -4,13 +4,15 @@ import io.ggroup.demo.model.*;
 import io.ggroup.demo.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/* Tää luokka luo testidataa integraatiotesteja varten. 
-Samaa testidataa voi sitten käyttää monessa eri testissä  */
-
+/*
+    Tää luokka luo testidataa integraatiotestejä varten.
+    Samaa testidataa voi käyttää monessa eri testissä.
+*/
 @Component
 public class TestDataFactory {
 
@@ -41,71 +43,87 @@ public class TestDataFactory {
     @Autowired
     private EventStatusRepository eventStatusRepository;
 
-    // Laskuri, joka luo uniikkeja sähköposteja. Estää myös duplikaatit.
-    private static int counter = 0;
+    private static final AtomicInteger counter = new AtomicInteger(0);
 
-    // Test Customer luonti ja tallentaminen tietokantaan
+    private int next() {
+        return counter.incrementAndGet();
+    }
+
     public Customer createPersistedCustomer() {
+        int id = next();
+
         Customer customer = new Customer();
         customer.setFirstname("Test");
         customer.setLastname("Customer");
-        customer.setEmail("customer" + (++counter) + "@test.com");
-        customer.setPhone("000000000");
+        customer.setEmail("customer" + id + "@test.com");
+        customer.setPhone("04000000" + id);
 
         return customerRepository.save(customer);
     }
 
-    // Test Seller luonti ja tallentaminen tietokantaan
-    // Täytyy luoda user, koska seller tarvitsee aina käyttäjätilin, toisin kuin customer
-    // siksi tarvii user ja accountstatus
-    public Seller createPersistedSeller() {
-        AccountStatus status = new AccountStatus();
-        status.setAccountStatus("active");
-        accountStatusRepository.save(status);
+    public AccountStatus createPersistedAccountStatus() {
+        return accountStatusRepository.findById("active")
+                .orElseGet(() -> accountStatusRepository.save(new AccountStatus("active")));
+    }
+
+    public User createPersistedUser() {
+        int id = next();
 
         User user = new User();
-        user.setEmail("seller" + (++counter) + "@test.com");
+        user.setEmail("user" + id + "@test.com");
         user.setPasswordHash("password");
-        user.setAccountStatus(status);
-        userRepository.save(user);
+        user.setAccountStatus(createPersistedAccountStatus());
+
+        return userRepository.save(user);
+    }
+
+    public Seller createPersistedSeller() {
+        int id = next();
+
+        User user = new User();
+        user.setEmail("selleruser" + id + "@test.com");
+        user.setPasswordHash("password");
+        user.setAccountStatus(createPersistedAccountStatus());
+        User savedUser = userRepository.save(user);
 
         Seller seller = new Seller();
-        seller.setName("Test Seller");
-        seller.setEmail("seller" + counter + "@test.com");
-        seller.setPhone("000000000");
-        seller.setUser(user);
+        seller.setName("Test Seller " + id);
+        seller.setEmail("seller" + id + "@test.com");
+        seller.setPhone("05000000" + id);
+        seller.setUser(savedUser);
 
         return sellerRepository.save(seller);
     }
 
-    // Postinumero, venue ja event luonti
     public PostalCode createPersistedPostalCode() {
-        PostalCode postalCode = new PostalCode();
-        postalCode.setPostalCode("00100");
-        postalCode.setCity("Helsinki");
-
-        return postalCodeRepository.save(postalCode);
+        return postalCodeRepository.findById("00100")
+                .orElseGet(() -> {
+                    PostalCode postalCode = new PostalCode();
+                    postalCode.setPostalCode("00100");
+                    postalCode.setCity("Helsinki");
+                    return postalCodeRepository.save(postalCode);
+                });
     }
 
     public Venue createPersistedVenue() {
+        int id = next();
+
         Venue venue = new Venue();
-        venue.setName("Ruttis");
-        venue.setAddress("Oman onnen tie");
-        venue.setPostalCode((createPersistedPostalCode()));
+        venue.setName("Ruttis " + id);
+        venue.setAddress("Oman onnen tie " + id);
+        venue.setPostalCode(createPersistedPostalCode());
 
         return venueRepository.save(venue);
     }
 
     public Category createPersistedCategory() {
-        
-        return categoryRepository.save(new Category("music"));
+        int id = next();
+        return categoryRepository.save(new Category("music-" + id));
     }
 
-
     public EventStatus createPersistedEventStatus() {
-        EventStatus status = new EventStatus("upcoming");
-            
-        return eventStatusRepository.save(status);
+        int id = next();
+        return eventStatusRepository.save(new EventStatus("upcoming-" + id));
     }
 
     public Event createPersistedEvent(String title) {
@@ -119,5 +137,19 @@ public class TestDataFactory {
         event.setVenue(createPersistedVenue());
 
         return eventRepository.save(event);
+    }
+
+    public Order createPersistedOrder() {
+        Customer customer = createPersistedCustomer();
+        Seller seller = createPersistedSeller();
+
+        Order order = new Order();
+        order.setCustomer(customer);
+        order.setSeller(seller);
+        order.setDate(LocalDateTime.now());
+        order.setIsPaid(true);
+        order.setIsRefunded(false);
+
+        return order;
     }
 }

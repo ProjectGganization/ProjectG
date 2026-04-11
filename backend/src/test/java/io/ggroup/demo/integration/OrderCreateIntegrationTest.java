@@ -4,11 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import io.ggroup.demo.model.Order;
 import io.ggroup.demo.model.Customer;
 import io.ggroup.demo.model.Seller;
-
 import io.ggroup.demo.repository.OrderRepository;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 public class OrderCreateIntegrationTest {
 
-  @Autowired
-  private TestDataFactory testDataFactory;
+    @Autowired
+    private TestDataFactory testDataFactory;
 
     @Autowired
     private MockMvc mockMvc;
@@ -62,7 +61,13 @@ public class OrderCreateIntegrationTest {
                 .content(orderJson))
                 .andExpect(status().isCreated());
 
-        assertThat(orderRepository.count())
-          .isEqualTo(ordersBefore+1);
+        assertThat(orderRepository.count()).isEqualTo(ordersBefore + 1);
+
+        Order savedOrder = orderRepository.findAll().get((int) orderRepository.count() - 1);
+        assertThat(savedOrder).isNotNull();
+        assertThat(savedOrder.getCustomer().getCustomerId()).isEqualTo(customer.getCustomerId());
+        assertThat(savedOrder.getSeller().getSellerId()).isEqualTo(seller.getSellerId());
+        assertThat(savedOrder.getIsPaid()).isTrue();
+        assertThat(savedOrder.getIsRefunded()).isFalse();
     }
 }
