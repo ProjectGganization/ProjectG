@@ -100,7 +100,7 @@ public class IssuedTicketController {
         }
     }
 
-    // GET /api/issuedtickets/{id}/qrcode - Palauttaa QR-koodin kuvana
+/*     // GET /api/issuedtickets/{id}/qrcode - Palauttaa QR-koodin kuvana
     @Operation(summary = "Get QR code image", description = "Generates and returns the QR code image for a ticket")
     @GetMapping("/{id}/qrcode")
     public ResponseEntity<byte[]> getTicketQRCode(@PathVariable Integer id) {
@@ -120,7 +120,7 @@ public class IssuedTicketController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).<byte[]>build();
             }
         }).orElse(ResponseEntity.notFound().build());
-    }
+    } */
 
     // Update an existing IssuedTicket
     @Operation(summary = "Update an existing IssuedTicket", description = "Updates the details of existing issuedticket")
