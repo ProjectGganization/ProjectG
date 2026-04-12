@@ -13,11 +13,11 @@ public class IssuedTicket {
     private Integer issuedTicketId;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false )
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @NotNull
-    @Column(name = "qr_code", nullable = false, unique = true, length = 250)
+    @Column(name = "qr_code", nullable = false, unique = true, columnDefinition = "TEXT")
     private String qrCode;
 
     @ManyToOne
@@ -70,11 +70,11 @@ public class IssuedTicket {
         this.ticket = ticket;
     }
 
-    public boolean isUsed(){
+    public boolean isUsed() {
         return used;
     }
 
-    public void setUsed(boolean used){
+    public void setUsed(boolean used) {
         this.used = used;
     }
 }
