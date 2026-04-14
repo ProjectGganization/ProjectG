@@ -39,12 +39,16 @@ public class Event {
     @JoinColumn(name = "category", nullable = false)
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private Seller seller;
+
     // Constructors
     public Event() {
     }
 
     public Event(String title, String description, String photo, LocalDateTime startTime, LocalDateTime endTime, 
-                 EventStatus eventStatus, Venue venue, Category category) {
+                 EventStatus eventStatus, Venue venue, Category category, Seller seller) {
         this.title = title;
         this.description = description;
         this.photo = photo;
@@ -53,6 +57,7 @@ public class Event {
         this.eventStatus = eventStatus;
         this.venue = venue;
         this.category = category;
+        this.seller = seller;
     }
 
     // Getters and Setters
@@ -123,4 +128,13 @@ public class Event {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+    
 }
