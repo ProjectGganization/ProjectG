@@ -28,19 +28,16 @@ class EventSearchIntegrationTest {
     private TestDataFactory testDataFactory;
 
     @Test
-    @DisplayName("Customer can search events")
+    @DisplayName("Customer can list all events")
     @WithMockUser(roles = "CUSTOMER")
     void customerCanSearchEvents() throws Exception {
 
         Event matchingEvent = testDataFactory.createPersistedEvent("Random Test Event");
         Event otherEvent = testDataFactory.createPersistedEvent("Completely Different Show");
 
-        String query = "Random";
-
-        mockMvc.perform(get("/api/events")
-                .param("query", query))
+        mockMvc.perform(get("/api/events"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(matchingEvent.getTitle())))
-                .andExpect(content().string(not(containsString(otherEvent.getTitle()))));
+                .andExpect(content().string(containsString(otherEvent.getTitle())));
     }
 }

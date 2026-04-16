@@ -127,6 +127,7 @@ public class SellerEventFlowTest {
         event.setVenue(savedVenue);
         event.setCategory(category);
         event.setEventStatus(eventStatus);
+        event.setSeller(seller);
         Event savedEvent = eventRepository.save(event);
 
         mockMvc.perform(get("/api/events")

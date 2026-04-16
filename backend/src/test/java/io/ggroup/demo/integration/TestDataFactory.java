@@ -43,6 +43,9 @@ public class TestDataFactory {
     @Autowired
     private EventStatusRepository eventStatusRepository;
 
+    @Autowired
+    private PaymentMethodRepository paymentMethodRepository;
+
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     private int next() {
@@ -126,6 +129,13 @@ public class TestDataFactory {
         return eventStatusRepository.save(new EventStatus("upcoming-" + id));
     }
 
+    public PaymentMethod createPersistedPaymentMethod() {
+        return paymentMethodRepository.findById("card")
+            .orElseGet(() ->
+                paymentMethodRepository.save(new PaymentMethod("card"))
+            );
+    }
+
     public Event createPersistedEvent(String title) {
         Event event = new Event();
         event.setTitle(title);
@@ -135,6 +145,7 @@ public class TestDataFactory {
         event.setStartTime(LocalDateTime.now().plusDays(1));
         event.setEndTime(LocalDateTime.now().plusDays(2));
         event.setVenue(createPersistedVenue());
+        event.setSeller(createPersistedSeller());
 
         return eventRepository.save(event);
     }
@@ -145,7 +156,6 @@ public class TestDataFactory {
 
         Order order = new Order();
         order.setCustomer(customer);
-        order.setSeller(seller);
         order.setDate(LocalDateTime.now());
         order.setIsPaid(true);
         order.setIsRefunded(false);
