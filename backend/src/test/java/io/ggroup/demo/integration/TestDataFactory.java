@@ -152,7 +152,6 @@ public class TestDataFactory {
 
     public Order createPersistedOrder() {
         Customer customer = createPersistedCustomer();
-        Seller seller = createPersistedSeller();
 
         Order order = new Order();
         order.setCustomer(customer);
