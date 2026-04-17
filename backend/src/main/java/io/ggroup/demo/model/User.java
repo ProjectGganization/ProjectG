@@ -21,24 +21,26 @@ public class User {
     @Column(name = "account_created", nullable = false)
     private LocalDateTime accountCreated;
 
-    @ManyToOne
-    @JoinColumn(name = "account_status",  nullable = false)
-    private AccountStatus accountStatus;
+    @Column(name = "account_status",  nullable = false)
+    private String accountStatus;
 
     // Constructors
     public User() {
     }
 
-    public User(String email, String passwordHash, AccountStatus accountStatus) {
+    public User(String email, String passwordHash) {
         this.email = email; 
         this.passwordHash = passwordHash;
-        this.accountStatus = accountStatus;
     }
 
     @PrePersist
     protected void onCreate() {
         if (this.accountCreated == null) {
             this.accountCreated = LocalDateTime.now();
+        }
+
+        if(this.accountStatus == null) {
+            this.accountStatus = "active";
         }
     }
 
@@ -67,11 +69,11 @@ public class User {
         return accountCreated;
     }
 
-    public AccountStatus getAccountStatus() {
+    public String getAccountStatus() {
         return accountStatus;
     }
 
-    public void setAccountStatus(AccountStatus accountStatus) {
+    public void setAccountStatus(String accountStatus) {
         this.accountStatus = accountStatus;
     }
 }

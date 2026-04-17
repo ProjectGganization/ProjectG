@@ -2,8 +2,6 @@ package io.ggroup.demo.config;
 
 import io.ggroup.demo.model.User;
 import io.ggroup.demo.repository.UserRepository;
-import io.ggroup.demo.model.AccountStatus;
-import io.ggroup.demo.repository.AccountStatusRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,20 +15,14 @@ public class TestLoginConfig {
     @Bean
     public CommandLineRunner createTestUsers(
             UserRepository userRepo, 
-            PasswordEncoder encoder, 
-            AccountStatusRepository accountStatusRepository) {
+            PasswordEncoder encoder) {
             return args -> {
-
-            AccountStatus active =
-                accountStatusRepository.findById("active")
-                    .orElseGet(() -> accountStatusRepository.save(new AccountStatus("active")));
 
             if (userRepo.findByEmail("admin@test.com").isEmpty()) {
                 // Create new admin user
                 User admin = new User();
                 admin.setEmail("admin@test.com");
                 admin.setPasswordHash(encoder.encode("admin123"));
-                admin.setAccountStatus(active);
 
                 userRepo.save(admin);
 
@@ -42,7 +34,6 @@ public class TestLoginConfig {
                 User seller = new User();
                 seller.setEmail("seller@test.com");
                 seller.setPasswordHash(encoder.encode("seller123"));
-                seller.setAccountStatus(active);
 
                 userRepo.save(seller);
 
@@ -54,7 +45,6 @@ public class TestLoginConfig {
                 User customer = new User();
                 customer.setEmail("customer@test.com");
                 customer.setPasswordHash(encoder.encode("customer123"));
-                customer.setAccountStatus(active);
 
                 userRepo.save(customer);
 

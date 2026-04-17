@@ -24,12 +24,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
 
     private final UserRepository userRepository;
-    private final AccountStatusRepository statusRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserRepository userRepository, AccountStatusRepository statusRepository, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.statusRepository = statusRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -46,9 +44,6 @@ public class UserController {
             User newUser = new User();
             newUser.setEmail(request.getEmail());
             newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-            if (request.getAccountStatus() != null) {
-                statusRepository.findById(request.getAccountStatus()).ifPresent(newUser::setAccountStatus);
-            }
 
             User savedUser = userRepository.save(newUser);
 
@@ -56,9 +51,6 @@ public class UserController {
             UserResponse response = new UserResponse();
             response.setUserId(savedUser.getUserId());
             response.setEmail(savedUser.getEmail());
-            if (newUser.getAccountStatus() != null) {
-                response.setStatusName(newUser.getAccountStatus().getAccountStatus());
-            }
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -89,9 +81,6 @@ public class UserController {
                 UserResponse response = new UserResponse();
                 response.setUserId(user.getUserId());
                 response.setEmail(user.getEmail());
-                if (user.getAccountStatus() != null) {
-                    response.setStatusName(user.getAccountStatus().getAccountStatus());
-                }
                 return ResponseEntity.ok(response);
             }
 
@@ -125,9 +114,6 @@ public class UserController {
             UserResponse res = new UserResponse();
             res.setUserId(user.getUserId());
             res.setEmail(user.getEmail());
-            if (user.getAccountStatus() != null) {
-                res.setStatusName(user.getAccountStatus().getAccountStatus());
-            }
             return res;
         }).toList();
 

@@ -75,7 +75,6 @@ public class TestDataFactory {
         User user = new User();
         user.setEmail("user" + id + "@test.com");
         user.setPasswordHash("password");
-        user.setAccountStatus(createPersistedAccountStatus());
 
         return userRepository.save(user);
     }
@@ -86,7 +85,6 @@ public class TestDataFactory {
         User user = new User();
         user.setEmail("selleruser" + id + "@test.com");
         user.setPasswordHash("password");
-        user.setAccountStatus(createPersistedAccountStatus());
         User savedUser = userRepository.save(user);
 
         Seller seller = new Seller();
