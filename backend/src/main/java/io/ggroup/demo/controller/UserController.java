@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import io.ggroup.demo.model.*;
@@ -24,10 +25,12 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final AccountStatusRepository statusRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserRepository userRepository, AccountStatusRepository statusRepository) {
+    public UserController(UserRepository userRepository, AccountStatusRepository statusRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.statusRepository = statusRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // POST /api/users - Create a new user
@@ -42,10 +45,7 @@ public class UserController {
         try {
             User newUser = new User();
             newUser.setEmail(request.getEmail());
-            // newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-            // (MUUTA TÄMÄ KUN SECURITYCONFIG TEHTY)
-            newUser.setPasswordHash("HASH_" + request.getPassword()); // HOX!! TILAPÄINEN RATKAISU, POISTA KUN
-                                                                      // SECURITYCONFIG TEHTY
+            newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
             if (request.getAccountStatus() != null) {
                 statusRepository.findById(request.getAccountStatus()).ifPresent(newUser::setAccountStatus);
             }
