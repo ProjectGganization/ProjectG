@@ -86,13 +86,9 @@ public class SellerEventFlowTest {
         long ticketsBefore = ticketRepository.count();
         String unique = UUID.randomUUID().toString().substring(0, 8);
 
-        AccountStatus accountStatus = accountStatusRepository.findById("active")
-                .orElseGet(() -> accountStatusRepository.save(new AccountStatus("active")));
-
         User user = new User();
         user.setEmail("selleruser_" + unique + "@test.com");
         user.setPasswordHash("password");
-        user.setAccountStatus(accountStatus);
         User savedUser = userRepository.save(user);
 
         Seller seller = new Seller();
@@ -127,6 +123,7 @@ public class SellerEventFlowTest {
         event.setVenue(savedVenue);
         event.setCategory(category);
         event.setEventStatus(eventStatus);
+        event.setSeller(seller);
         Event savedEvent = eventRepository.save(event);
 
         mockMvc.perform(get("/api/events")

@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import io.ggroup.demo.model.Order;
 import io.ggroup.demo.model.Customer;
-import io.ggroup.demo.model.Seller;
 import io.ggroup.demo.repository.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,27 +32,26 @@ public class OrderCreateIntegrationTest {
 
     @Test
     @DisplayName("Test if customer can create a new order")
-    @WithMockUser(username = "customer@test.com", roles = "CUSTOMER")
     void shouldCreateNewOrder() throws Exception {
 
         long ordersBefore = orderRepository.count();
 
         Customer customer = testDataFactory.createPersistedCustomer();
-        Seller seller = testDataFactory.createPersistedSeller();
+        testDataFactory.createPersistedPaymentMethod();
 
         String orderJson = """
                 {
                   "customer": {
                     "customerId": %d
                   },
-                  "seller": {
-                    "sellerId": %d
-                  },
                   "date": "2026-01-10T17:32:24.719",
                   "isRefunded": false,
-                  "isPaid": true
+                  "isPaid": true,
+                  "paymentMethod": {
+                    "paymentMethod": "card"
+                  }
                 }
-                """.formatted(customer.getCustomerId(), seller.getSellerId());
+                """.formatted(customer.getCustomerId());
 
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -66,7 +63,6 @@ public class OrderCreateIntegrationTest {
         Order savedOrder = orderRepository.findAll().get((int) orderRepository.count() - 1);
         assertThat(savedOrder).isNotNull();
         assertThat(savedOrder.getCustomer().getCustomerId()).isEqualTo(customer.getCustomerId());
-        assertThat(savedOrder.getSeller().getSellerId()).isEqualTo(seller.getSellerId());
         assertThat(savedOrder.getIsPaid()).isTrue();
         assertThat(savedOrder.getIsRefunded()).isFalse();
     }
