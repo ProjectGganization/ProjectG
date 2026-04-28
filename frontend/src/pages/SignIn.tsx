@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,11 +17,9 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      // Replace this with your actual auth call, e.g.:
-      // await authService.login(email, password);
-      await new Promise((res) => setTimeout(res, 1000)); // simulate API call
-      navigate('/'); // redirect after login
-    } catch (err) {
+      await login(email, password);
+      navigate('/');
+    } catch {
       setError('Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
@@ -142,7 +142,7 @@ const SignIn = () => {
           {/* Sign up link */}
           <p className="text-center text-sm text-on-surface-variant">
             Don't have an account?{' '}
-            <Link to="/signup" className="text-primary hover:opacity-75 font-medium transition-opacity">
+            <Link to="/register" className="text-primary hover:opacity-75 font-medium transition-opacity">
               Create one
             </Link>
           </p>

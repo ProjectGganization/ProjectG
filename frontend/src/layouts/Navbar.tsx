@@ -1,9 +1,9 @@
-
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   return (
     <nav className="fixed top-0 w-full z-50 glass-nav shadow-sm font-inter antialiased tracking-tight bg-red-500">
       <div className="flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto w-full">
@@ -41,12 +41,27 @@ const Navbar = () => {
           >
             Admin
           </Link>
-          
-          <button
-           onClick={() => navigate('/signin')} 
-          className="bg-primary text-on-primary px-5 py-2 rounded-lg font-semibold signature-gradient active:scale-95 transition-transform hover:opacity-90">
-            Sign In
-          </button>
+
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-on-surface-variant font-medium hidden md:block">
+                {user.email}
+              </span>
+              <button
+                onClick={() => { logout(); navigate('/'); }}
+                className="px-5 py-2 rounded-lg font-semibold border border-outline-variant/30 text-on-surface hover:bg-surface-container transition-colors active:scale-95"
+              >
+                Kirjaudu ulos
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate('/signin')}
+              className="bg-primary text-on-primary px-5 py-2 rounded-lg font-semibold signature-gradient active:scale-95 transition-transform hover:opacity-90"
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </div>
     </nav>
