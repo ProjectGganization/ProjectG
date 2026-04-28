@@ -1,37 +1,20 @@
+import { useEffect, useState } from 'react';
 import EventCard from '../components/EventCard';
 import { Event } from '../types/event';
-
-const MOCK_EVENTS: Event[] = [
-  {
-    id: 1,
-    title: 'Jazz Night',
-    category: 'Jazz',
-    price: 45,
-    date: 'August 24, 2024',
-    location: 'The Blue Room, NYC',
-    imageUrl: 'https://picsum.photos/seed/jazz/640/400',
-  },
-  {
-    id: 2,
-    title: 'Art Expo',
-    category: 'Exhibition',
-    price: 30,
-    date: 'September 12, 2024',
-    location: 'Grand Pavilion, London',
-    imageUrl: 'https://picsum.photos/seed/artexpo/640/400',
-  },
-  {
-    id: 3,
-    title: 'Rock Concert',
-    category: 'Live',
-    price: 85,
-    date: 'October 05, 2024',
-    location: 'Stadium Arena, LA',
-    imageUrl: 'https://picsum.photos/seed/rockconcert/640/400',
-  },
-];
+import { getEvents } from '../api/eventService';
 
 const HomePage = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getEvents()
+      .then(setEvents)
+      .catch(() => setError('Could not load events. Make sure the backend is running.'))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <>
       {/* Hero Section */}
@@ -112,11 +95,32 @@ const HomePage = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {MOCK_EVENTS.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          {loading && (
+            <div className="flex justify-center py-24">
+              <span className="material-symbols-outlined animate-spin text-primary text-4xl">progress_activity</span>
+            </div>
+          )}
+
+          {error && (
+            <div className="text-center py-24 text-on-surface-variant">
+              <span className="material-symbols-outlined text-4xl mb-4 block">error</span>
+              {error}
+            </div>
+          )}
+
+          {!loading && !error && events.length === 0 && (
+            <div className="text-center py-24 text-on-surface-variant">
+              No events found.
+            </div>
+          )}
+
+          {!loading && !error && events.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {events.map((event) => (
+                <EventCard key={event.eventId} event={event} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

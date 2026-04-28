@@ -32,4 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
+### Local dev config (contains DB credentials - never commit) ###
+src/main/resources/application-local.properties
+
 

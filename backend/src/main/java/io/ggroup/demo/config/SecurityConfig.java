@@ -28,11 +28,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**", "/api/**"))
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
+
+                        // Allow CORS preflight through without authentication
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // Public pages
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
@@ -50,8 +54,11 @@ public class SecurityConfig {
 
                         // Public purchase
                         .requestMatchers(HttpMethod.POST,
+                                "/api/customers",
                                 "/api/customers/**",
+                                "/api/orders",
                                 "/api/orders/**",
+                                "/api/orderdetails",
                                 "/api/orderdetails/**")
                         .permitAll()
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import io.ggroup.demo.model.*;
 
 import io.ggroup.demo.repository.OrderDetailsRepository;
+import io.ggroup.demo.repository.TicketRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,10 +25,11 @@ import jakarta.validation.Valid;
 public class OrderDetailsController {
 
 private final OrderDetailsRepository orderDetailsRepository;
+private final TicketRepository ticketRepository;
 
-    
-     public OrderDetailsController(OrderDetailsRepository orderDetailsRepository) {
+    public OrderDetailsController(OrderDetailsRepository orderDetailsRepository, TicketRepository ticketRepository) {
         this.orderDetailsRepository = orderDetailsRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     // GET /api/orderdetails - Get all order details
@@ -111,6 +113,22 @@ private final OrderDetailsRepository orderDetailsRepository;
 
     @PostMapping
     public ResponseEntity<?> createOrderDetail(@Valid @RequestBody OrderDetails orderDetails) {
+        Integer ticketId = orderDetails.getId().getTicketId();
+        int quantity = orderDetails.getQuantity();
+
+        Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
+        if (ticket == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(400, "Ticket not found: " + ticketId));
+        }
+        if (ticket.getInStock() < quantity) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(400, "Not enough tickets in stock"));
+        }
+
+        ticket.setInStock(ticket.getInStock() - quantity);
+        ticketRepository.save(ticket);
+
         OrderDetails saved = orderDetailsRepository.save(orderDetails);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
