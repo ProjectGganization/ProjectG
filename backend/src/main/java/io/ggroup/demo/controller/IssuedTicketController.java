@@ -2,13 +2,14 @@ package io.ggroup.demo.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import io.ggroup.demo.model.*;
 import io.ggroup.demo.repository.*;
-
+import io.ggroup.demo.service.QRCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,28 +17,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import java.io.ByteArrayOutputStream;
-import java.util.Base64;
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/issuedtickets")
 @Tag(name = "IssuedTicket API", description = "Endpoints for managing issuedtickets")
 public class IssuedTicketController {
 
+    private final QRCodeService qrCodeService;
     private final IssuedTicketRepository issuedTicketRepository;
     private final TicketRepository ticketRepository;
     private final OrderRepository orderRepository;
 
     public IssuedTicketController(IssuedTicketRepository issuedTicketRepository, TicketRepository ticketRepository,
-            OrderRepository orderRepository) {
+            OrderRepository orderRepository, QRCodeService qrCodeService) {
         this.issuedTicketRepository = issuedTicketRepository;
         this.ticketRepository = ticketRepository;
         this.orderRepository = orderRepository;
+        this.qrCodeService = qrCodeService;
     }
 
     // Get all issuedTickets
@@ -72,6 +67,22 @@ public class IssuedTicketController {
                         .body(new ErrorResponse(404, "Issued ticket not found")));
     }
 
+    // Get QR code image for a ticket
+    @Operation(summary = "Get QR code image for a ticket")
+    @GetMapping("/{id}/qrcode")
+    public ResponseEntity<?> getQRCodeImage(@PathVariable Integer id) {
+        return issuedTicketRepository.findById(id)
+                .map(ticket -> {
+                    try {
+                        String base64Image = qrCodeService.generateQRCode(ticket.getQrCode());
+                        return ResponseEntity.ok(Map.of("qrCodeImage", base64Image));
+                    } catch (Exception e) {
+                        return ResponseEntity.status(500).body("Error generating QR code");
+                    }
+                })
+                .orElseGet(() -> ResponseEntity.status(404).build());
+    }
+
     // Create a new issued ticket
     @Operation(summary = "Create a new issued ticket", description = "Adds a new issued ticket to the system")
     @ApiResponses(value = {
@@ -100,32 +111,10 @@ public class IssuedTicketController {
         }
     }
 
-/*     // GET /api/issuedtickets/{id}/qrcode - Palauttaa QR-koodin kuvana
-    @Operation(summary = "Get QR code image", description = "Generates and returns the QR code image for a ticket")
-    @GetMapping("/{id}/qrcode")
-    public ResponseEntity<byte[]> getTicketQRCode(@PathVariable Integer id) {
-        return issuedTicketRepository.findById(id).map(ticket -> {
-            try {
-                QRCodeWriter qrCodeWriter = new QRCodeWriter();
-                BitMatrix bitMatrix = qrCodeWriter.encode(ticket.getQrCode(), BarcodeFormat.QR_CODE, 300, 300);
-
-                ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-                MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-                byte[] qrImageData = pngOutputStream.toByteArray();
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_PNG)
-                        .body(qrImageData);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).<byte[]>build();
-            }
-        }).orElse(ResponseEntity.notFound().build());
-    } */
-
     // Update an existing IssuedTicket
     @Operation(summary = "Update an existing IssuedTicket", description = "Updates the details of existing issuedticket")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "IssuedTicket updated succesfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IssuedTicket.class))),
+            @ApiResponse(responseCode = "200", description = "IssuedTicket updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IssuedTicket.class))),
             @ApiResponse(responseCode = "400", description = "Invalid issuedTicket data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "IssuedTicket not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
