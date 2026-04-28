@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom';
+
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <nav className="fixed top-0 w-full z-50 glass-nav shadow-sm font-inter antialiased tracking-tight bg-red-500">
       <div className="flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto w-full">
@@ -38,7 +41,10 @@ const Navbar = () => {
           >
             Admin
           </Link>
-          <button className="bg-primary text-on-primary px-5 py-2 rounded-lg font-semibold signature-gradient active:scale-95 transition-transform hover:opacity-90">
+          
+          <button
+           onClick={() => navigate('/signin')} 
+          className="bg-primary text-on-primary px-5 py-2 rounded-lg font-semibold signature-gradient active:scale-95 transition-transform hover:opacity-90">
             Sign In
           </button>
         </div>

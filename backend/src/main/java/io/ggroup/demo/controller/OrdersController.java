@@ -125,15 +125,8 @@ public class OrdersController {
                 .body(new ErrorResponse(400, "Date is required"));
         }
 
-        if (order.getSeller() != null) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(400, "Seller is required"));
-        }
-
         existingOrder.setCustomer(order.getCustomer());  // tämä on validateAndAttachCustomer() kautta DB-entity
         existingOrder.setDate(order.getDate());
-        existingOrder.setSeller(order.getSeller());
         existingOrder.setIsRefunded(order.getIsRefunded());
         existingOrder.setIsPaid(order.getIsPaid());
         existingOrder.setPaymentMethod(order.getPaymentMethod());

@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import EventDetailPage from './pages/EventDetailPage';
 import CreateEventPage from './pages/admin/CreateEventPage';
 import TicketFetcherPage from './pages/admin/TicketFetcherPage';
+import SignIn from './pages/SignIn';
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: '/events/:id',
     element: <MainLayout><EventDetailPage /></MainLayout>,
+  },
+  {
+    path: '/signin',
+    element: <SignIn />,
   },
   {
     path: '/admin/events/create',
