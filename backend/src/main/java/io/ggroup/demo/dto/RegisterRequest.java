@@ -12,13 +12,13 @@ public class RegisterRequest {
     @NotBlank @Size(min = 8)
     private String password;
 
-    @NotBlank
+    @NotBlank @Size(max = 100)
     private String firstname;
 
-    @NotBlank
+    @NotBlank @Size(max = 100)
     private String lastname;
 
-    @NotBlank
+    @NotBlank @Size(max = 25)
     private String phone;
 
     public String getEmail() { return email; }

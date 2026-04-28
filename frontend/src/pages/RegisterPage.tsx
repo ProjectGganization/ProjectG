@@ -25,7 +25,7 @@ const RegisterPage = () => {
     setError('');
 
     if (form.password !== form.confirmPassword) {
-      setError('Salasanat eivät täsmää.');
+      setError('Passwords do not match.');
       return;
     }
 
@@ -42,11 +42,11 @@ const RegisterPage = () => {
     } catch (err) {
       const status = (err as Error & { status?: number }).status;
       if (status === 409) {
-        setError('Sähköposti on jo käytössä.');
+        setError('This email is already in use.');
       } else if (status === 400) {
-        setError('Tarkista syötteet. Salasanan tulee olla vähintään 8 merkkiä pitkä.');
+        setError('Please check your details. Password must be at least 8 characters.');
       } else {
-        setError('Rekisteröityminen epäonnistui. Yritä uudelleen.');
+        setError('Registration failed. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -69,7 +69,7 @@ const RegisterPage = () => {
             <Link to="/" className="inline-block">
               <span className="text-3xl font-black tracking-tighter text-on-surface">TicketGG</span>
             </Link>
-            <p className="mt-2 text-on-surface-variant text-sm">Luo uusi tili</p>
+            <p className="mt-2 text-on-surface-variant text-sm">Create a new account</p>
           </div>
 
           {/* Error */}
@@ -84,26 +84,26 @@ const RegisterPage = () => {
             {/* Name row */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-on-surface mb-1.5">Etunimi</label>
+                <label className="block text-sm font-medium text-on-surface mb-1.5">First name</label>
                 <input
                   required
                   name="firstname"
                   type="text"
                   value={form.firstname}
                   onChange={handleChange}
-                  placeholder="Matti"
+                  placeholder="Matt"
                   className="w-full bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-2.5 text-on-surface placeholder-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-on-surface mb-1.5">Sukunimi</label>
+                <label className="block text-sm font-medium text-on-surface mb-1.5">Last name</label>
                 <input
                   required
                   name="lastname"
                   type="text"
                   value={form.lastname}
                   onChange={handleChange}
-                  placeholder="Meikäläinen"
+                  placeholder="Smith"
                   className="w-full bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-2.5 text-on-surface placeholder-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
               </div>
@@ -111,7 +111,7 @@ const RegisterPage = () => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5">Sähköposti</label>
+              <label className="block text-sm font-medium text-on-surface mb-1.5">Email</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">mail</span>
                 <input
@@ -120,7 +120,7 @@ const RegisterPage = () => {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
-                  placeholder="matti@esimerkki.fi"
+                  placeholder="matt@example.com"
                   className="w-full bg-surface-container border border-outline-variant/30 rounded-lg pl-10 pr-4 py-2.5 text-on-surface placeholder-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
               </div>
@@ -128,7 +128,7 @@ const RegisterPage = () => {
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5">Puhelinnumero</label>
+              <label className="block text-sm font-medium text-on-surface mb-1.5">Phone number</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">phone</span>
                 <input
@@ -145,7 +145,7 @@ const RegisterPage = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5">Salasana</label>
+              <label className="block text-sm font-medium text-on-surface mb-1.5">Password</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">lock</span>
                 <input
@@ -171,7 +171,7 @@ const RegisterPage = () => {
 
             {/* Confirm password */}
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5">Vahvista salasana</label>
+              <label className="block text-sm font-medium text-on-surface mb-1.5">Confirm password</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">lock</span>
                 <input
@@ -198,24 +198,24 @@ const RegisterPage = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                   </svg>
-                  Rekisteröidytään...
+                  Creating account...
                 </>
               ) : (
-                'Luo tili'
+                'Create account'
               )}
             </button>
           </form>
 
           <div className="my-6 flex items-center gap-3">
             <div className="flex-1 h-px bg-outline-variant/30" />
-            <span className="text-on-surface-variant text-xs">tai</span>
+            <span className="text-on-surface-variant text-xs">or</span>
             <div className="flex-1 h-px bg-outline-variant/30" />
           </div>
 
           <p className="text-center text-sm text-on-surface-variant">
-            Onko sinulla jo tili?{' '}
+            Already have an account?{' '}
             <Link to="/signin" className="text-primary hover:opacity-75 font-medium transition-opacity">
-              Kirjaudu sisään
+              Sign in
             </Link>
           </p>
         </div>
