@@ -123,7 +123,7 @@ Onnistui: { email } tallennetaan localStorageen ja Reactin tilaan
         ↓
 Ohjaus etusivulle (/)
         ↓
-Navbar näyttää sähköpostin ja "Kirjaudu ulos" -napin
+Navbar näyttää sähköpostin ja "Sign out" -napin
 ```
 
 ---
@@ -169,8 +169,8 @@ Käyttäjä kirjautuu sisään luomillaan tunnuksilla
 2. Avaa `http://localhost:3000/register`
 3. Täytä lomake ja lähetä → pitäisi ohjata `/signin`-sivulle
 4. Kirjaudu juuri luomillasi tunnuksilla → pitäisi ohjata etusivulle
-5. Tarkista että Navbar näyttää sähköpostiosoitteen ja "Kirjaudu ulos" -napin
-6. Klikkaa "Kirjaudu ulos" → Navbar palaa "Sign In" -tilaan
+5. Tarkista että Navbar näyttää sähköpostiosoitteen ja "Sign out" -napin
+6. Klikkaa "Sign out" → Navbar palaa "Sign In" -tilaan
 
 ### Testaus Swaggerilla
 
@@ -203,9 +203,9 @@ Odotettava vastaus: `200 OK` → `{ "email": "testi@esimerkki.fi" }`
 
 | Skenaario | Odotettava vastaus | Virheilmoitus käyttäjälle |
 |-----------|-------------------|--------------------------|
-| Rekisteröidy samalla sähköpostilla uudelleen | `409 Conflict` | "Sähköposti on jo käytössä." |
-| Tyhjä kenttä tai virheellinen sähköposti | `400 Bad Request` | "Tarkista syötteet. Salasanan tulee olla vähintään 8 merkkiä pitkä." |
-| Salasana alle 8 merkkiä | `400 Bad Request` | "Tarkista syötteet. Salasanan tulee olla vähintään 8 merkkiä pitkä." |
+| Rekisteröidy samalla sähköpostilla uudelleen | `409 Conflict` | "This email is already in use." |
+| Tyhjä kenttä tai virheellinen sähköposti | `400 Bad Request` | "Please check your details. Password must be at least 8 characters." |
+| Salasana alle 8 merkkiä | `400 Bad Request` | "Please check your details. Password must be at least 8 characters." |
 | Väärä salasana kirjautuessa | `401 Unauthorized` | "Invalid email or password. Please try again." |
 
 ---
