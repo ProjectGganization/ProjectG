@@ -12,9 +12,8 @@ public class Ticket {
     @Column(name = "ticket_id")
     private Integer ticketId;
 
-    @ManyToOne
-    @JoinColumn(name = "ticket_type", nullable = false)
-    private TicketType ticketType;
+    @Column(name = "ticket_type", nullable = false)
+    private String ticketType;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
@@ -29,11 +28,11 @@ public class Ticket {
     @Column(name = "order_limit")
     private Integer orderLimit;
 
-    // Constructors
+    // Constructorsö
     public Ticket() {
     }
 
-    public Ticket(TicketType ticketType, Event event, BigDecimal unitPrice, Integer inStock, Integer orderLimit) {
+    public Ticket(String ticketType, Event event, BigDecimal unitPrice, Integer inStock, Integer orderLimit) {
         this.ticketType = ticketType;
         this.event = event;
         this.unitPrice = unitPrice;
@@ -46,11 +45,11 @@ public class Ticket {
         return ticketId;
     }
 
-    public TicketType getTicketType() {
+    public String getTicketType() {
         return ticketType;
     }
 
-    public void setTicketType(TicketType ticketType) {
+    public void setTicketType(String ticketType) {
         this.ticketType = ticketType;
     }
 
