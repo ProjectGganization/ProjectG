@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import io.ggroup.demo.model.*;
 import io.ggroup.demo.repository.*;
+import jakarta.transaction.Transactional;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,6 +38,7 @@ public class TicketController {
     })
 
     @GetMapping
+    @Transactional
     public ResponseEntity<?> getAllTickets() {
         List<Ticket> tickets = ticketRepository.findAll();
         if (tickets.isEmpty()) {
@@ -107,13 +109,13 @@ public class TicketController {
             return eventValidation;
         }
 
-        if (ticket.getTicketType() != null) {
+        if (ticket.getTicketType() == null) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400, "Ticket type is required"));
         }
 
-        if (ticket.getEvent() != null) {
+        if (ticket.getEvent() == null) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400, "Event is required"));

@@ -21,10 +21,10 @@ public class Order {
     private LocalDateTime date;
 
     @Column(name = "is_refunded", nullable = false)
-    private boolean isRefunded;
+    private boolean isRefunded = false; 
 
     @Column(name = "is_paid", nullable = false)
-    private boolean isPaid;
+    private boolean isPaid = true;
 
     @ManyToOne
     @JoinColumn(name = "paymentmethod")
@@ -32,6 +32,13 @@ public class Order {
 
     // Constructors
     public Order() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.date == null) {
+            this.date = LocalDateTime.now();
+        }
     }
 
     public Order(Customer customer, LocalDateTime date, boolean isRefunded, boolean isPaid, PaymentMethod paymentMethod) {

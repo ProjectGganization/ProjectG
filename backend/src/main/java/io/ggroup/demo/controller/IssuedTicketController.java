@@ -2,14 +2,16 @@ package io.ggroup.demo.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import jakarta.transaction.Transactional;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import io.ggroup.demo.dto.*;
 import io.ggroup.demo.model.*;
 import io.ggroup.demo.repository.*;
-import io.ggroup.demo.service.QRCodeService;
+import io.ggroup.demo.service.QRService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,17 +24,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "IssuedTicket API", description = "Endpoints for managing issuedtickets")
 public class IssuedTicketController {
 
-    private final QRCodeService qrCodeService;
     private final IssuedTicketRepository issuedTicketRepository;
     private final TicketRepository ticketRepository;
     private final OrderRepository orderRepository;
 
     public IssuedTicketController(IssuedTicketRepository issuedTicketRepository, TicketRepository ticketRepository,
-            OrderRepository orderRepository, QRCodeService qrCodeService) {
+            OrderRepository orderRepository) {
         this.issuedTicketRepository = issuedTicketRepository;
         this.ticketRepository = ticketRepository;
         this.orderRepository = orderRepository;
-        this.qrCodeService = qrCodeService;
     }
 
     // Get all issuedTickets
@@ -42,6 +42,7 @@ public class IssuedTicketController {
             @ApiResponse(responseCode = "404", description = "No issued tickets found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping
+    @Transactional
     public ResponseEntity<?> getAllIssuedTickets() {
         List<IssuedTicket> list = issuedTicketRepository.findAll();
         if (list.isEmpty()) {
@@ -67,43 +68,35 @@ public class IssuedTicketController {
                         .body(new ErrorResponse(404, "Issued ticket not found")));
     }
 
-    // Get QR code image for a ticket
-    @Operation(summary = "Get QR code image for a ticket")
-    @GetMapping("/{id}/qrcode")
-    public ResponseEntity<?> getQRCodeImage(@PathVariable Integer id) {
-        return issuedTicketRepository.findById(id)
-                .map(ticket -> {
-                    try {
-                        String base64Image = qrCodeService.generateQRCode(ticket.getQrCode());
-                        return ResponseEntity.ok(Map.of("qrCodeImage", base64Image));
-                    } catch (Exception e) {
-                        return ResponseEntity.status(500).body("Error generating QR code");
-                    }
-                })
-                .orElseGet(() -> ResponseEntity.status(404).build());
-    }
-
     // Create a new issued ticket
-    @Operation(summary = "Create a new issued ticket", description = "Adds a new issued ticket to the system")
+    @Operation(summary = "Create a new issued ticket + QR string", description = "Adds a new issued ticket to the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Issued ticket created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IssuedTicket.class))),
             @ApiResponse(responseCode = "400", description = "Invalid issued ticket data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping
-    public ResponseEntity<?> createIssuedTicket(@RequestBody IssuedTicket issuedTicket) {
-
-        ResponseEntity<?> validation = validateAndAttachForeignKeys(issuedTicket);
-        if (validation != null) {
-            return validation;
-        }
-
+    @Transactional
+    public ResponseEntity<?> createIssuedTicket(@RequestBody CreateIssuedTicketRequest request) {
+        // DTO validation
         try {
-            String verificationCode = UUID.randomUUID().toString();
+            Order order = orderRepository.findById(request.getOrderId())
+                    .orElseThrow(() ->
+                        new RuntimeException("Order not found"));
 
-            issuedTicket.setQrCode(verificationCode);
+            Ticket ticket = ticketRepository.findById(request.getTicketId())
+                    .orElseThrow(() ->
+                        new RuntimeException("Ticket not found"));
 
+            // Map entity to response DTO                
+            IssuedTicket issuedTicket = new IssuedTicket();
+            issuedTicket.setOrder(order);
+            issuedTicket.setTicket(ticket);
+            issuedTicket.setUsed(false);
+            issuedTicket.setQrCode(QRService.generate());
             IssuedTicket saved = issuedTicketRepository.save(issuedTicket);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

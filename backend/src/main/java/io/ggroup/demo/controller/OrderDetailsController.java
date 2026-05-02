@@ -7,8 +7,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import io.ggroup.demo.model.*;
+import io.ggroup.demo.dto.*;
 
 import io.ggroup.demo.repository.OrderDetailsRepository;
+import io.ggroup.demo.repository.OrderRepository;
 import io.ggroup.demo.repository.TicketRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
@@ -26,15 +29,16 @@ public class OrderDetailsController {
 
 private final OrderDetailsRepository orderDetailsRepository;
 private final TicketRepository ticketRepository;
+private final OrderRepository orderRepository;
 
-    public OrderDetailsController(OrderDetailsRepository orderDetailsRepository, TicketRepository ticketRepository) {
+    public OrderDetailsController(OrderDetailsRepository orderDetailsRepository, TicketRepository ticketRepository, OrderRepository orderRepository) {
         this.orderDetailsRepository = orderDetailsRepository;
         this.ticketRepository = ticketRepository;
+        this.orderRepository = orderRepository;
     }
 
     // GET /api/orderdetails - Get all order details
-    
-    @Operation(summary = "get all order details", description = "Returns a list of all order details")
+    @Operation(summary = "Get all order details", description = "Returns a list of all order details")
     @ApiResponses(value = {
        @ApiResponse(
             responseCode = "200",
@@ -59,8 +63,7 @@ private final TicketRepository ticketRepository;
         }
     }
 
-     // GET /api/orderdetails/{id} - Get order details by ID
-    
+     // GET /api/orderdetails/{id} - Get order details by ID    
     @Operation(summary = "Get order detail by ID", description = "Returns a single order detail by orderId and ticketId")
     @ApiResponses(value = {
     @ApiResponse(
@@ -89,8 +92,6 @@ private final TicketRepository ticketRepository;
                     .body(new ErrorResponse(404, "Order detail not found")));
 }
 
-
-
     // POST /api/orderdetails - Create a new order detail
     @Operation(summary = "Create a new order detail", description = "Creates a new order detail for an order")
     @ApiResponses(value = {
@@ -112,21 +113,46 @@ private final TicketRepository ticketRepository;
     })
 
     @PostMapping
-    public ResponseEntity<?> createOrderDetail(@Valid @RequestBody OrderDetails orderDetails) {
-        Integer ticketId = orderDetails.getId().getTicketId();
-        int quantity = orderDetails.getQuantity();
+    @Transactional
+    public ResponseEntity<?> createOrderDetail(@Valid @RequestBody CreateOrderDetailsRequest request) {
 
-        Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
+        Ticket ticket = ticketRepository.findById(request.getTicketId()).orElse(null);
         if (ticket == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(400, "Ticket not found: " + ticketId));
+                    .body(new ErrorResponse(400, "Ticket not found: " + request.getTicketId()));
         }
-        if (ticket.getInStock() < quantity) {
+        if (ticket.getInStock() < request.getQuantity()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse(400, "Not enough tickets in stock"));
         }
 
-        ticket.setInStock(ticket.getInStock() - quantity);
+        Order order = orderRepository.findById(request.getOrderId()).orElse(null);
+        if (order == null) {
+            return ResponseEntity.badRequest()
+                .body(new ErrorResponse(400, "Order not found: " + request.getOrderId()));
+        }
+  
+        // Composite key
+        OrderDetails.OrderDetailsId id =
+            new OrderDetails.OrderDetailsId(
+                    request.getOrderId(),
+                    request.getTicketId()
+            );
+            
+        OrderDetails orderDetails = new OrderDetails();
+        orderDetails.setId(id);
+        orderDetails.setOrder(order);
+        orderDetails.setTicket(ticket);
+        orderDetails.setQuantity(request.getQuantity());
+        orderDetails.setUnitPrice(ticket.getUnitPrice());
+
+        if (orderDetailsRepository.existsById(id)) {
+            return ResponseEntity.badRequest()
+                .body(new ErrorResponse(400,
+                    "Order detail already exists for this order and ticket"));
+        }
+
+        ticket.setInStock(ticket.getInStock() - request.getQuantity());
         ticketRepository.save(ticket);
 
         OrderDetails saved = orderDetailsRepository.save(orderDetails);
@@ -169,15 +195,14 @@ private final TicketRepository ticketRepository;
                 .body(new ErrorResponse(404, "Order detail not found")));
     }
 
-        // DELETE /api/orders/{id} - Delete order detail by ID
-        
+    // DELETE /api/orders/{id} - Delete order detail by ID
     @Operation(summary = "Delete order detail by ID", description = "Deletes a single order detail by its orderId and ticketId")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
             description = "Order detail deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(type = "object", example = "{\"message\": \"Successfully deleted order detail with id {id}\"}"))),
         
-@ApiResponse(
+    @ApiResponse(
             responseCode = "404",
             description = "Order detail not found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
