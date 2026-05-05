@@ -42,7 +42,7 @@
 		<!-- Web (MVC) mahdollistaa REST APIt, Tomcat ja Spring MVC -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -97,14 +97,14 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<version>2.2.224</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.7.3</version>
 		    <scope>runtime</scope>
-		</dependency>
+		</dependency> -->
         <!-- ZXing dependency for QR code generation and scanning -->
 		<dependency>
    			<groupId>com.google.zxing</groupId>

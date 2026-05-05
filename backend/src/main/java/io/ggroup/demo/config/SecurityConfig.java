@@ -126,7 +126,7 @@ public class SecurityConfig {
                         // Delete only for admin
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
-.anyRequest().authenticated())
+                .anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/swagger-ui/index.html", true)
                         .permitAll()
