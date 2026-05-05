@@ -4,7 +4,7 @@ export interface TicketType {
 
 export interface Ticket {
   ticketId: number;
-  ticketType: TicketType;
+  ticketType: string;
   event: { eventId: number };
   unitPrice: number;
   inStock: number;

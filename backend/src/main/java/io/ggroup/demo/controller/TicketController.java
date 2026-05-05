@@ -121,13 +121,13 @@ public class TicketController {
                 .body(new ErrorResponse(400, "Event is required"));
         }
 
-        if (ticket.getUnitPrice() != null) {
+        if (ticket.getUnitPrice() == null) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400, "Unit price is required"));
         }
 
-        if (ticket.getInStock() != null) {
+        if (ticket.getInStock() == null) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400, "In stock quantity is required"));
