@@ -11,6 +11,7 @@ import io.ggroup.demo.dto.*;
 
 import io.ggroup.demo.repository.OrderDetailsRepository;
 import io.ggroup.demo.repository.OrderRepository;
+import io.ggroup.demo.repository.SellerRepository;
 import io.ggroup.demo.repository.TicketRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,11 +31,13 @@ public class OrderDetailsController {
 private final OrderDetailsRepository orderDetailsRepository;
 private final TicketRepository ticketRepository;
 private final OrderRepository orderRepository;
+private final SellerRepository sellerRepository;
 
-    public OrderDetailsController(OrderDetailsRepository orderDetailsRepository, TicketRepository ticketRepository, OrderRepository orderRepository) {
+    public OrderDetailsController(OrderDetailsRepository orderDetailsRepository, TicketRepository ticketRepository, OrderRepository orderRepository, SellerRepository sellerRepository) {
         this.orderDetailsRepository = orderDetailsRepository;
         this.ticketRepository = ticketRepository;
         this.orderRepository = orderRepository;
+        this.sellerRepository = sellerRepository;
     }
 
     // GET /api/orderdetails - Get all order details
@@ -139,12 +142,16 @@ private final OrderRepository orderRepository;
                     request.getTicketId()
             );
             
+        Seller seller = sellerRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("No seller found"));
+
         OrderDetails orderDetails = new OrderDetails();
         orderDetails.setId(id);
         orderDetails.setOrder(order);
         orderDetails.setTicket(ticket);
         orderDetails.setQuantity(request.getQuantity());
         orderDetails.setUnitPrice(ticket.getUnitPrice());
+        orderDetails.setSeller(seller);
 
         if (orderDetailsRepository.existsById(id)) {
             return ResponseEntity.badRequest()

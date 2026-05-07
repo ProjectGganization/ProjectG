@@ -16,12 +16,7 @@ export interface CustomerResponse {
 }
 
 export interface CreateOrderRequest {
-  customer: { customerId: number };
-  seller: { sellerId: number };
-  date: string;
-  isRefunded: boolean;
-  isPaid: boolean;
-  paymentMethod: { paymentMethod: string };
+  customerId: number;
 }
 
 export interface OrderResponse {
@@ -29,38 +24,38 @@ export interface OrderResponse {
 }
 
 export interface CreateOrderDetailRequest {
-  id: { orderId: number; ticketId: number };
-  order: { orderId: number };
-  ticket: { ticketId: number };
-  unitPrice: number;
+  orderId: number;
+  ticketId: number;
   quantity: number;
 }
 
-const WEB_SELLER_ID = 1;
+export interface Order {
+  orderId: number;
+  customer: { firstname: string; lastname: string; email: string };
+  date: string;
+  isPaid: boolean;
+  isRefunded: boolean;
+  paymentMethod: { paymentMethod: string } | null;
+}
+
+export const getOrders = (): Promise<Order[]> =>
+  apiClient.get<Order[]>('/api/orders');
 
 export const createCustomer = (data: CreateCustomerRequest): Promise<CustomerResponse> =>
   apiClient.post<CustomerResponse>('/api/customers', data);
 
-export const createOrder = (customerId: number, paymentMethod: string): Promise<OrderResponse> =>
+export const createOrder = (customerId: number): Promise<OrderResponse> =>
   apiClient.post<OrderResponse>('/api/orders', {
-    customer: { customerId },
-    seller: { sellerId: WEB_SELLER_ID },
-    date: new Date().toISOString(),
-    isRefunded: false,
-    isPaid: true,
-    paymentMethod: { paymentMethod },
+    customerId,
   } satisfies CreateOrderRequest);
 
 export const createOrderDetail = (
   orderId: number,
   ticketId: number,
-  unitPrice: number,
   quantity: number,
 ): Promise<void> =>
   apiClient.post<void>('/api/orderdetails', {
-    id: { orderId, ticketId },
-    order: { orderId },
-    ticket: { ticketId },
-    unitPrice,
+    orderId,
+    ticketId,
     quantity,
   } satisfies CreateOrderDetailRequest);

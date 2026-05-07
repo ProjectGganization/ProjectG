@@ -3,6 +3,7 @@ import apiClient from '../api/apiClient';
 
 interface AuthUser {
   email: string;
+  role: string;
 }
 
 interface AuthContextType {
@@ -20,11 +21,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const login = async (email: string, password: string) => {
-    const response = await apiClient.post<{ email: string }>('/api/auth/login', {
+    const response = await apiClient.post<{ email: string; role: string }>('/api/auth/login', {
       email,
       password,
     });
-    const authUser = { email: response.email };
+    const authUser = { email: response.email, role: response.role };
     setUser(authUser);
     localStorage.setItem('auth_user', JSON.stringify(authUser));
   };
