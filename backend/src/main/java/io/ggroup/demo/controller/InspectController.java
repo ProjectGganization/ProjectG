@@ -22,6 +22,20 @@ public class InspectController {
         this.issuedTicketRepository = issuedTicketRepository;
     }
 
+    @Operation(summary = "Get ticket by QR code", description = "Returns issued ticket info by QR code")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ticket found"),
+        @ApiResponse(responseCode = "404", description = "Ticket not found")
+    })
+    @GetMapping("/{qrCode}")
+    public ResponseEntity<?> getTicketByQrCode(@PathVariable String qrCode) {
+        return issuedTicketRepository.findByQrCode(qrCode)
+                .map(ticket -> ResponseEntity.ok((Object) ticket))
+                .orElseGet(() -> ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(new ErrorResponse(404, "Issued ticket not found with QR code")));
+    }
+
     @Operation(summary = "Mark ticket as used", description = "Marks a ticket as used by its QR code")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Ticket marked as used"),

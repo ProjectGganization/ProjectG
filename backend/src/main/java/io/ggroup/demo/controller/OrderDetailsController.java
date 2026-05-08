@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import io.ggroup.demo.model.*;
 import io.ggroup.demo.dto.*;
 
+import io.ggroup.demo.repository.IssuedTicketRepository;
 import io.ggroup.demo.repository.OrderDetailsRepository;
 import io.ggroup.demo.repository.OrderRepository;
 import io.ggroup.demo.repository.SellerRepository;
 import io.ggroup.demo.repository.TicketRepository;
+import io.ggroup.demo.service.QRService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,12 +34,14 @@ private final OrderDetailsRepository orderDetailsRepository;
 private final TicketRepository ticketRepository;
 private final OrderRepository orderRepository;
 private final SellerRepository sellerRepository;
+private final IssuedTicketRepository issuedTicketRepository;
 
-    public OrderDetailsController(OrderDetailsRepository orderDetailsRepository, TicketRepository ticketRepository, OrderRepository orderRepository, SellerRepository sellerRepository) {
+    public OrderDetailsController(OrderDetailsRepository orderDetailsRepository, TicketRepository ticketRepository, OrderRepository orderRepository, SellerRepository sellerRepository, IssuedTicketRepository issuedTicketRepository) {
         this.orderDetailsRepository = orderDetailsRepository;
         this.ticketRepository = ticketRepository;
         this.orderRepository = orderRepository;
         this.sellerRepository = sellerRepository;
+        this.issuedTicketRepository = issuedTicketRepository;
     }
 
     // GET /api/orderdetails - Get all order details
@@ -163,6 +167,13 @@ private final SellerRepository sellerRepository;
         ticketRepository.save(ticket);
 
         OrderDetails saved = orderDetailsRepository.save(orderDetails);
+
+        // Generate one IssuedTicket (with unique QR code) per ticket unit
+        for (int i = 0; i < request.getQuantity(); i++) {
+            IssuedTicket issuedTicket = new IssuedTicket(order, QRService.generate(), ticket);
+            issuedTicketRepository.save(issuedTicket);
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
