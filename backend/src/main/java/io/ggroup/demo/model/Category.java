@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "category")
-public class Category {  
+public class Category {
     
     @Id
     @Column(name = "category", length = 50)
@@ -24,7 +24,7 @@ public class Category {
         return category;
     }
 
-    public void setCategory(String category) {  // ← add this setter
+    public void setCategory(String category) {
         this.category = category;
     }
 }

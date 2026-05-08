@@ -55,7 +55,10 @@ VALUES
  '2026-09-01 09:00', '2026-09-01 18:00', 'upcoming', 1, 'conference', 'techconf.jpg'),
 
 ('Winter Sports Cup', 'National-level winter sports event', 1,
- '2026-02-15 10:00', '2026-02-15 17:00', 'finished', 2, 'sports', 'sportscup.jpg');
+ '2026-02-15 10:00', '2026-02-15 17:00', 'upcoming', 2, 'sports', 'sportscup.jpg'),
+
+ ('Summer Music Festival', 'Heartwarming music', 1,
+ '2026-07-07 15:00', '2026-07-07 15:00', 'upcoming', 2, 'music', 'rockfest.jpg');
 
 
 -- Tickets
@@ -73,7 +76,11 @@ INSERT INTO Tickets (ticket_type, event_id, unitprice, in_stock, order_limit) VA
 -- Winter Sports Cup (event_id = 3)
 ('normal',  3, 25.00, 1000, 10),
 ('student', 3, 15.00, 300, 5),
-('elder',   3, 12.00, 200, 5);
+('elder',   3, 12.00, 200, 5),
+
+-- Summer Music Festival (event_id = 4)
+('normal',  4, 15.00, 50, 10),
+('student', 4, 10.00, 25, 10);
 
 -- Myyntiraportti näkymä
 CREATE VIEW Myyntiraportti AS

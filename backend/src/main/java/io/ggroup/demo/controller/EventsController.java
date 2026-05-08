@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.ggroup.demo.model.ErrorResponse;
-import io.ggroup.demo.model.Event;
-import io.ggroup.demo.model.Venue;
-import io.ggroup.demo.repository.EventRepository;
-import io.ggroup.demo.repository.VenueRepository;
+import io.ggroup.demo.model.*;
+import io.ggroup.demo.repository.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

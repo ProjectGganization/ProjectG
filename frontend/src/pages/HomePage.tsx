@@ -43,8 +43,7 @@ const HomePage = () => {
           </h1>
           <div className='flex gap-4'>
             <button
-              onClick={() =>
-                events[0] && navigate(`/events/${events[0].eventId}`)
+              onClick={() => navigate(`/events/4`)
               }
               className='signature-gradient text-on-primary px-8 py-4 rounded-lg text-lg font-bold active:scale-95 transition-transform flex items-center gap-2'
             >
