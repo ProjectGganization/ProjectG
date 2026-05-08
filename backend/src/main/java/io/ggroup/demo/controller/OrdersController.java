@@ -85,14 +85,14 @@ public class OrdersController {
         try {
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        
+
+        PaymentMethod paymentMethod = paymentMethodRepository.findById("cash")
+                .orElseThrow(() -> new RuntimeException("Payment method not found"));
+
         Order order = new Order();
         order.setCustomer(customer);
-        
-        PaymentMethod bank = paymentMethodRepository.findById("bank")
-                .orElseThrow(() -> new RuntimeException("Payment method BANK not found"));
-        order.setPaymentMethod(bank);
-        
+        order.setPaymentMethod(paymentMethod);
+
         Order savedOrder = orderRepository.save(order);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);

@@ -3,11 +3,13 @@ import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
 import HomePage from './pages/HomePage';
 import EventDetailPage from './pages/EventDetailPage';
+import DashboardPage from './pages/admin/DashboardPage';
 import CreateEventPage from './pages/admin/CreateEventPage';
 import TicketFetcherPage from './pages/admin/TicketFetcherPage';
 import OrdersPage from './pages/admin/OrdersPage';
 import SignIn from './pages/SignIn';
 import RegisterPage from './pages/RegisterPage';
+import EditEventPage from './pages/admin/EditEventPage';
 
 const router = createBrowserRouter([
   {
@@ -27,8 +29,16 @@ const router = createBrowserRouter([
     element: <RegisterPage />,
   },
   {
+    path: '/admin',
+    element: <AdminLayout><DashboardPage /></AdminLayout>,
+  },
+  {
     path: '/admin/events/create',
     element: <AdminLayout><CreateEventPage /></AdminLayout>,
+  },
+  {
+    path: '/admin/events/:id/edit',
+    element: <AdminLayout><EditEventPage /></AdminLayout>,
   },
   {
     path: '/admin/ticket-fetcher',

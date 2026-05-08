@@ -5,6 +5,7 @@ A full-stack event ticketing platform combining Spring Boot (backend) and React 
 ## Project Overview
 
 This project consists of two main parts:
+
 - **Backend**: Java Spring Boot REST API with Spring Security and JPA
 - **Frontend**: React 19 + TypeScript, Vite, Tailwind CSS v4
 
@@ -20,81 +21,97 @@ ProjectG/
 │       │   ├── SecurityConfig.java   # Auth & role-based authorization
 │       │   ├── CorsConfig.java       # CORS for frontend (port 3000)
 │       │   ├── OpenApiConfig.java    # Swagger/OpenAPI setup
-│       │   └── TestLoginConfig.java  # Test admin user
-│       ├── controller/               # 9 REST controllers
+│       │   ├── H2Config.java         # Registers H2 console via JakartaWebServlet
+│       │   └── TestLoginConfig.java  # Creates test users on startup
+│       ├── controller/               # REST controllers
+│       │   ├── AuthController.java   # POST /api/auth/login → { email, role }
 │       │   ├── CustomerController.java
 │       │   ├── EventsController.java
 │       │   ├── IssuedTicketController.java
 │       │   ├── OrdersController.java
 │       │   ├── OrderDetailsController.java
 │       │   ├── PostalCodeController.java
+│       │   ├── SellerController.java
 │       │   ├── TicketController.java
 │       │   ├── UserController.java
 │       │   └── VenuesController.java
-│       ├── dto/                      # Request/response DTOs
+│       ├── dto/
+│       │   ├── CreateOrderRequest.java       # { customerId }
+│       │   ├── CreateOrderDetailsRequest.java # { id: { orderId, ticketId }, quantity }
 │       │   ├── CreateCustomerRequest.java
 │       │   ├── CreateUserRequest.java
 │       │   ├── CustomerResponse.java
 │       │   └── UserResponse.java
-│       ├── model/                    # JPA entities & enums
+│       ├── model/                    # JPA entities
 │       │   ├── User.java, Customer.java, Seller.java
 │       │   ├── Event.java, Venue.java, Category.java
-│       │   ├── Ticket.java, TicketType.java, IssuedTicket.java
-│       │   ├── Order.java, OrderDetails.java, SalesSession.java
-│       │   └── enums: Role, AccountStatus, EventStatus, PaymentMethod
+│       │   ├── Ticket.java, IssuedTicket.java
+│       │   ├── Order.java, OrderDetails.java
+│       │   ├── PaymentMethod.java, EventStatus.java, PostalCode.java
+│       │   └── ErrorResponse.java
 │       ├── repository/               # Spring Data JPA repositories
 │       └── service/
-│           └── UsersDetailsService.java  # Spring Security integration
+│           └── UsersDetailsService.java  # Assigns roles: ADMIN / SELLER / CUSTOMER
 │
 ├── frontend/                         # React TypeScript app
-│   ├── index.html                    # App entry HTML (fonts, icons)
-│   ├── vite.config.ts                # Vite: React plugin, Tailwind, API proxy
-│   ├── tailwind.config.ts            # Design system: colors, radius, shadows
-│   ├── tsconfig.json                 # TypeScript config (strict, path aliases)
+│   ├── index.html
+│   ├── vite.config.ts                # Vite: React plugin, Tailwind, API proxy → :8080
+│   ├── tsconfig.json
 │   ├── package.json
 │   └── src/
-│       ├── index.tsx                 # React entry point
-│       ├── App.tsx                   # Root component — mounts RouterProvider
-│       ├── router.tsx                # React Router — all route definitions
-│       ├── styles/index.css          # Tailwind v4 @theme tokens + custom classes
+│       ├── router.tsx                # All route definitions
+│       ├── styles/index.css          # Tailwind v4 @theme design tokens
+│       ├── context/
+│       │   └── AuthContext.tsx       # Session auth: { email, role } stored in localStorage
 │       ├── layouts/
-│       │   ├── MainLayout.tsx        # Navbar + children + Footer (public pages)
-│       │   ├── AdminLayout.tsx       # Sidebar + children (admin pages)
-│       │   ├── Navbar.tsx            # Fixed top nav with search, sign in, admin link
-│       │   ├── Sidebar.tsx           # Fixed left nav for admin panel
-│       │   └── Footer.tsx            # Site footer
+│       │   ├── MainLayout.tsx        # Navbar + Footer (public pages)
+│       │   ├── AdminLayout.tsx       # Sidebar (admin pages)
+│       │   ├── Navbar.tsx            # Search, Sign In/out, Admin link (role-gated)
+│       │   ├── Sidebar.tsx           # Admin nav + Home link
+│       │   └── Footer.tsx
 │       ├── pages/
-│       │   ├── HomePage.tsx          # Home: hero, about, upcoming events
+│       │   ├── HomePage.tsx          # Hero, about, searchable event grid
+│       │   ├── EventDetailPage.tsx   # Event info + ticket purchase
+│       │   ├── SignIn.tsx
+│       │   ├── RegisterPage.tsx
 │       │   └── admin/
-│       │       └── CreateEventPage.tsx  # Admin: create event form
+│       │       ├── DashboardPage.tsx     # Stats + upcoming events (clickable)
+│       │       ├── CreateEventPage.tsx   # Create event + ticket tiers
+│       │       ├── EditEventPage.tsx     # Edit existing event
+│       │       └── TicketFetcherPage.tsx # QR scanner
 │       ├── components/
-│       │   ├── EventCard.tsx         # Reusable event card (homepage)
+│       │   ├── EventCard.tsx
+│       │   ├── CheckoutModal.tsx     # Multi-step ticket purchase flow
 │       │   └── admin/
-│       │       └── TicketTierRow.tsx  # Editable ticket tier table row
+│       │       └── TicketTierRow.tsx
+│       ├── api/
+│       │   ├── apiClient.ts          # Axios wrapper (credentials: include)
+│       │   ├── eventService.ts       # getEvents, getEvent, createEvent, updateEvent
+│       │   ├── ticketService.ts      # getTicketsByEvent, createTicket
+│       │   ├── orderService.ts       # createCustomer, createOrder, createOrderDetail
+│       │   ├── venueService.ts       # getVenues
+│       │   └── sellerService.ts      # getSellers
 │       ├── types/
-│       │   ├── event.ts              # Event interface
-│       │   └── ticketTier.ts         # TicketTier interface
-│       ├── config/
-│       │   └── env.ts                # API base URL (VITE_API_BASE_URL)
-│       ├── features/                 # Feature modules — in progress
-│       ├── hooks/                    # Custom React hooks — in progress
-│       ├── services/                 # API service modules — in progress
-│       ├── store/                    # State management — in progress
-│       └── utils/                    # Utility functions — in progress
+│       │   ├── event.ts              # Event, Venue, Category, Seller interfaces
+│       │   ├── ticket.ts             # Ticket interface
+│       │   └── ticketTier.ts         # TicketTier interface (admin form)
+│       └── utils/
+│           └── categoryImage.ts      # Maps category → hero image
 │
 ├── docs/
-│   ├── api/                          # Per-resource API docs (9 files)
+│   ├── api/                          # Per-resource API docs
 │   └── photos/                       # Architecture & UX diagrams
 │
-├── build.js                          # API documentation generator
-├── APIDOCUMENTATION.md               # API docs template
-├── APIDOCUMENTATION.generated.md     # Generated API reference
+├── build.js
+├── APIDOCUMENTATION.md
+├── APIDOCUMENTATION.generated.md
 └── DOKUMENTAATIO.md                  # Finnish project documentation
 ```
 
 ## Prerequisites
 
 Before running this project, ensure you have:
+
 - Java 21 or higher
 - Node.js v18 or higher
 - npm
@@ -113,28 +130,70 @@ Once the backend is running:
 
 ### Available Endpoints
 
-| Resource | Base Path |
-|---|---|
-| Customers | `/api/customers` |
-| Events | `/api/events` |
-| Tickets | `/api/tickets` |
+| Resource       | Base Path             |
+| -------------- | --------------------- |
+| Customers      | `/api/customers`      |
+| Events         | `/api/events`         |
+| Tickets        | `/api/tickets`        |
 | Issued Tickets | `/api/issued-tickets` |
-| Orders | `/api/orders` |
-| Order Details | `/api/order-details` |
-| Venues | `/api/venues` |
-| Users | `/api/users` |
-| Postal Codes | `/api/postal-codes` |
+| Orders         | `/api/orders`         |
+| Order Details  | `/api/order-details`  |
+| Venues         | `/api/venues`         |
+| Users          | `/api/users`          |
+| Postal Codes   | `/api/postal-codes`   |
 
 See `APIDOCUMENTATION.generated.md` or Swagger UI for full endpoint details.
 
 ### Running the Backend
 
-#### Option 1: Spring Boot Dashboard (VS Code)
+The backend requires a database profile. Two options:
 
-1. Open the Spring Boot icon in the VS Code sidebar
-2. Click the Run button next to the application name
+#### Option A: H2 in-memory (recommended for local dev)
 
-#### Option 2: Terminal
+No setup needed — uses an embedded database with automatic test data.
+
+Create `backend/src/main/resources/application.properties` with:
+
+```properties
+spring.application.name=demo
+spring.profiles.active=h2
+```
+
+Then run:
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+Test data is seeded automatically on every startup:
+
+| Account  | Email               | Password      | Role     |
+| -------- | ------------------- | ------------- | -------- |
+| Admin    | `admin@test.com`    | `admin123`    | ADMIN    |
+| Seller   | `seller@test.com`   | `seller123`   | SELLER   |
+| Customer | `customer@test.com` | `customer123` | CUSTOMER |
+| Seller   | `sami@gg.com`       | `seller123`   | SELLER   |
+| Customer | `daniel@gmail.com`  | `customer123` | CUSTOMER |
+
+Seeded data includes: 3 events, 10 ticket types, 3 venues, payment methods (card/bank/cash).
+
+> **Note:** H2 is in-memory — all data resets on every backend restart. Log out and back in after restarting.
+
+H2 console available at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:testdb`)
+
+#### Option B: Render PostgreSQL (shared cloud DB)
+
+Create `backend/src/main/resources/application.properties` with:
+
+```properties
+spring.application.name=demo
+spring.profiles.active=local
+```
+
+Then fill in `application-local.properties` with credentials from the Render dashboard (ask a teammate for the file).
+
+#### Running
 
 ```bash
 cd backend
@@ -142,6 +201,7 @@ cd backend
 ```
 
 Windows PowerShell:
+
 ```powershell
 cd backend
 .\mvnw.cmd spring-boot:run
@@ -167,10 +227,28 @@ The app opens at `http://localhost:3000`
 
 ### Routes
 
-| Path | Page | Layout |
-|---|---|---|
-| `/` | Homepage — hero, about, upcoming events | MainLayout |
-| `/admin/events/create` | Admin — create event form | AdminLayout |
+| Path                       | Page                                      | Access         |
+| -------------------------- | ----------------------------------------- | -------------- |
+| `/`                        | Homepage — hero, about, searchable events | Public         |
+| `/events/:id`              | Event detail + ticket purchase            | Public         |
+| `/signin`                  | Sign in                                   | Public         |
+| `/register`                | Register                                  | Public         |
+| `/admin`                   | Dashboard — stats + upcoming events       | ADMIN / SELLER |
+| `/admin/events/create`     | Create event + ticket tiers               | ADMIN / SELLER |
+| `/admin/events/:id/edit`   | Edit existing event                       | ADMIN / SELLER |
+| `/admin/ticket-fetcher`    | QR code scanner                           | ADMIN / SELLER |
+
+### Role Permissions
+
+| Action                | ADMIN | SELLER | CUSTOMER |
+| --------------------- | ----- | ------ | -------- |
+| View events & tickets | ✓     | ✓      | ✓        |
+| Purchase tickets      | ✓     | ✓      | ✓        |
+| Create / edit events  | ✓     | ✓      | —        |
+| Create / edit tickets | ✓     | ✓      | —        |
+| Access admin panel    | ✓     | ✓      | —        |
+| Delete resources      | ✓     | —      | —        |
+| Manage users          | ✓     | —      | —        |
 
 ### Frontend Architecture
 
@@ -182,11 +260,11 @@ Styling is done entirely with **Tailwind CSS v4** using a custom design system d
 
 ### Frontend Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start dev server at localhost:3000 with HMR |
-| `npm run build` | Type-check + production build to `dist/` |
-| `npm run preview` | Preview the production build locally |
+| Command           | Description                                 |
+| ----------------- | ------------------------------------------- |
+| `npm run dev`     | Start dev server at localhost:3000 with HMR |
+| `npm run build`   | Type-check + production build to `dist/`    |
+| `npm run preview` | Preview the production build locally        |
 
 ## Development Workflow
 
@@ -199,20 +277,24 @@ Styling is done entirely with **Tailwind CSS v4** using a custom design system d
 ## Troubleshooting
 
 **Frontend shows connection error**
+
 - Ensure backend is running on port 8080
 - Check `CorsConfig.java` `allowedOrigins`
 
 **Port already in use**
+
 - Backend: set `server.port` in `application.properties`
 - Frontend: change `server.port` in `vite.config.ts`
 
 **Build fails**
+
 - Backend: `./mvnw clean install`
 - Frontend: delete `node_modules` and run `npm install`
 
 ## Building for Production
 
 ### Backend
+
 ```bash
 cd backend
 ./mvnw clean package
@@ -220,6 +302,7 @@ java -jar target/backend-0.0.1-SNAPSHOT.jar
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
 npm run build
@@ -230,19 +313,21 @@ Output goes to `frontend/dist/`.
 ## Technology Stack
 
 **Backend:**
-- Spring Boot 4.0.1
+
+- Spring Boot 4
 - Java 21
 - Maven
-- Spring Security (role-based auth: ADMIN, USER)
-- Spring Data JPA + H2 (in-memory)
-- Lombok
+- Spring Security — session-based auth, roles: ADMIN / SELLER / CUSTOMER
+- Spring Data JPA
+- H2 in-memory (dev) / PostgreSQL (production)
 - SpringDoc OpenAPI (Swagger UI)
 
 **Frontend:**
-- React 19
-- TypeScript 6.0
-- Vite 8
-- Tailwind CSS v4 (CSS-first, @theme tokens)
+
+- React 19 + TypeScript
+- Vite (dev server + proxy to :8080)
+- Tailwind CSS v4 (CSS-first, @theme design tokens)
 - React Router v7
+- Axios (API client with session credentials)
 - Material Symbols Outlined (icons)
 - Inter (font)

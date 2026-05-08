@@ -1,5 +1,5 @@
 -- AccountStatus
-INSERT INTO AccountStatus (account_status) VALUES 
+INSERT INTO AccountStatus (account_status) VALUES
 ('active'), ('inactive');
 
 -- PaymentMethod

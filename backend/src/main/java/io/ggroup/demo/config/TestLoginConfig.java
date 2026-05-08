@@ -5,6 +5,7 @@ import io.ggroup.demo.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -13,6 +14,7 @@ public class TestLoginConfig {
     //seller@test salasana seller123
     //customer@test salasana customer123
     @Bean
+    @Order(1)
     public CommandLineRunner createTestUsers(
             UserRepository userRepo, 
             PasswordEncoder encoder) {

@@ -50,7 +50,12 @@ public class AuthController {
             HttpSession session = request.getSession(true);
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-            return ResponseEntity.ok(Map.of("email", auth.getName()));
+            String role = auth.getAuthorities().stream()
+                    .findFirst()
+                    .map(a -> a.getAuthority().replace("ROLE_", "").toLowerCase())
+                    .orElse("user");
+
+            return ResponseEntity.ok(Map.of("email", auth.getName(), "role", role));
 
         } catch (BadCredentialsException e) {
             return ResponseEntity

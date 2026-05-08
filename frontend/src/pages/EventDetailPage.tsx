@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Event, formatEventDate, formatEventLocation } from '../types/event';
 import { Ticket } from '../types/ticket';
 import { getEvent } from '../api/eventService';
@@ -12,6 +12,7 @@ const SERVICE_FEE = 12.50;
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [event, setEvent] = useState<Event | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -76,11 +77,15 @@ const EventDetailPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Back button */}
         <button
-          onClick={() => { navigate(-1); window.scrollTo(0, 0); }}
+          onClick={() => {
+            const from = (location.state as { from?: string })?.from;
+            if (from) { navigate(from); } else { navigate(-1); }
+            window.scrollTo(0, 0);
+          }}
           className="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline underline-offset-4"
         >
           <span className="material-symbols-outlined text-sm">arrow_back</span>
-          Back to Events
+          {(location.state as { from?: string })?.from === '/admin' ? 'Back to Dashboard' : 'Back to Events'}
         </button>
 
         {/* Hero Section */}

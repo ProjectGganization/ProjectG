@@ -52,11 +52,11 @@ const CheckoutModal = ({ selected, subtotal, serviceFee, onClose, onSuccess }: C
         phone: form.phone,
       });
 
-      const order = await createOrder(customer.customerId, form.paymentMethod);
+      const order = await createOrder(customer.customerId);
 
       await Promise.all(
         selected.map((s) =>
-          createOrderDetail(order.orderId, s.ticket.ticketId, s.ticket.unitPrice, s.quantity)
+          createOrderDetail(order.orderId, s.ticket.ticketId, s.quantity)
         )
       );
 
