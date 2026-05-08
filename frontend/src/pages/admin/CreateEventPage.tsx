@@ -8,8 +8,8 @@ import { Seller, getSellers } from '../../api/sellerService';
 import { createEvent } from '../../api/eventService';
 import { createTicket } from '../../api/ticketService';
 
-const CATEGORIES = ['Music', 'Sports', 'Theater', 'Art & Gallery'];
-const EVENT_STATUSES = ['upcoming', 'ongoing', 'cancelled', 'finished'];
+const CATEGORIES = ['music', 'sports', 'conference', 'theatre'];
+const EVENT_STATUSES = ['upcoming', 'cancelled', 'finished'];
 
 const CreateEventPage = () => {
   const navigate = useNavigate();

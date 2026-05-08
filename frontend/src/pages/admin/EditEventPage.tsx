@@ -7,8 +7,8 @@ import { getVenues } from '../../api/venueService';
 import { Seller, getSellers } from '../../api/sellerService';
 import { getEvent, updateEvent } from '../../api/eventService';
 
-const CATEGORIES = ['Music', 'Sports', 'Theater', 'Art & Gallery'];
-const EVENT_STATUSES = ['upcoming', 'ongoing', 'cancelled', 'finished'];
+const CATEGORIES = ['music', 'sports', 'conference', 'theatre'];
+const EVENT_STATUSES = ['upcoming', 'cancelled', 'finished'];
 
 const EditEventPage = () => {
   const { id } = useParams<{ id: string }>();

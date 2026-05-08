@@ -21,8 +21,8 @@ ProjectG/
 │       │   ├── SecurityConfig.java   # Auth & role-based authorization
 │       │   ├── CorsConfig.java       # CORS for frontend (port 3000)
 │       │   ├── OpenApiConfig.java    # Swagger/OpenAPI setup
-│       │   ├── TestLoginConfig.java  # Creates test users on startup (@Order 1)
-│       │   └── H2DataSeeder.java     # Seeds test data for H2 profile (@Order 2)
+│       │   ├── H2Config.java         # Registers H2 console via JakartaWebServlet
+│       │   └── TestLoginConfig.java  # Creates test users on startup
 │       ├── controller/               # REST controllers
 │       │   ├── AuthController.java   # POST /api/auth/login → { email, role }
 │       │   ├── CustomerController.java
@@ -153,12 +153,14 @@ The backend requires a database profile. Two options:
 No setup needed — uses an embedded database with automatic test data.
 
 Create `backend/src/main/resources/application.properties` with:
+
 ```properties
 spring.application.name=demo
 spring.profiles.active=h2
 ```
 
 Then run:
+
 ```bash
 cd backend
 ./mvnw spring-boot:run
@@ -166,13 +168,15 @@ cd backend
 
 Test data is seeded automatically on every startup:
 
-| Account | Email | Password | Role |
-|---|---|---|---|
-| Admin | `admin@test.com` | `admin123` | ADMIN |
-| Seller | `seller@test.com` | `seller123` | SELLER |
+| Account  | Email               | Password      | Role     |
+| -------- | ------------------- | ------------- | -------- |
+| Admin    | `admin@test.com`    | `admin123`    | ADMIN    |
+| Seller   | `seller@test.com`   | `seller123`   | SELLER   |
 | Customer | `customer@test.com` | `customer123` | CUSTOMER |
+| Seller   | `sami@gg.com`       | `seller123`   | SELLER   |
+| Customer | `daniel@gmail.com`  | `customer123` | CUSTOMER |
 
-Seeded data includes: 3 events, 6 ticket types, 3 venues, payment methods (card/cash/bank).
+Seeded data includes: 3 events, 10 ticket types, 3 venues, payment methods (card/bank/cash).
 
 > **Note:** H2 is in-memory — all data resets on every backend restart. Log out and back in after restarting.
 
@@ -181,6 +185,7 @@ H2 console available at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:m
 #### Option B: Render PostgreSQL (shared cloud DB)
 
 Create `backend/src/main/resources/application.properties` with:
+
 ```properties
 spring.application.name=demo
 spring.profiles.active=local
@@ -196,6 +201,7 @@ cd backend
 ```
 
 Windows PowerShell:
+
 ```powershell
 cd backend
 .\mvnw.cmd spring-boot:run
@@ -221,28 +227,28 @@ The app opens at `http://localhost:3000`
 
 ### Routes
 
-| Path | Page | Access |
-|---|---|---|
-| `/` | Homepage — hero, about, searchable events | Public |
-| `/events/:id` | Event detail + ticket purchase | Public |
-| `/signin` | Sign in | Public |
-| `/register` | Register | Public |
-| `/admin` | Dashboard — stats + upcoming events | ADMIN / SELLER |
-| `/admin/events/create` | Create event + ticket tiers | ADMIN / SELLER |
-| `/admin/events/:id/edit` | Edit existing event | ADMIN / SELLER |
-| `/admin/ticket-fetcher` | QR code scanner | ADMIN / SELLER |
+| Path                       | Page                                      | Access         |
+| -------------------------- | ----------------------------------------- | -------------- |
+| `/`                        | Homepage — hero, about, searchable events | Public         |
+| `/events/:id`              | Event detail + ticket purchase            | Public         |
+| `/signin`                  | Sign in                                   | Public         |
+| `/register`                | Register                                  | Public         |
+| `/admin`                   | Dashboard — stats + upcoming events       | ADMIN / SELLER |
+| `/admin/events/create`     | Create event + ticket tiers               | ADMIN / SELLER |
+| `/admin/events/:id/edit`   | Edit existing event                       | ADMIN / SELLER |
+| `/admin/ticket-fetcher`    | QR code scanner                           | ADMIN / SELLER |
 
 ### Role Permissions
 
-| Action | ADMIN | SELLER | CUSTOMER |
-|---|---|---|---|
-| View events & tickets | ✓ | ✓ | ✓ |
-| Purchase tickets | ✓ | ✓ | ✓ |
-| Create / edit events | ✓ | ✓ | — |
-| Create / edit tickets | ✓ | ✓ | — |
-| Access admin panel | ✓ | ✓ | — |
-| Delete resources | ✓ | — | — |
-| Manage users | ✓ | — | — |
+| Action                | ADMIN | SELLER | CUSTOMER |
+| --------------------- | ----- | ------ | -------- |
+| View events & tickets | ✓     | ✓      | ✓        |
+| Purchase tickets      | ✓     | ✓      | ✓        |
+| Create / edit events  | ✓     | ✓      | —        |
+| Create / edit tickets | ✓     | ✓      | —        |
+| Access admin panel    | ✓     | ✓      | —        |
+| Delete resources      | ✓     | —      | —        |
+| Manage users          | ✓     | —      | —        |
 
 ### Frontend Architecture
 
