@@ -6,6 +6,7 @@ import EventDetailPage from './pages/EventDetailPage';
 import DashboardPage from './pages/admin/DashboardPage';
 import CreateEventPage from './pages/admin/CreateEventPage';
 import TicketFetcherPage from './pages/admin/TicketFetcherPage';
+import OrdersPage from './pages/admin/OrdersPage';
 import SignIn from './pages/SignIn';
 import RegisterPage from './pages/RegisterPage';
 import EditEventPage from './pages/admin/EditEventPage';
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: '/admin/ticket-fetcher',
     element: <AdminLayout><TicketFetcherPage /></AdminLayout>,
+  },
+  {
+    path: '/admin/orders',
+    element: <AdminLayout><OrdersPage /></AdminLayout>,
   },
 ]);
 
