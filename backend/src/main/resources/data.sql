@@ -74,3 +74,25 @@ INSERT INTO Tickets (ticket_type, event_id, unitprice, in_stock, order_limit) VA
 ('normal',  3, 25.00, 1000, 10),
 ('student', 3, 15.00, 300, 5),
 ('elder',   3, 12.00, 200, 5);
+
+-- Myyntiraportti näkymä
+CREATE VIEW Myyntiraportti AS
+    SELECT
+        e.title AS tapahtuma,
+        e.start_time AS alkuaika,
+        t.ticket_type AS lipputyyppi,
+    COUNT(it.issuedticket_id) AS kpl,
+    SUM(t.unitprice) AS yhteensa
+    FROM IssuedTickets it
+    JOIN Tickets t
+        ON it.ticket_id = t.ticket_id
+    JOIN Events e
+        ON t.event_id = e.event_id
+    JOIN Venues v
+        ON e.venue_id = v.venue_id
+    GROUP BY
+        e.event_id,
+        e.title,
+        v.name,
+        e.start_time,
+        t.ticket_type;
