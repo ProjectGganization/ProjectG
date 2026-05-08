@@ -90,12 +90,12 @@ public class SecurityConfig {
                         // User management only for admin
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
 
-                        // Only admin can create main business resources
+                        // Admin and seller can create events and tickets
                         .requestMatchers(HttpMethod.POST,
                                 "/api/events/**",
                                 "/api/venues/**",
                                 "/api/postalcodes/**")
-                        .hasRole("ADMIN")
+                        .hasAnyRole("ADMIN", "SELLER")
 
                         // Seller and admin can create issued tickets
                         .requestMatchers(HttpMethod.POST,
@@ -107,10 +107,14 @@ public class SecurityConfig {
                                 "/api/tickets/**")
                         .hasAnyRole("SELLER", "ADMIN")
 
-                        // Only admin can edit main business resources
+                        // Admin and seller can edit events and tickets
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/events/**",
-                                "/api/tickets/**",
+                                "/api/tickets/**")
+                        .hasAnyRole("ADMIN", "SELLER")
+
+                        // Only admin can edit venues, postal codes, customers
+                        .requestMatchers(HttpMethod.PUT,
                                 "/api/venues/**",
                                 "/api/postalcodes/**",
                                 "/api/customers/**")
@@ -126,7 +130,7 @@ public class SecurityConfig {
                         // Delete only for admin
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
-.anyRequest().authenticated())
+                .anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/swagger-ui/index.html", true)
                         .permitAll()

@@ -10,6 +10,4 @@ public class CreateOrderRequest {
     public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
-    
 }
-

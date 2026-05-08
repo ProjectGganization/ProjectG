@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Event, formatEventDate, formatEventLocation } from '../types/event';
 import { Ticket } from '../types/ticket';
 import { getEvent } from '../api/eventService';
@@ -12,6 +12,7 @@ const SERVICE_FEE = 12.50;
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [event, setEvent] = useState<Event | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -76,11 +77,15 @@ const EventDetailPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Back button */}
         <button
-          onClick={() => { navigate(-1); window.scrollTo(0, 0); }}
+          onClick={() => {
+            const from = (location.state as { from?: string })?.from;
+            if (from) { navigate(from); } else { navigate(-1); }
+            window.scrollTo(0, 0);
+          }}
           className="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline underline-offset-4"
         >
           <span className="material-symbols-outlined text-sm">arrow_back</span>
-          Back to Events
+          {(location.state as { from?: string })?.from === '/admin' ? 'Back to Dashboard' : 'Back to Events'}
         </button>
 
         {/* Hero Section */}
@@ -142,7 +147,7 @@ const EventDetailPage = () => {
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-2">{ticket.ticketType.ticketType}</h3>
+                        <h3 className="text-xl font-bold mb-2">{ticket.ticketType}</h3>
                         <div className="flex flex-wrap gap-2">
                           <span className="text-[0.6875rem] px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
                             {ticket.inStock} left
@@ -200,7 +205,7 @@ const EventDetailPage = () => {
                       {tickets.filter((t) => (quantities[t.ticketId] ?? 0) > 0).map((t) => (
                         <div key={t.ticketId} className="flex justify-between text-sm">
                           <span className="text-on-surface-variant">
-                            {quantities[t.ticketId]}x {t.ticketType.ticketType}
+                            {quantities[t.ticketId]}x {t.ticketType}
                           </span>
                           <span className="font-bold">
                             €{(t.unitPrice * quantities[t.ticketId]).toFixed(2)}

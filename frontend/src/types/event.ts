@@ -18,6 +18,12 @@ export interface Category {
   category: string;
 }
 
+export interface Seller {
+  sellerId: number;
+  name: string;
+  email: string;
+}
+
 export interface Event {
   eventId: number;
   title: string;
@@ -28,6 +34,7 @@ export interface Event {
   eventStatus: EventStatus;
   venue: Venue;
   category: Category;
+  seller: Seller;
 }
 
 export function formatEventDate(startTime: string): string {

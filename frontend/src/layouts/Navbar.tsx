@@ -1,23 +1,77 @@
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { user, logout } = useAuth();
+
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setQuery(searchParams.get("q") ?? "");
+    }
+  }, [location.pathname, searchParams]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+    if (location.pathname === "/") {
+      navigate(value ? `/?q=${encodeURIComponent(value)}` : "/", {
+        replace: true,
+      });
+    }
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      navigate(query ? `/?q=${encodeURIComponent(query)}` : "/");
+      setTimeout(
+        () =>
+          document
+            .getElementById("events")
+            ?.scrollIntoView({ behavior: "smooth" }),
+        100,
+      );
+    }
+  };
+
+  const scrollToEvents = () => {
+    if (location.pathname === "/") {
+      document.getElementById("events")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(
+        () =>
+          document
+            .getElementById("events")
+            ?.scrollIntoView({ behavior: "smooth" }),
+        100,
+      );
+    }
+  };
   return (
-    <nav className='fixed top-0 w-full z-50 glass-nav shadow-sm font-inter antialiased tracking-tight bg-red-500'>
+    <nav className='fixed top-0 w-full z-50 glass-nav shadow-sm font-inter antialiased tracking-tight'>
       <div className='flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto w-full'>
         <div className='flex items-center gap-8'>
           <span className='text-2xl font-black tracking-tighter text-slate-900'>
             TicketGG
           </span>
           <div className='hidden md:flex gap-6'>
-            <a
+            <button
               className='text-blue-600 font-semibold border-b-2 border-blue-600 transition-all duration-300'
-              href='#'
+              onClick={scrollToEvents}
             >
               Events
-            </a>
+            </button>
           </div>
         </div>
 
@@ -30,17 +84,22 @@ const Navbar = () => {
               className='w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all duration-300 outline-none'
               placeholder='Search curated experiences...'
               type='text'
+              value={query}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
             />
           </div>
         </div>
 
         <div className='flex items-center gap-3'>
-          <Link
-            to='/admin/events/create'
-            className='text-on-surface-variant hover:text-primary text-sm font-medium transition-colors'
-          >
-            Admin
-          </Link>
+          {user && (user.role === 'admin' || user.role === 'seller') && (
+            <Link
+              to='/admin'
+              className='text-on-surface-variant hover:text-primary text-sm font-medium transition-colors'
+            >
+              Admin
+            </Link>
+          )}
 
           {user ? (
             <div className='flex items-center gap-3'>
