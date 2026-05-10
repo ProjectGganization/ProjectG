@@ -104,6 +104,11 @@
 			<version>42.7.3</version>
 		    <scope>runtime</scope>
 		</dependency> -->
+		<!-- Email dependency -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
