@@ -103,3 +103,20 @@ CREATE VIEW Myyntiraportti AS
         v.name,
         e.start_time,
         t.ticket_type;
+
+-- Kuitin tulostus näkymä
+CREATE VIEW Kuitti AS
+    SELECT
+        o.order_id AS orderId,
+        e.title AS tapahtuma,
+        t.ticket_type AS lipputyyppi,
+        t.unitprice AS yksikkohinta,
+        it.qr_code AS qrCode,
+        SUM(t.unitprice) OVER (PARTITION BY o.order_id) AS yhteensa
+    FROM Orders o
+    JOIN IssuedTickets it 
+        ON o.order_id = it.order_id
+    JOIN Tickets t 
+        ON it.ticket_id = t.ticket_id
+    JOIN Events e 
+        ON t.event_id = e.event_id;
