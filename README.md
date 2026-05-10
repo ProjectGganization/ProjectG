@@ -34,14 +34,23 @@ ProjectG/
 │       │   ├── SellerController.java
 │       │   ├── TicketController.java
 │       │   ├── UserController.java
-│       │   └── VenuesController.java
+│       │   ├── VenuesController.java
+│       │   ├── InspectController.java
+│       │   ├── RegisterController.java
+│       │   ├── CategoryController.java
+│       │   ├── MyyntiraporttiController.java
+│       │   └── KuittiController.java
 │       ├── dto/
 │       │   ├── CreateOrderRequest.java       # { customerId }
 │       │   ├── CreateOrderDetailsRequest.java # { id: { orderId, ticketId }, quantity }
 │       │   ├── CreateCustomerRequest.java
 │       │   ├── CreateUserRequest.java
 │       │   ├── CustomerResponse.java
-│       │   └── UserResponse.java
+│       │   ├── UserResponse.java
+│       │   ├── LoginRequest.java
+│       │   ├── RegisterRequest.java
+│       │   ├── MyyntiraporttiDTO.java
+│       │   └── KuittiDTO.java
 │       ├── model/                    # JPA entities
 │       │   ├── User.java, Customer.java, Seller.java
 │       │   ├── Event.java, Venue.java, Category.java
@@ -51,6 +60,9 @@ ProjectG/
 │       │   └── ErrorResponse.java
 │       ├── repository/               # Spring Data JPA repositories
 │       └── service/
+│       │   ├── EmailService.java         # Sends email
+│       │   ├── KuittiService.java        # Fetches receipt for a specific order
+│       │   ├── QRService.java            # Generates QR code of 10 characters lenght 
 │           └── UsersDetailsService.java  # Assigns roles: ADMIN / SELLER / CUSTOMER
 │
 ├── frontend/                         # React TypeScript app
