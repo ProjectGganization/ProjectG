@@ -10,6 +10,7 @@ import OrdersPage from './pages/admin/OrdersPage';
 import SignIn from './pages/SignIn';
 import RegisterPage from './pages/RegisterPage';
 import EditEventPage from './pages/admin/EditEventPage';
+import SalesReportsPage from './pages/admin/SalesReports';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
     path: '/admin/orders',
     element: <AdminLayout><OrdersPage /></AdminLayout>,
   },
+  {
+    path: '/admin/reports',
+    element: <AdminLayout><SalesReportsPage /></AdminLayout>,
+  }
 ]);
 
 export default router;
