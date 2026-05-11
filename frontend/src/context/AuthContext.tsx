@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import apiClient from '../api/apiClient';
 
+type UserRole = 'admin' | 'seller' | 'customer' | 'user';
+
 interface AuthUser {
   email: string;
-  role: string;
+  role: UserRole;
 }
 
 interface AuthContextType {
@@ -21,7 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const login = async (email: string, password: string) => {
-    const response = await apiClient.post<{ email: string; role: string }>('/api/auth/login', {
+    const response = await apiClient.post<{ email: string; role: UserRole }>('/api/auth/login', {
       email,
       password,
     });

@@ -3,6 +3,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getEvents } from '../../api/eventService';
 import { Event, formatEventDate } from '../../types/event';
 
+const STATUS_GROUPS = [
+  { key: 'upcoming', label: 'Upcoming Events' },
+  { key: 'cancelled', label: 'Cancelled Events' },
+  { key: 'finished', label: 'Finished Events' },
+];
+
+const STATUS_STYLES: Record<string, string> = {
+  upcoming: 'bg-primary/10 text-primary',
+  cancelled: 'bg-error/10 text-error',
+  finished: 'bg-surface-container-high text-on-surface-variant',
+};
+
 const DashboardPage = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
@@ -15,10 +27,12 @@ const DashboardPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const upcomingEvents = events
-    .filter((e) => e.eventStatus.eventStatus === 'upcoming')
-    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
-    .slice(0, 5);
+  const upcomingEvents = events.filter((e) => e.eventStatus.eventStatus === 'upcoming');
+
+  const groupedEvents = (status: string) =>
+    events
+      .filter((e) => e.eventStatus.eventStatus === status)
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
   const stats = [
     {
@@ -79,39 +93,43 @@ const DashboardPage = () => {
           ))}
         </div>
 
-        {/* Upcoming Events */}
-        <section className="space-y-4">
-          <div className="flex items-baseline gap-4">
-            <h2 className="text-base font-bold text-on-surface">Upcoming Events</h2>
-            <span className="h-px flex-1 bg-surface-container-high" />
-            <Link to="/admin/events/create" className="text-xs font-semibold text-primary hover:underline">
-              + New event
-            </Link>
-          </div>
-          <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-xl divide-y divide-surface-container-low overflow-hidden">
-            {upcomingEvents.length === 0 ? (
-              <p className="text-sm text-on-surface-variant text-center py-10">No upcoming events.</p>
-            ) : (
-              upcomingEvents.map((event) => (
-                <div
-                  key={event.eventId}
-                  onClick={() => navigate(`/admin/events/${event.eventId}/edit`)}
-                  className="flex items-center justify-between px-5 py-4 hover:bg-surface-container-low transition-colors cursor-pointer"
-                >
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-on-surface truncate">{event.title}</p>
-                    <p className="text-xs text-on-surface-variant mt-0.5">
-                      {formatEventDate(event.startTime)} · {event.venue.name}, {event.venue.postalCode.city}
-                    </p>
-                  </div>
-                  <span className="ml-4 shrink-0 text-[10px] font-bold px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container uppercase tracking-wide">
-                    {event.category.category}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
+        {/* Events grouped by status */}
+        {STATUS_GROUPS.map(({ key, label }) => {
+          const group = groupedEvents(key);
+          if (group.length === 0) return null;
+          return (
+            <section key={key} className="space-y-4">
+              <div className="flex items-baseline gap-4">
+                <h2 className="text-base font-bold text-on-surface">{label}</h2>
+                <span className="h-px flex-1 bg-surface-container-high" />
+                {key === 'upcoming' && (
+                  <Link to="/admin/events/create" className="text-xs font-semibold text-primary hover:underline">
+                    + New event
+                  </Link>
+                )}
+              </div>
+              <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-xl divide-y divide-surface-container-low overflow-hidden">
+                {group.map((event) => (
+                    <div
+                      key={event.eventId}
+                      onClick={() => navigate(`/admin/events/${event.eventId}/edit`)}
+                      className="flex items-center justify-between px-5 py-4 hover:bg-surface-container-low transition-colors cursor-pointer"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-on-surface truncate">{event.title}</p>
+                        <p className="text-xs text-on-surface-variant mt-0.5">
+                          {formatEventDate(event.startTime)} · {event.venue.name}, {event.venue.postalCode.city}
+                        </p>
+                      </div>
+                      <span className={`ml-4 shrink-0 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${STATUS_STYLES[key]}`}>
+                        {key}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </section>
+          );
+        })}
 
       </div>
     </>

@@ -9,7 +9,8 @@ const HomePage = () => {
   const [searchParams] = useSearchParams();
   const [events, setEvents] = useState<Event[]>([]);
   const q = (searchParams.get('q') ?? '').toLowerCase();
-  const filteredEvents = q ? events.filter((e) => e.title.toLowerCase().includes(q)) : events;
+  const upcomingEvents = events.filter((e) => e.eventStatus.eventStatus === 'upcoming');
+  const filteredEvents = q ? upcomingEvents.filter((e) => e.title.toLowerCase().includes(q)) : upcomingEvents;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
