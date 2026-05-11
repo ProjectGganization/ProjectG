@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 
 const navItems = [
+  { icon: 'home', label: 'Home', path: '/' },
   { icon: 'dashboard', label: 'Dashboard', path: '/admin' },
   { icon: 'calendar_today', label: 'Events', path: '/admin/events/create' },
   {
@@ -13,10 +14,6 @@ const navItems = [
     ]
   },
   { icon: 'qr_code_scanner', label: 'Ticket Fetcher', path: '/admin/ticket-fetcher' },
-];
-
-const bottomItems = [
-  { icon: 'home', label: 'Home', path: '/' },
 ];
 
 const Sidebar = () => {
@@ -85,18 +82,6 @@ const Sidebar = () => {
           </div>
         ))}
 
-        <div className="pt-2 border-t border-slate-200/60 mt-2">
-          {bottomItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.path}
-              className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-200/50 transition-colors duration-200 text-sm font-medium tracking-tight"
-            >
-              <span className="material-symbols-outlined">{item.icon}</span>
-              {item.label}
-            </Link>
-          ))}
-        </div>
       </nav >
 
       <div className="mt-auto p-4 bg-slate-100 rounded-xl">

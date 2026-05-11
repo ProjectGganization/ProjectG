@@ -1,8 +1,10 @@
 package io.ggroup.demo.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import io.ggroup.demo.dto.InspectResponseDTO;
 import io.ggroup.demo.model.*;
 import io.ggroup.demo.repository.*;
 
@@ -22,15 +24,16 @@ public class InspectController {
         this.issuedTicketRepository = issuedTicketRepository;
     }
 
-    @Operation(summary = "Get ticket by QR code", description = "Returns issued ticket info by QR code")
+    @Operation(summary = "Get ticket by QR code", description = "Returns full ticket info by QR code")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Ticket found"),
         @ApiResponse(responseCode = "404", description = "Ticket not found")
     })
     @GetMapping("/{qrCode}")
+    @Transactional
     public ResponseEntity<?> getTicketByQrCode(@PathVariable String qrCode) {
         return issuedTicketRepository.findByQrCode(qrCode)
-                .map(ticket -> ResponseEntity.ok((Object) ticket))
+                .map(ticket -> ResponseEntity.ok((Object) new InspectResponseDTO(ticket)))
                 .orElseGet(() -> ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
                         .body(new ErrorResponse(404, "Issued ticket not found with QR code")));
@@ -43,6 +46,7 @@ public class InspectController {
         @ApiResponse(responseCode = "409", description = "Ticket has already been used")
     })
     @PutMapping("/{qrCode}/use")
+    @Transactional
     public ResponseEntity<?> markTicketUsed(@PathVariable String qrCode) {
         return issuedTicketRepository.findByQrCode(qrCode)
                 .map(issuedTicket -> {
@@ -54,7 +58,7 @@ public class InspectController {
                     issuedTicket.setUsed(true);
                     issuedTicketRepository.save(issuedTicket);
 
-                    return ResponseEntity.ok(issuedTicket);
+                    return ResponseEntity.ok((Object) new InspectResponseDTO(issuedTicket));
                 })
                 .orElseGet(() -> ResponseEntity
                         .status(HttpStatus.NOT_FOUND)

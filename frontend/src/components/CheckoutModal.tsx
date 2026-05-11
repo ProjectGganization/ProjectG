@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Ticket } from '../types/ticket';
-import { createCustomer, createOrder, createOrderDetail } from '../api/orderService';
+import { createCustomer, createOrder, createOrderDetail, sendReceipt } from '../api/orderService';
 
 interface SelectedTicket {
   ticket: Ticket;
@@ -59,6 +59,8 @@ const CheckoutModal = ({ selected, subtotal, serviceFee, onClose, onSuccess }: C
           createOrderDetail(order.orderId, s.ticket.ticketId, s.quantity)
         )
       );
+
+      sendReceipt(order.orderId, form.email).catch(() => {});
 
       setOrderId(order.orderId);
       setStep('success');
