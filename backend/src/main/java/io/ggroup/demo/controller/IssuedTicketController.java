@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import io.ggroup.demo.dto.*;
 import io.ggroup.demo.model.*;
 import io.ggroup.demo.repository.*;
+import io.ggroup.demo.service.QRImageService;
 import io.ggroup.demo.service.QRService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,12 +28,32 @@ public class IssuedTicketController {
     private final IssuedTicketRepository issuedTicketRepository;
     private final TicketRepository ticketRepository;
     private final OrderRepository orderRepository;
+    private final QRImageService qrImageService;
 
     public IssuedTicketController(IssuedTicketRepository issuedTicketRepository, TicketRepository ticketRepository,
-            OrderRepository orderRepository) {
+            OrderRepository orderRepository, QRImageService qrImageService) {
         this.issuedTicketRepository = issuedTicketRepository;
         this.ticketRepository = ticketRepository;
         this.orderRepository = orderRepository;
+        this.qrImageService = qrImageService;
+    }
+
+    // Get QR code image for an issued ticket
+    @Operation(summary = "Get QR code image", description = "Returns a PNG QR code image for the issued ticket")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "QR code image returned"),
+            @ApiResponse(responseCode = "404", description = "Issued ticket not found")
+    })
+    @GetMapping("/{id}/qr")
+    public ResponseEntity<byte[]> getQrImage(@PathVariable Integer id) {
+        return issuedTicketRepository.findById(id)
+                .map(ticket -> {
+                    byte[] image = qrImageService.toImage(ticket.getQrCode(), 300);
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.IMAGE_PNG)
+                            .body(image);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Get all issuedTickets

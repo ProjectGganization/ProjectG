@@ -5,19 +5,24 @@ import io.ggroup.demo.repository.KuittiRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class KuittiService {
 
     private final KuittiRepository kuittiRepository;
     private final EmailService emailService;
+    private final QRImageService qrImageService;
 
     public KuittiService(KuittiRepository kuittiRepository,
-                          EmailService emailService) {
+                          EmailService emailService,
+                          QRImageService qrImageService) {
         this.kuittiRepository = kuittiRepository;
         this.emailService = emailService;
+        this.qrImageService = qrImageService;
     }
 
     public List<KuittiDTO> haeKuitti(Integer orderId) {
@@ -32,12 +37,21 @@ public class KuittiService {
             throw new IllegalArgumentException("Receipt could not be found for order " + orderId);
         }
 
+        Map<String, byte[]> inlineImages = new LinkedHashMap<>();
+        for (int i = 0; i < kuitti.size(); i++) {
+            String qrCode = kuitti.get(i).getQrCode();
+            if (qrCode != null) {
+                inlineImages.put("qr-" + i, qrImageService.toImage(qrCode, 150));
+            }
+        }
+
         String html = buildReceiptHtml(kuitti);
 
-        emailService.sendHtmlEmail(
+        emailService.sendHtmlEmailWithInlineImages(
             email,
             "Kuitti tilauksesta #" + orderId,
-            html
+            html,
+            inlineImages
         );
     }
 
@@ -45,17 +59,21 @@ public class KuittiService {
 
         StringBuilder rows = new StringBuilder();
 
-        for (KuittiDTO r : kuitti) {
+        for (int i = 0; i < kuitti.size(); i++) {
+            KuittiDTO r = kuitti.get(i);
             rows.append("""
                 <tr>
                     <td>%s</td>
                     <td>%s</td>
                     <td>%s €</td>
+                    <td><img src="cid:qr-%d" width="120" height="120" alt="%s" /></td>
                 </tr>
             """.formatted(
                 r.getTapahtuma(),
                 r.getLipputyyppi(),
-                formatMoney(r.getYksikkohinta())
+                formatMoney(r.getYksikkohinta()),
+                i,
+                r.getQrCode()
             ));
         }
 
@@ -68,6 +86,7 @@ public class KuittiService {
                     <th>Tapahtuma</th>
                     <th>Lipputyyppi</th>
                     <th>Hinta</th>
+                    <th>QR-koodi</th>
                 </tr>
                 %s
             </table>

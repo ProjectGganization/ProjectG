@@ -59,3 +59,6 @@ export const createOrderDetail = (
     ticketId,
     quantity,
   } satisfies CreateOrderDetailRequest);
+
+export const sendReceipt = (orderId: number, email: string): Promise<void> =>
+  apiClient.post<void>(`/api/kuitti/${orderId}/email?email=${encodeURIComponent(email)}`, null);
