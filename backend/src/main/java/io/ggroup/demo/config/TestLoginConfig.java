@@ -1,6 +1,8 @@
 package io.ggroup.demo.config;
 
+import io.ggroup.demo.model.Seller;
 import io.ggroup.demo.model.User;
+import io.ggroup.demo.repository.SellerRepository;
 import io.ggroup.demo.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,28 +16,30 @@ public class TestLoginConfig {
     //customer@test salasana customer123
     @Bean
     public CommandLineRunner createTestUsers(
-            UserRepository userRepo, 
+            UserRepository userRepo,
+            SellerRepository sellerRepo,
             PasswordEncoder encoder) {
             return args -> {
 
             if (userRepo.findByEmail("admin@test.com").isEmpty()) {
-                // Create new admin user
                 User admin = new User();
                 admin.setEmail("admin@test.com");
                 admin.setPasswordHash(encoder.encode("admin123"));
-
                 userRepo.save(admin);
-
                 System.out.println("Admin user created: admin@test.com / admin123");
             }
 
             if (userRepo.findByEmail("seller@test.com").isEmpty()) {
-                // Create new seller user
-                User seller = new User();
-                seller.setEmail("seller@test.com");
-                seller.setPasswordHash(encoder.encode("seller123"));
+                User sellerUser = new User();
+                sellerUser.setEmail("seller@test.com");
+                sellerUser.setPasswordHash(encoder.encode("seller123"));
+                userRepo.save(sellerUser);
 
-                userRepo.save(seller);
+                Seller seller = new Seller();
+                seller.setEmail("seller@test.com");
+                seller.setName("Test Seller");
+                seller.setUser(sellerUser);
+                sellerRepo.save(seller);
 
                 System.out.println("Seller user created: seller@test.com / seller123");
             }
