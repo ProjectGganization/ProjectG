@@ -37,7 +37,8 @@ INSERT INTO Sellers (name, email, phone, user_id) VALUES
 INSERT INTO Customers (firstname, lastname, email, phone, user_id) VALUES
 ('Daniel', 'Duunari', 'daniel@gmail.com', '+358409876543', 2),
 ('Sanni', 'Shoppaaja', 'sanni@gmail.com', '+358409222333', NULL),
-('Riikka', 'Remes', 'riikka@gmail.com', '+358409834875', NULL);
+('Riikka', 'Remes', 'riikka@gmail.com', '+358409834875', NULL),
+('Tiina', 'Tuhlari', 'tiinatuhlari@mail.com', '+35840922493', NULL);
 
 -- Venues
 INSERT INTO Venues (name, address, postalcode) VALUES
@@ -81,6 +82,17 @@ INSERT INTO Tickets (ticket_type, event_id, unitprice, in_stock, order_limit) VA
 -- Summer Music Festival (event_id = 4)
 ('normal',  4, 15.00, 50, 10),
 ('student', 4, 10.00, 25, 10);
+
+INSERT INTO Orders (customer_id, is_paid, is_refunded, date, paymentmethod) VALUES 
+(4, true, false, '2026-05-12', 'bank');
+
+INSERT INTO OrderDetails (order_id, quantity, seller_id, ticket_id, unitprice) VALUES
+(1, 1, 1, 3, 39.90),
+(1, 1, 1, 1, 59.90);
+
+INSERT INTO IssuedTickets (order_id, ticket_id, used_at, qr_code) VALUES
+(1, 3, false, 'P7TVJPO0TD'),
+(1, 1, false, 'DYQTBCBIC9');
 
 -- Myyntiraportti näkymä
 CREATE VIEW Myyntiraportti AS
