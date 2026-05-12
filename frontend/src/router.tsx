@@ -11,6 +11,7 @@ import SignIn from './pages/SignIn';
 import RegisterPage from './pages/RegisterPage';
 import EditEventPage from './pages/admin/EditEventPage';
 import SalesReportsPage from './pages/admin/SalesReports';
+import VenuesPage from './pages/admin/VenuesPage';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: '/admin/reports',
     element: <AdminLayout><SalesReportsPage /></AdminLayout>,
+  },
+  {
+    path: '/admin/venues',
+    element: <AdminLayout><VenuesPage /></AdminLayout>,
   }
 ]);
 
