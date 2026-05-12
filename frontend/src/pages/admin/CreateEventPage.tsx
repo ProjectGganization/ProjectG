@@ -1,20 +1,46 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { TicketTier } from '../../types/ticketTier';
 import TicketTierRow from '../../components/admin/TicketTierRow';
+import { Venue } from '../../types/event';
+import { getVenues } from '../../api/venueService';
+import { Seller, getSellers } from '../../api/sellerService';
+import { createEvent } from '../../api/eventService';
+import { createTicket } from '../../api/ticketService';
 
-const INITIAL_TIERS: TicketTier[] = [
-  { id: 1, type: 'VIP Gold Pass', unitPrice: 450, inStock: 50, orderLimit: 2 },
-  { id: 2, type: 'General Admission', unitPrice: 120, inStock: 1000, orderLimit: 6 },
-];
+const CATEGORIES = ['music', 'sports', 'conference', 'theatre'];
+const EVENT_STATUSES = ['upcoming', 'cancelled', 'finished'];
 
 const CreateEventPage = () => {
-  const [tiers, setTiers] = useState<TicketTier[]>(INITIAL_TIERS);
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    startTime: '',
+    endTime: '',
+    category: '',
+    eventStatus: 'upcoming',
+    venueId: '',
+    sellerId: '',
+  });
+  const [tiers, setTiers] = useState<TicketTier[]>([]);
+  const [venues, setVenues] = useState<Venue[]>([]);
+  const [sellers, setSellers] = useState<Seller[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getVenues().then(setVenues).catch(() => {});
+    getSellers().then(setSellers).catch(() => {});
+  }, []);
+
+  const set = (field: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleTierChange = (id: number, field: keyof TicketTier, value: string | number) => {
-    setTiers((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
-    );
+    setTiers((prev) => prev.map((t) => (t.id === id ? { ...t, [field]: value } : t)));
   };
 
   const handleTierDelete = (id: number) => {
@@ -27,6 +53,42 @@ const CreateEventPage = () => {
       ...prev,
       { id: newId, type: 'New Ticket Type', unitPrice: 0, inStock: 0, orderLimit: 1 },
     ]);
+  };
+
+  const handlePublish = async () => {
+    if (!form.title || !form.startTime || !form.endTime || !form.venueId || !form.category || !form.sellerId) {
+      setError('Please fill in all required fields: title, dates, category, venue, and seller.');
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const event = await createEvent({
+        title: form.title,
+        description: form.description,
+        startTime: form.startTime,
+        endTime: form.endTime,
+        eventStatus: { eventStatus: form.eventStatus },
+        venue: { venueId: Number(form.venueId) },
+        category: { category: form.category },
+        seller: { sellerId: Number(form.sellerId) },
+      });
+      await Promise.all(
+        tiers.map((tier) =>
+          createTicket({
+            ticketType: tier.type,
+            event: { eventId: event.eventId },
+            unitPrice: tier.unitPrice,
+            inStock: tier.inStock,
+            orderLimit: tier.orderLimit,
+          })
+        )
+      );
+      navigate(`/events/${event.eventId}`, { state: { from: '/admin' } });
+    } catch {
+      setError('Failed to create event. Please try again.');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -42,24 +104,24 @@ const CreateEventPage = () => {
             <span className="material-symbols-outlined text-sm">arrow_back</span>
             Home
           </Link>
-          <button className="px-4 py-2 text-sm font-medium text-primary hover:bg-primary/5 rounded-md transition-colors">
-            Save Draft
-          </button>
-          <button className="px-6 py-2 text-sm font-semibold text-on-primary bg-gradient-to-br from-primary to-primary-container rounded-md shadow-sm hover:opacity-90 active:scale-95 transition-all">
-            Publish Event
-          </button>
-          <div className="h-6 w-px bg-outline-variant/30 mx-2" />
-          <button className="text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">notifications</span>
-          </button>
-          <button className="text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">help_outline</span>
+          <button
+            onClick={handlePublish}
+            disabled={submitting}
+            className="px-6 py-2 text-sm font-semibold text-on-primary bg-gradient-to-br from-primary to-primary-container rounded-md shadow-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {submitting ? 'Publishing...' : 'Publish Event'}
           </button>
         </div>
       </header>
 
       {/* Form Content */}
       <div className="max-w-5xl mx-auto p-8 space-y-12">
+
+        {error && (
+          <div className="p-4 bg-error-container text-on-error-container rounded-xl text-sm font-medium">
+            {error}
+          </div>
+        )}
 
         {/* Section 1: Event Information */}
         <section className="space-y-6">
@@ -71,12 +133,14 @@ const CreateEventPage = () => {
           <div className="grid grid-cols-1 gap-8">
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-                Event Title
+                Event Title <span className="text-error">*</span>
               </label>
               <input
                 className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl px-6 py-4 text-xl font-medium focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-outline/50 outline-none"
                 placeholder="e.g. Midnight Symphony at the Grand Hall"
                 type="text"
+                value={form.title}
+                onChange={set('title')}
               />
             </div>
 
@@ -86,20 +150,13 @@ const CreateEventPage = () => {
                 <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                   Description
                 </label>
-                <div className="rounded-xl border border-outline-variant/20 bg-surface-container-lowest overflow-hidden">
-                  <div className="flex items-center gap-1 p-2 border-b border-surface-container-low bg-surface-container-low/30">
-                    {['format_bold', 'format_italic', 'format_list_bulleted', 'link'].map((icon) => (
-                      <button key={icon} className="p-2 hover:bg-white rounded text-on-surface-variant">
-                        <span className="material-symbols-outlined text-sm">{icon}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <textarea
-                    className="w-full border-none bg-transparent p-6 focus:ring-0 resize-none text-base outline-none"
-                    placeholder="Describe the experience..."
-                    rows={6}
-                  />
-                </div>
+                <textarea
+                  className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-6 focus:ring-2 focus:ring-primary/10 focus:border-primary resize-none text-base outline-none"
+                  placeholder="Describe the experience..."
+                  rows={7}
+                  value={form.description}
+                  onChange={set('description')}
+                />
               </div>
 
               {/* Cover Media */}
@@ -128,20 +185,24 @@ const CreateEventPage = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-                  Start Date &amp; Time
+                  Start Date &amp; Time <span className="text-error">*</span>
                 </label>
                 <input
                   className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none"
                   type="datetime-local"
+                  value={form.startTime}
+                  onChange={set('startTime')}
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-                  End Date &amp; Time
+                  End Date &amp; Time <span className="text-error">*</span>
                 </label>
                 <input
                   className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none"
                   type="datetime-local"
+                  value={form.endTime}
+                  onChange={set('endTime')}
                 />
               </div>
             </div>
@@ -156,71 +217,87 @@ const CreateEventPage = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-                  Category
+                  Category <span className="text-error">*</span>
                 </label>
-                <select className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none">
-                  <option>Music</option>
-                  <option>Art &amp; Gallery</option>
-                  <option>Professional Sports</option>
-                  <option>Theater</option>
-                  <option>Fine Dining</option>
+                <select
+                  className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none"
+                  value={form.category}
+                  onChange={set('category')}
+                >
+                  <option value="">Select category</option>
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                   Event Status
                 </label>
-                <select className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none">
-                  <option>Draft</option>
-                  <option>Published</option>
-                  <option>Private / Invite Only</option>
+                <select
+                  className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none"
+                  value={form.eventStatus}
+                  onChange={set('eventStatus')}
+                >
+                  {EVENT_STATUSES.map((s) => (
+                    <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                  ))}
                 </select>
               </div>
             </div>
           </section>
         </div>
 
-        {/* Section 4: Location */}
-        <section className="space-y-6">
-          <div className="flex items-baseline gap-4">
-            <h2 className="text-xl font-bold tracking-tight text-on-surface">Location</h2>
-            <span className="h-px flex-1 bg-surface-container-high" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-            <div className="md:col-span-2 space-y-4">
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-                  Venue
-                </label>
-                <div className="flex gap-2">
-                  <select className="flex-1 bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none">
-                    <option>Royal Albert Hall, London</option>
-                    <option>Madison Square Garden, NY</option>
-                    <option>The Opera House, Sydney</option>
-                    <option>+ Add New Venue</option>
-                  </select>
-                  <button className="px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg hover:bg-secondary-container/80 transition-colors">
-                    <span className="material-symbols-outlined align-middle text-lg">add</span>
-                  </button>
-                </div>
-              </div>
-              <div className="p-4 bg-surface-container-low rounded-xl flex items-start gap-4">
-                <span className="material-symbols-outlined text-primary">info</span>
-                <div className="text-xs text-on-surface-variant leading-relaxed">
-                  <p className="font-bold text-on-surface">Venue Capacity Auto-Limit</p>
-                  <p>The selected venue has a maximum capacity of 5,272. Ticket tiers will be restricted to this total.</p>
-                </div>
-              </div>
+        {/* Section 4: Location & Seller */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <section className="space-y-6">
+            <div className="flex items-baseline gap-4">
+              <h2 className="text-xl font-bold tracking-tight text-on-surface">Location</h2>
+              <span className="h-px flex-1 bg-surface-container-high" />
             </div>
-            <div className="h-40 rounded-xl bg-surface-container-highest overflow-hidden grayscale contrast-125 border border-outline-variant/10">
-              <img
-                alt="Venue Location Map"
-                className="w-full h-full object-cover"
-                src="https://picsum.photos/seed/venuemap/300/160"
-              />
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
+                Venue <span className="text-error">*</span>
+              </label>
+              <select
+                className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none"
+                value={form.venueId}
+                onChange={set('venueId')}
+              >
+                <option value="">Select venue</option>
+                {venues.map((v) => (
+                  <option key={v.venueId} value={v.venueId}>
+                    {v.name}, {v.postalCode.city}
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="space-y-6">
+            <div className="flex items-baseline gap-4">
+              <h2 className="text-xl font-bold tracking-tight text-on-surface">Seller</h2>
+              <span className="h-px flex-1 bg-surface-container-high" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
+                Assigned Seller <span className="text-error">*</span>
+              </label>
+              <select
+                className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none"
+                value={form.sellerId}
+                onChange={set('sellerId')}
+              >
+                <option value="">Select seller</option>
+                {sellers.map((s) => (
+                  <option key={s.sellerId} value={s.sellerId}>
+                    {s.name} ({s.email})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </section>
+        </div>
 
         {/* Section 5: Ticket Tiers */}
         <section className="space-y-6">
@@ -233,7 +310,7 @@ const CreateEventPage = () => {
               <thead>
                 <tr className="bg-surface-container-low/50">
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Ticket Type</th>
-                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-right">Unit Price ($)</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-right">Unit Price (€)</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-right">In Stock</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-right">Order Limit</th>
                   <th className="px-6 py-4 w-16" />
@@ -261,19 +338,14 @@ const CreateEventPage = () => {
         </section>
 
         {/* Final Action Row */}
-        <div className="pt-8 border-t border-surface-container-high flex justify-between items-center">
-          <div className="text-xs text-on-surface-variant flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Autosaved at 14:23 PM
-          </div>
-          <div className="flex gap-4">
-            <button className="px-8 py-3 rounded-lg border border-outline-variant/30 text-sm font-semibold text-on-surface hover:bg-surface-container-low transition-colors">
-              Preview Draft
-            </button>
-            <button className="px-12 py-3 rounded-lg bg-primary text-on-primary text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all">
-              Launch Experience
-            </button>
-          </div>
+        <div className="pt-8 border-t border-surface-container-high flex justify-end">
+          <button
+            onClick={handlePublish}
+            disabled={submitting}
+            className="px-12 py-3 rounded-lg bg-primary text-on-primary text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {submitting ? 'Publishing...' : 'Publish Event'}
+          </button>
         </div>
 
       </div>

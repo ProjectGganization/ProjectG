@@ -3,7 +3,9 @@ package io.ggroup.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,13 +28,22 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**", "/api/**"))
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
+
+                        // Allow CORS preflight through without authentication
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // Public pages
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
@@ -48,10 +59,16 @@ public class SecurityConfig {
                                 "/api/inspect/**")
                         .permitAll()
 
+                        // Public auth endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/register", "/api/auth/login").permitAll()
+
                         // Public purchase
                         .requestMatchers(HttpMethod.POST,
+                                "/api/customers",
                                 "/api/customers/**",
+                                "/api/orders",
                                 "/api/orders/**",
+                                "/api/orderdetails",
                                 "/api/orderdetails/**")
                         .permitAll()
 
@@ -73,23 +90,31 @@ public class SecurityConfig {
                         // User management only for admin
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
 
-                        // Only admin can create main business resources
+                        // Admin and seller can create events and tickets
                         .requestMatchers(HttpMethod.POST,
                                 "/api/events/**",
-                                "/api/tickets/**",
                                 "/api/venues/**",
                                 "/api/postalcodes/**")
-                        .hasRole("ADMIN")
+                        .hasAnyRole("ADMIN", "SELLER")
 
                         // Seller and admin can create issued tickets
                         .requestMatchers(HttpMethod.POST,
                                 "/api/issuedtickets/**")
                         .hasAnyRole("SELLER", "ADMIN")
 
-                        // Only admin can edit main business resources
+                         // Seller and admin can create tickets
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/tickets/**")
+                        .hasAnyRole("SELLER", "ADMIN")
+
+                        // Admin and seller can edit events and tickets
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/events/**",
-                                "/api/tickets/**",
+                                "/api/tickets/**")
+                        .hasAnyRole("ADMIN", "SELLER")
+
+                        // Only admin can edit venues, postal codes, customers
+                        .requestMatchers(HttpMethod.PUT,
                                 "/api/venues/**",
                                 "/api/postalcodes/**",
                                 "/api/customers/**")
@@ -105,7 +130,7 @@ public class SecurityConfig {
                         // Delete only for admin
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
-.anyRequest().authenticated())
+                .anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/swagger-ui/index.html", true)
                         .permitAll()

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import io.ggroup.demo.dto.CreateOrderRequest;
 import io.ggroup.demo.model.*;
 import io.ggroup.demo.repository.*;
 
@@ -23,10 +24,12 @@ public class OrdersController {
 
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
 
-    public OrdersController(OrderRepository orderRepository, CustomerRepository customerRepository) {
+    public OrdersController(OrderRepository orderRepository, CustomerRepository customerRepository, PaymentMethodRepository paymentMethodRepository) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
     }
 
     // GET /api/orders - Get all orders
@@ -77,14 +80,23 @@ public class OrdersController {
         @ApiResponse(responseCode = "400", description = "Invalid order data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody Order order) {
-        // Validation
-        ResponseEntity<?> customerValidation = validateAndAttachCustomer(order);
-        if (customerValidation != null) return customerValidation;
+    public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request) {
     
         try {
-            Order savedOrder = orderRepository.save(order);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        PaymentMethod paymentMethod = paymentMethodRepository.findById("cash")
+                .orElseThrow(() -> new RuntimeException("Payment method not found"));
+
+        Order order = new Order();
+        order.setCustomer(customer);
+        order.setPaymentMethod(paymentMethod);
+
+        Order savedOrder = orderRepository.save(order);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
+
         } catch (Exception e) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -125,15 +137,8 @@ public class OrdersController {
                 .body(new ErrorResponse(400, "Date is required"));
         }
 
-        if (order.getSeller() != null) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(400, "Seller is required"));
-        }
-
         existingOrder.setCustomer(order.getCustomer());  // tämä on validateAndAttachCustomer() kautta DB-entity
         existingOrder.setDate(order.getDate());
-        existingOrder.setSeller(order.getSeller());
         existingOrder.setIsRefunded(order.getIsRefunded());
         existingOrder.setIsPaid(order.getIsPaid());
         existingOrder.setPaymentMethod(order.getPaymentMethod());

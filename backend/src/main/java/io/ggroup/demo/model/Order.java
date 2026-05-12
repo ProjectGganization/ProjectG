@@ -20,15 +20,11 @@ public class Order {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id", nullable = false)
-    private Seller seller;
-
     @Column(name = "is_refunded", nullable = false)
-    private boolean isRefunded;
+    private boolean isRefunded = false; 
 
     @Column(name = "is_paid", nullable = false)
-    private boolean isPaid;
+    private boolean isPaid = true;
 
     @ManyToOne
     @JoinColumn(name = "paymentmethod")
@@ -38,10 +34,16 @@ public class Order {
     public Order() {
     }
 
-    public Order(Customer customer, LocalDateTime date, Seller seller, boolean isRefunded, boolean isPaid, PaymentMethod paymentMethod) {
+    @PrePersist
+    protected void onCreate() {
+        if (this.date == null) {
+            this.date = LocalDateTime.now();
+        }
+    }
+
+    public Order(Customer customer, LocalDateTime date, boolean isRefunded, boolean isPaid, PaymentMethod paymentMethod) {
         this.customer = customer;
         this.date = date;
-        this.seller = seller;
         this.isRefunded = isRefunded;
         this.isPaid = isPaid;
         this.paymentMethod = paymentMethod;
@@ -66,14 +68,6 @@ public class Order {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
-    }
-
-    public Seller getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
     }
 
     public boolean getIsRefunded() {

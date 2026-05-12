@@ -28,16 +28,21 @@ public class OrderDetails {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private Seller seller;
+
     // Constructors
     public OrderDetails() {
     }
 
-    public OrderDetails(Order order, Ticket ticket, BigDecimal unitPrice, Integer quantity) {
+    public OrderDetails(Order order, Ticket ticket, BigDecimal unitPrice, Integer quantity, Seller seller) {
         this.id = new OrderDetailsId(order.getOrderId(), ticket.getTicketId());
         this.order = order;
         this.ticket = ticket;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
+        this.seller = seller;
     }
 
     // Getters and Setters
@@ -129,5 +134,12 @@ public class OrderDetails {
         }
     }
 
-   
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+    
 }
