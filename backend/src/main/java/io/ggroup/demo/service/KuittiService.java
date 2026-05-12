@@ -16,6 +16,7 @@ public class KuittiService {
     private final KuittiRepository kuittiRepository;
     private final EmailService emailService;
     private final QRImageService qrImageService;
+    private static final BigDecimal palvelumaksu = new BigDecimal("12.50");
 
     public KuittiService(KuittiRepository kuittiRepository,
                           EmailService emailService,
@@ -67,17 +68,19 @@ public class KuittiService {
                     <td>%s</td>
                     <td>%s €</td>
                     <td><img src="cid:qr-%d" width="120" height="120" alt="%s" /></td>
+                    <td>%s</td>
                 </tr>
             """.formatted(
                 r.getTapahtuma(),
                 r.getLipputyyppi(),
                 formatMoney(r.getYksikkohinta()),
                 i,
+                r.getQrCode(),
                 r.getQrCode()
             ));
         }
 
-        BigDecimal total = kuitti.get(0).getYhteensa();
+        BigDecimal total = kuitti.get(0).getYhteensa().add(palvelumaksu);
 
         return """
             <h2>Kiitos ostoksestasi!</h2>
@@ -87,11 +90,13 @@ public class KuittiService {
                     <th>Lipputyyppi</th>
                     <th>Hinta</th>
                     <th>QR-koodi</th>
+                    <th>Koodi</th>
                 </tr>
                 %s
             </table>
+            <p>Palvelumaksu: %s €</p>
             <p><strong>Yhteensä: %s €</strong></p>
-        """.formatted(rows, formatMoney(total));
+        """.formatted(rows, formatMoney(palvelumaksu), formatMoney(total));
     }
 
     private String formatMoney(BigDecimal value) {
