@@ -21,5 +21,6 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 spring.jpa.hibernate.ddl-auto=validate
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
-# Kirjoita perään joko H2Dialect tai PostgreSQLDialect riippuen siitä, kumpaa tietokantaa käytät
+
 spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+# Kirjoita perään joko H2Dialect tai PostgreSQLDialect riippuen siitä, kumpaa tietokantaa käytät
