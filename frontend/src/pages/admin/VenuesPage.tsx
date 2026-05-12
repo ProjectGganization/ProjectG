@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Venue } from '../../types/event';
-import { getVenues, createVenue, updateVenue, deleteVenue } from '../../api/venueService';
+import { getVenues, createVenue, updateVenue } from '../../api/venueService';
 import { getPostalCode, createPostalCode } from '../../api/postalCodeService';
 
 interface VenueForm {
@@ -27,7 +27,7 @@ export default function VenuesPage() {
   const [postalLookup, setPostalLookup] = useState<'idle' | 'loading' | 'found' | 'notfound'>('idle');
   const postalDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deletedIds, setDeletedIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     loadVenues();
@@ -111,17 +111,16 @@ export default function VenuesPage() {
     }
   }
 
-  async function handleDelete(id: number) {
-    if (!window.confirm('Poistetaanko venue?')) return;
-    setDeletingId(id);
-    try {
-      await deleteVenue(id);
-      setVenues((prev) => prev.filter((v) => v.venueId !== id));
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Poisto epäonnistui.');
-    } finally {
-      setDeletingId(null);
-    }
+  function handleDelete(id: number) {
+    setDeletedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
   }
 
   return (
@@ -164,34 +163,45 @@ export default function VenuesPage() {
                   </td>
                 </tr>
               ) : (
-                venues.map((venue) => (
-                  <tr key={venue.venueId} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-mono text-gray-500">{venue.venueId}</td>
-                    <td className="px-4 py-3 font-medium text-gray-900">{venue.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{venue.address}</td>
-                    <td className="px-4 py-3 text-gray-600">{venue.postalCode.postalCode}</td>
-                    <td className="px-4 py-3 text-gray-600">{venue.postalCode.city}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => openEdit(venue)}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Muokkaa"
-                        >
-                          <span className="material-symbols-outlined text-base">edit</span>
-                        </button>
-                        <button
-                          onClick={() => handleDelete(venue.venueId)}
-                          disabled={deletingId === venue.venueId}
-                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-40"
-                          title="Poista"
-                        >
-                          <span className="material-symbols-outlined text-base">delete</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                venues.map((venue) => {
+                  const isDeleted = deletedIds.has(venue.venueId);
+                  return (
+                    <tr
+                      key={venue.venueId}
+                      className={isDeleted ? 'bg-red-50' : 'hover:bg-gray-50 transition-colors'}
+                    >
+                      <td className={`px-4 py-3 font-mono ${isDeleted ? 'text-red-300' : 'text-gray-500'}`}>{venue.venueId}</td>
+                      <td className={`px-4 py-3 font-medium ${isDeleted ? 'text-red-400 line-through' : 'text-gray-900'}`}>
+                        {venue.name}
+                      </td>
+                      <td className={`px-4 py-3 ${isDeleted ? 'text-red-300 line-through' : 'text-gray-600'}`}>{venue.address}</td>
+                      <td className={`px-4 py-3 ${isDeleted ? 'text-red-300' : 'text-gray-600'}`}>{venue.postalCode.postalCode}</td>
+                      <td className={`px-4 py-3 ${isDeleted ? 'text-red-300' : 'text-gray-600'}`}>{venue.postalCode.city}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-2">
+                          {isDeleted ? (
+                            <span className="text-xs text-red-400 font-medium px-2 py-0.5 bg-red-100 rounded-full">Poistettu</span>
+                          ) : (
+                            <button
+                              onClick={() => openEdit(venue)}
+                              className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              title="Muokkaa"
+                            >
+                              <span className="material-symbols-outlined text-base">edit</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDelete(venue.venueId)}
+                            className={`p-1.5 rounded-lg transition-colors ${isDeleted ? 'text-red-400 hover:text-gray-500 hover:bg-gray-100' : 'text-gray-400 hover:text-red-600 hover:bg-red-50'}`}
+                            title={isDeleted ? 'Kumoa poisto' : 'Poista'}
+                          >
+                            <span className="material-symbols-outlined text-base">{isDeleted ? 'undo' : 'delete'}</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

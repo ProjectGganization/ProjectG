@@ -1,6 +1,14 @@
 ## Venue API
 Base URL: `/api/venues`
 
+### Admin UI — Venues Page
+
+The admin page (`VenuesPage.tsx`) allows admins to list, create, and update venues.
+
+**Soft delete** — the delete button in the UI does **not** call `DELETE /api/venues/{id}`. Instead it marks the row as deleted visually (red background, strikethrough, "Poistettu" badge). The change is UI-only and is not persisted. The delete can be undone in the same session with the undo button. The `DELETE` endpoint remains available for direct API use.
+
+**Postal code auto-creation** — when creating or updating a venue, if the entered postal code does not exist in the database, the admin page automatically calls `POST /api/postalcodes` to create it before saving the venue.
+
 **Permissions**
 
 | Endpoint           | Method | Required Role     |
@@ -201,6 +209,8 @@ curl -X POST http://localhost:8080/api/venues \
 **Endpoint:** `PUT /api/venues/{id}`
 
 **Access Control** `ADMIN`
+
+> **Fix:** Null checks for `name`, `address`, and `postalCode` were inverted in a previous version — all three fields are now correctly required and validated.
 
 ### Path Parameters
 
