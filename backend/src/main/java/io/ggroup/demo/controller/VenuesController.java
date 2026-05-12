@@ -110,19 +110,19 @@ public class VenuesController {
 			return postalCodeValidation;
 		}
 
-		if (venue.getName() != null) {
+		if (venue.getName() == null) {
 			return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(new ErrorResponse(400, "Name is required"));
 		}
 
-		if (venue.getAddress() != null) {
+		if (venue.getAddress() == null) {
 			return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(new ErrorResponse(400, "Address is required"));
 		}
 
-		if (venue.getPostalCode() != null) {
+		if (venue.getPostalCode() == null) {
 			return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(new ErrorResponse(400, "Postal code is required"));

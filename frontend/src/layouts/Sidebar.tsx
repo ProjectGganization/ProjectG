@@ -13,6 +13,7 @@ const navItems = [
       { label: 'Sales Reports', path: '/admin/reports' },
     ]
   },
+  { icon: 'location_on', label: 'Venues', path: '/admin/venues' },
   { icon: 'qr_code_scanner', label: 'Ticket Fetcher', path: '/admin/ticket-fetcher' },
 ];
 
