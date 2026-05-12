@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import externalClient from '../../api/externalClient';
+import apiClient from '../../api/apiClient';
 
 interface InspectResult {
   issuedTicketId: number;
@@ -29,11 +29,7 @@ const TicketFetcherPage = () => {
     setError(null);
     setResult(null);
     try {
-<<<<<<< HEAD
-      const data = await externalClient.get<Record<string, unknown>>(`/api/inspect/${ticketId.trim()}`);
-=======
       const data = await apiClient.get<InspectResult>(`/api/inspect/${ticketId.trim()}`);
->>>>>>> dev
       setResult(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
@@ -47,11 +43,7 @@ const TicketFetcherPage = () => {
     setMarking(true);
     setError(null);
     try {
-<<<<<<< HEAD
-      const data = await externalClient.put<Record<string, unknown>>(`/api/inspect/${ticketId.trim()}/use`);
-=======
       const data = await apiClient.put<InspectResult>(`/api/inspect/${ticketId.trim()}/use`);
->>>>>>> dev
       setResult(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
