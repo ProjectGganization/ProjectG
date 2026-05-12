@@ -83,11 +83,11 @@ export default function VenuesPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.name.trim() || !form.address.trim() || !form.postalCode.trim()) {
-      setFormError('Nimi, osoite ja postinumero ovat pakollisia.');
+      setFormError('Name, address and postal code are required.');
       return;
     }
     if (postalLookup === 'notfound' && !form.city.trim()) {
-      setFormError('Syötä kaupunki uudelle postinumerolle.');
+      setFormError('Enter a city for the new postal code.');
       return;
     }
     setSubmitting(true);
@@ -105,7 +105,7 @@ export default function VenuesPage() {
       }
       setShowModal(false);
     } catch (err: unknown) {
-      setFormError(err instanceof Error ? err.message : 'Tallennus epäonnistui.');
+      setFormError(err instanceof Error ? err.message : 'Save failed.');
     } finally {
       setSubmitting(false);
     }
@@ -128,18 +128,18 @@ export default function VenuesPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Venues</h1>
-          <p className="text-sm text-gray-500 mt-1">Hallinnoi tapahtumapaikkoja</p>
+          <p className="text-sm text-gray-500 mt-1">Manage venues</p>
         </div>
         <button
           onClick={openCreate}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
         >
           <span className="material-symbols-outlined text-base">add</span>
-          Lisää venue
+          Add venue
         </button>
       </div>
 
-      {loading && <div className="text-center py-20 text-gray-400 text-sm">Ladataan...</div>}
+      {loading && <div className="text-center py-20 text-gray-400 text-sm">Loading...</div>}
       {error && <div className="text-center py-20 text-red-500 text-sm">{error}</div>}
 
       {!loading && !error && (
@@ -148,10 +148,10 @@ export default function VenuesPage() {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">#</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Nimi</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Osoite</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Postinumero</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Kaupunki</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">Address</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">Postal code</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">City</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -159,7 +159,7 @@ export default function VenuesPage() {
               {venues.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="text-center py-10 text-gray-400">
-                    Ei venueita. Lisää ensimmäinen.
+                    No venues. Add the first one.
                   </td>
                 </tr>
               ) : (
@@ -180,12 +180,12 @@ export default function VenuesPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
                           {isDeleted ? (
-                            <span className="text-xs text-red-400 font-medium px-2 py-0.5 bg-red-100 rounded-full">Poistettu</span>
+                            <span className="text-xs text-red-400 font-medium px-2 py-0.5 bg-red-100 rounded-full">Deleted</span>
                           ) : (
                             <button
                               onClick={() => openEdit(venue)}
                               className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                              title="Muokkaa"
+                              title="Edit"
                             >
                               <span className="material-symbols-outlined text-base">edit</span>
                             </button>
@@ -193,7 +193,7 @@ export default function VenuesPage() {
                           <button
                             onClick={() => handleDelete(venue.venueId)}
                             className={`p-1.5 rounded-lg transition-colors ${isDeleted ? 'text-red-400 hover:text-gray-500 hover:bg-gray-100' : 'text-gray-400 hover:text-red-600 hover:bg-red-50'}`}
-                            title={isDeleted ? 'Kumoa poisto' : 'Poista'}
+                            title={isDeleted ? 'Undo delete' : 'Delete'}
                           >
                             <span className="material-symbols-outlined text-base">{isDeleted ? 'undo' : 'delete'}</span>
                           </button>
@@ -207,7 +207,7 @@ export default function VenuesPage() {
           </table>
           {venues.length > 0 && (
             <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-400">
-              {venues.length} venue{venues.length !== 1 ? 'a' : ''}
+              {venues.length} venue{venues.length !== 1 ? 's' : ''}
             </div>
           )}
         </div>
@@ -218,7 +218,7 @@ export default function VenuesPage() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-bold text-gray-900">
-                {editingVenue ? 'Muokkaa venueä' : 'Lisää uusi venue'}
+                {editingVenue ? 'Edit venue' : 'Add new venue'}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -230,27 +230,27 @@ export default function VenuesPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nimi</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="esim. Hartwall Arena"
+                  placeholder="e.g. Hartwall Arena"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Osoite</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                 <input
                   type="text"
                   value={form.address}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="esim. Areenankuja 1"
+                  placeholder="e.g. Areenankuja 1"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Postinumero</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Postal code</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -258,7 +258,7 @@ export default function VenuesPage() {
                     onChange={(e) => handlePostalCodeChange(e.target.value)}
                     maxLength={5}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    placeholder="esim. 00240"
+                    placeholder="e.g. 00240"
                   />
                   {postalLookup === 'loading' && (
                     <span className="absolute right-2 top-2.5 text-gray-400 text-xs">...</span>
@@ -274,22 +274,22 @@ export default function VenuesPage() {
                   <p className="mt-1 text-xs text-green-600">{form.city}</p>
                 )}
                 {postalLookup === 'notfound' && (
-                  <p className="mt-1 text-xs text-amber-600">Postinumeroa ei löydy — syötä kaupunki alla</p>
+                  <p className="mt-1 text-xs text-amber-600">Postal code not found — enter a city below</p>
                 )}
               </div>
 
               {postalLookup === 'notfound' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Kaupunki</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
                   <input
                     type="text"
                     value={form.city}
                     onChange={(e) => setForm({ ...form, city: e.target.value })}
                     className="w-full border border-amber-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-                    placeholder="esim. Helsinki"
+                    placeholder="e.g. Helsinki"
                     autoFocus
                   />
-                  <p className="mt-1 text-xs text-gray-400">Postinumero luodaan automaattisesti tallennuksen yhteydessä.</p>
+                  <p className="mt-1 text-xs text-gray-400">The postal code will be created automatically on save.</p>
                 </div>
               )}
 
@@ -303,14 +303,14 @@ export default function VenuesPage() {
                   onClick={() => setShowModal(false)}
                   className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Peruuta
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting || postalLookup === 'loading'}
                   className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                 >
-                  {submitting ? 'Tallennetaan...' : editingVenue ? 'Tallenna' : 'Lisää'}
+                  {submitting ? 'Saving...' : editingVenue ? 'Save' : 'Add'}
                 </button>
               </div>
             </form>
